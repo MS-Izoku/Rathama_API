@@ -1,0 +1,2 @@
+class ScalePower < ApplicationRecord
+end
