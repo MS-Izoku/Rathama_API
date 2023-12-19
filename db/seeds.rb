@@ -1,6 +1,8 @@
 require 'io/console'
+require_relative './card_data.rb'
+require 'csv'
 
-# region Seed Text
+
 class SeedText
   def self.main_title
     <<-TEXT
@@ -111,141 +113,136 @@ class SeedText
     "#{msg} #{text}"
   end
 end
-# endregion
 
-
-class SeedMethods
-  
-# region Fiends
-  def self.seed_fiends
-  end
-
-  def self.drop_fiends
-  end
-
-# endregion
-
-# region Spells
-  def self.seed_spells
-  end
-
-  def self.drop_spell
-  end
-# endregion
-
-# region Traps
-  def self.seed_traps
-  end
-
-  def self.drop_traps
-  end
-# endregion
-
-#region Monuments
-  def self.seed_monuments
-  end
-
-  def self.drop_monuments
-  end
-#endregion
-
-
-
-# region Heroes
-  def self.seed_heroes
-  end
-
-  def self.drop_heroes
-  end
-# endregion
-
-
-
-# region PlayerClasses
-  def self.seed_player_classes
-    @@player_class_data = {
-      "Neutral": {
-        id: 0,
-        description: "No Class"
-      },
-      "Detainer": {
-        id: 1,
-        description: "A master of demons, who uses them at a cost to themselves for a greater reward"
-      },
-      "Keeper":{
-         id: 2,
-         description: "An overseer of the seal, capable of raising an army"
-      },
-      "Magus": {
-         id: 3,
-         description: "A spellcaster versed in many magics"
-      },
-      "Sage": {
-         id: 4,
-         description: "A master of body and soul, often native to Koden" 
-      },
-      "Seer": {
-         id: 5,
-         description: "One who sees the future, and prepares for it" 
-      },
-      "Trapper":{
-         id: 6,
-         description: "A well-versed demon hunter who prepares deadly traps"
-      },
-      "Warden": {
-         id: 7,
-         description: "A guardian who safeguards the seal" 
-      },
-      "Watcher": {
-         id: 8,
-         description: "An attendant of the seal who seeks new prey from the outside world" 
-      }
-    }
-
-    @@player_class_data.each do |name, data|
-      puts ">>> Creating PlayerClass: #{name}"
-      new_class = PlayerClass.find_or_create_by(id: data[:id], name: name, description: data[:description])
-      new_class.save
-    end
-  end
-
-  def self.drop_player_classes
-    total = PlayerClass.all.count
-    PlayerClass.destroy_all
-    puts ">> Dropped #{total} PlayerClasses"
-  end
-# endregion
-
-
-
-# region Expansions
-  def self.seed_expansions
-    @@expansion_data = {
-      "Core" => {
-        id: 0,
-        description: "Cards Included with the base version of the game.  Available to all players for free.",
-        tagline: "Core of the Game"
-      }
-    }
-
-    total = 0
-    @@expansion_data.each do |name, data|
-      puts "Creating PlayerClass: #{name}"
-      new_class = Expansion.new(id: data[:id], name: name, description: data[:description], tagline: data[:tagline])
-      total += 1
-      new_class.save
+# this is a comment!
+class SeedMethods  
+  # region Fiends
+    def self.seed_fiends
     end
 
-    puts "Created #{total} PlayerClasses"
+    def self.drop_fiends
+    end
 
-  end
+  # endregion
 
-  def self.drop_expansions
-    total = Expansion.all.count
-    Expansion.delete_all
-    puts ">> Dropped #{total} PlayerClasses"
-  end
-# endregion
+  # region Spells
+    def self.seed_spells
+    end
+
+    def self.drop_spells
+    end
+  # endregion
+
+  # region Traps
+    def self.seed_traps
+    end
+
+    def self.drop_traps
+    end
+  # endregion
+
+  # region Monuments
+    def self.seed_monuments
+    end
+
+    def self.drop_monuments
+    end
+  # endregion
+
+
+  # region Heroes
+    def self.seed_heroes
+    end
+
+    def self.drop_heroes
+    end
+  # endregion
+
+
+  # region PlayerClasses
+    def self.seed_player_classes
+      @@player_class_data = {
+        "Neutral": {
+          id: 0,
+          description: "No Class"
+        },
+        "Detainer": {
+          id: 1,
+          description: "A master of demons, who uses them at a cost to themselves for a greater reward"
+        },
+        "Keeper":{
+          id: 2,
+          description: "An overseer of the seal, capable of raising an army"
+        },
+        "Magus": {
+          id: 3,
+          description: "A spellcaster versed in many magics"
+        },
+        "Sage": {
+          id: 4,
+          description: "A master of body and soul, often native to Koden" 
+        },
+        "Seer": {
+          id: 5,
+          description: "One who sees the future, and prepares for it" 
+        },
+        "Trapper":{
+          id: 6,
+          description: "A well-versed demon hunter who prepares deadly traps"
+        },
+        "Warden": {
+          id: 7,
+          description: "A guardian who safeguards the seal" 
+        },
+        "Watcher": {
+          id: 8,
+          description: "An attendant of the seal who seeks new prey from the outside world" 
+        }
+      }
+
+      @@player_class_data.each do |name, data|
+        puts ">>> Creating PlayerClass: #{name}"
+        new_class = PlayerClass.find_or_create_by(id: data[:id], name: name, description: data[:description])
+        new_class.save
+      end
+    end
+
+    def self.drop_player_classes
+      total = PlayerClass.all.count
+      PlayerClass.destroy_all
+      puts ">> Dropped #{total} PlayerClasses"
+    end
+  # endregion
+
+
+  # region Expansions
+    def self.seed_expansions
+      @@expansion_data = {
+        "Core" => {
+          id: 0,
+          description: "Cards Included with the base version of the game.  Available to all players for free.",
+          tagline: "Core of the Game"
+        }
+      }
+
+      total = 0
+      @@expansion_data.each do |name, data|
+        puts "Creating PlayerClass: #{name}"
+        new_class = Expansion.new(id: data[:id], name: name, description: data[:description], tagline: data[:tagline])
+        total += 1
+        new_class.save
+      end
+
+      puts "Created #{total} PlayerClasses"
+
+    end
+
+    def self.drop_expansions
+      total = Expansion.all.count
+      Expansion.delete_all
+      puts ">> Dropped #{total} PlayerClasses"
+    end
+  # endregion
 
 end
 
@@ -267,37 +264,37 @@ class ModelSeedController
     puts "> Dropping existing records of #{@model_name}"
     @drop_proc.call
   end
-end
 
 
-class SeedPerform
-  def self.run
+  def create_from_csv
+    
+    # create PlayerClasses to asscociate card data
+    # SeedMethods.seed_player_classes
+
+    # reference each Player Class
+    # detainer = PlayerClass.find_or_create_by(name: "Detainer")
+    # keeper = PlayerClass.find_or_create_by(name: "Keeper")
+    # magus = PlayerClass.find_or_create_by(name: "Magus")
+    # sage = PlayerClass.find_or_create_by(name: "Sage")
+    # seer = PlayerClass.find_or_create_by(name: "Seer")
+    # trapper = PlayerClass.find_or_create_by(name: "Trapper")
+    # warden = PlayerClass.find_or_create_by(name: "Warden")
+    # watcher = PlayerClass.find_or_create_by(name: "Watcher")
+
     system('cls')
-    puts "Constructing SeedPerform...\n"
+    script_directory = File.dirname(__FILE__)
+    csv_filename = './cards.csv'
+    csv_file_path = File.join(script_directory, csv_filename)
 
-    all_seeders = SeedPerform.create_all_seeders
+    puts "attempting to load file at: " + csv_file_path
 
-    puts "\nRunning Seed\n"
-    all_seeders.each do |seeder|
-      seeder.create_model
+    # Read and parse the CSV file with headers
+    CSV.foreach(csv_file_path, headers: true) do |row|
+      puts "Row: #{row.inspect}"
     end
   end
-
-  def self.create_all_seeders
-    all_seeders = []
-    
-    expansion_seeder = ModelSeedController.new("Expansions", proc { SeedMethods.seed_expansions}, proc { SeedMethods.drop_expansions})
-    all_seeders << expansion_seeder
-    puts "> Created Seeder for 'Expansions'"
-    
-
-    player_class_seeder = ModelSeedController.new("Player Classes", proc { SeedMethods.seed_player_classes}, proc { SeedMethods.drop_player_classes})
-    puts "> Created Seeder for 'Player Classes'"
-    all_seeders << player_class_seeder
-
-    all_seeders
-  end
 end
 
 
-SeedPerform.run
+# p CardData.all_cards
+ModelSeedController.new.create_from_csv

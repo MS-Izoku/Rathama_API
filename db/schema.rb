@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_13_211307) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_19_193946) do
   create_table "cards", force: :cascade do |t|
     t.string "name"
     t.string "card_text"
@@ -18,6 +18,28 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_13_211307) do
     t.text "flavor_text"
     t.string "rarity"
     t.string "card_art_url"
+    t.string "type"
+    t.integer "attack"
+    t.integer "health"
+    t.integer "armor"
+    t.integer "durability"
+    t.integer "expansion_id", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_token"
+  end
+
+  create_table "connected_cards", force: :cascade do |t|
+    t.integer "master_card_id"
+    t.integer "child_card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "expansion_groups", force: :cascade do |t|
+    t.string "name"
+    t.integer "year"
+    t.string "icon_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -26,36 +48,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_13_211307) do
     t.string "name"
     t.text "description"
     t.string "tagline"
+    t.integer "expansion_group_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "fiend_cards", force: :cascade do |t|
-    t.integer "attack"
-    t.integer "health"
-    t.string "cardable_type"
-    t.integer "cardable_id"
+  create_table "player_class_cards", force: :cascade do |t|
+    t.integer "player_class_id"
+    t.integer "card_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cardable_type", "cardable_id"], name: "index_fiend_cards_on_cardable"
-  end
-
-  create_table "hero_cards", force: :cascade do |t|
-    t.integer "armor"
-    t.string "card_type", null: false
-    t.integer "card_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["card_type", "card_id"], name: "index_hero_cards_on_card"
-  end
-
-  create_table "monument_cards", force: :cascade do |t|
-    t.integer "durability"
-    t.string "card_type", null: false
-    t.integer "card_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["card_type", "card_id"], name: "index_monument_cards_on_card"
   end
 
   create_table "player_classes", force: :cascade do |t|
@@ -65,29 +67,14 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_13_211307) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "spell_cards", force: :cascade do |t|
-    t.string "card_type", null: false
-    t.integer "card_id", null: false
+  create_table "scale_powers", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "art_url"
+    t.integer "player_class_id"
+    t.integer "cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["card_type", "card_id"], name: "index_spell_cards_on_card"
-  end
-
-  create_table "trap_cards", force: :cascade do |t|
-    t.string "card_type", null: false
-    t.integer "card_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["card_type", "card_id"], name: "index_trap_cards_on_card"
-  end
-
-  create_table "weapon_cards", force: :cascade do |t|
-    t.integer "durability"
-    t.string "card_type", null: false
-    t.integer "card_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["card_type", "card_id"], name: "index_weapon_cards_on_card"
   end
 
 end

@@ -1,0 +1,6 @@
+AllCops:
+  SuggestExtensions: false
+
+Layout/CommentIndentation:
+  Description: Comment Indentation ignores regions
+  Enabled: false

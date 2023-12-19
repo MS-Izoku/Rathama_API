@@ -23,8 +23,6 @@ class CreateCards < ActiveRecord::Migration[7.1]
 
       # Foreign Key Ids
       t.integer :expansion_id, default: 1
-      t.integer :player_class_id, default: 0
-
 
       t.timestamps
     end
