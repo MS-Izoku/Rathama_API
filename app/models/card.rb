@@ -65,5 +65,4 @@ class Card < ApplicationRecord
     # if the card is not a token, it should have a unique name
     !is_token
   end
-
 end
