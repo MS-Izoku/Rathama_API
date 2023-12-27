@@ -40,17 +40,20 @@ class CardData
       "Sen": "Spells and Traps rooted in the use of Sage Arts",
 
       # elements
-      "Earth": "" ,
-      "Fire": "" ,
-      "Ice": "" ,
-      "Life": "", 
-      "Light": "" ,
-      "Shadow": "" ,
-      "Wind": ""
+      "Earth": "Spells and Traps relating to the element of Earth" ,
+      "Fire": "Spells and Traps relating to the element of Fire" ,
+      "Ice": "Spells and Traps relating to the element of Water and Ice" ,
+      "Life": "Spells and Traps relating to the element of Life and Nature",
+      "Lightning": "Spells and Traps relating to the elements of Thunder and Lightning",
+      "Light": "Spells and Traps relating to the element of Light",
+      "Metal": "Spells and Traps relating to the element of Metal",
+      "Shadow": "Spells and Traps relating to the element of Shadow" ,
+      "Wind": "Spells and Traps relating to the element of Wind and Air"
+
     }
   end
 
-  # Undead, Quillboar, Elemental, Beast, Mech, xMurloc, Totem, xDragon, Naga, xxDemon, Pirate
+  # Undead, Quillboar, Elemental, Beast, Mech, -, Totem, -, Naga, -, Pirate
   def self.tribes
     {
         "Aquatic": "Fiends which reside in the Oceans and Waters",
@@ -59,6 +62,7 @@ class CardData
         "Flying": "Fiends which are able to Fly",
         "Ghost": "Fiends which are notably etherial or resemble the living dead",
         "Primal": "Fiends which have similarities to elements or elemental creatures",
+        "Eldritch": "Fiends which have similarities to otherworldly entities, incomprehensible to sane minds",
         "All": "Fiends which have all possible tribes",
     }
   end
