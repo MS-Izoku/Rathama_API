@@ -1,8 +1,16 @@
 class Card < ApplicationRecord
 # region: relationships
+
+  # Player Class/es of the Card (In Case of Dual+ Class Cards)
   has_many :player_class_cards
   has_many :player_classes, through: :player_class_cards
-# endregion
+
+  # Cards have many CardTypeAttributes, being either Tribes or SpellSchools (validated on other models)
+  has_many :card_types
+  has_many :card_type_attributes, through: :card_types
+
+  
+  # endregion
 
   # presence checks
   validates :name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, presence: true
@@ -59,7 +67,6 @@ class Card < ApplicationRecord
       errors.add(:base, 'A Card must have at least one PlayerClassCard.')
     end
   end
-
 
   def should_validate_uniqueness?
     # if the card is not a token, it should have a unique name
