@@ -1,0 +1,3 @@
+class SpellSchool < CardTypeAttribute
+    
+end

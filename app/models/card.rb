@@ -2,6 +2,7 @@ class Card < ApplicationRecord
 # region: relationships
   has_many :player_class_cards
   has_many :player_classes, through: :player_class_cards
+  belongs_to :expansion
 # endregion
 
   # presence checks
