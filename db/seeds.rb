@@ -2,6 +2,7 @@ require 'io/console'
 require_relative './card_data.rb'
 require 'csv'
 
+# NOTE: Rails 7 switched out byebug with => binding.break
 
 class SeedText
   def self.main_title
@@ -115,7 +116,7 @@ class SeedText
 end
 
 # this is a comment!
-class SeedMethods  
+class SeedMethods
   # region Fiends
     def self.seed_fiends
     end
@@ -161,49 +162,12 @@ class SeedMethods
 
   # region PlayerClasses
     def self.seed_player_classes
-      @@player_class_data = {
-        "Neutral": {
-          id: 0,
-          description: "No Class"
-        },
-        "Detainer": {
-          id: 1,
-          description: "A master of demons, who uses them at a cost to themselves for a greater reward"
-        },
-        "Keeper":{
-          id: 2,
-          description: "An overseer of the seal, capable of raising an army"
-        },
-        "Magus": {
-          id: 3,
-          description: "A spellcaster versed in many magics"
-        },
-        "Sage": {
-          id: 4,
-          description: "A master of body and soul, often native to Koden" 
-        },
-        "Seer": {
-          id: 5,
-          description: "One who sees the future, and prepares for it" 
-        },
-        "Trapper":{
-          id: 6,
-          description: "A well-versed demon hunter who prepares deadly traps"
-        },
-        "Warden": {
-          id: 7,
-          description: "A guardian who safeguards the seal" 
-        },
-        "Watcher": {
-          id: 8,
-          description: "An attendant of the seal who seeks new prey from the outside world" 
-        }
-      }
-
-      @@player_class_data.each do |name, data|
+      CardData.player_class_data.each do |name, data|
         puts ">>> Creating PlayerClass: #{name}"
         new_class = PlayerClass.find_or_create_by(id: data[:id], name: name, description: data[:description])
-        new_class.save
+        
+        puts ">>>>> [Created New PlayerClass] #{new_class.name}: [#{new_class.description}]" if new_class.save
+        
       end
     end
 
@@ -213,6 +177,88 @@ class SeedMethods
       puts ">> Dropped #{total} PlayerClasses"
     end
   # endregion
+
+
+# region: Tribes and Spell Schools
+
+  def self.seed_tribes
+    puts ""
+    puts ">> Seeding Tribes"
+
+    total_created = 0
+    failed = 0
+    CardData.tribes.each do |name, description|
+      puts ">>>> Creating Tribe: #{name}"
+      tribe = Tribe.find_or_create_by(name: name, description: description)
+      if tribe.save
+        puts ">>>>> [Created New Tribe] #{tribe.name}: [#{new_class.description}]"
+        total_created += 1
+      else
+        puts "Failed to Create #{name}"
+        tribe.errors.each do |error|
+          
+          puts ">>> " + error.full_message
+        end
+        failed += 1
+      end
+    end
+
+    puts ">> Total Tribes Created from Hash: [#{total_created}]"
+    puts ">> Total Tribes Failed: [#{failed}]"
+  end
+
+
+  def self.seed_spell_schools
+    puts ""
+    puts ">> Seeding Spell Schools"
+
+    total_created = 0
+    failed = 0
+    CardData.spell_schools.each do |name, description|
+      puts ">>>> Creating SpellSchool: #{name}"
+      spell_school = SpellSchool.find_or_create_by(name: name, description: description)
+      if spell_school.save
+        puts ">>>>> [Created New SpellSchool] #{spell_school.name}: [#{new_class.description}]"
+        total_created += 1
+      else
+        puts "Failed to Create: #{name}"
+        spell_school.errors.each do |error|
+          puts ">>> " + error.full_message
+        end
+        failed += 1
+      end
+    end
+
+    puts ">> Total SpellSchools Created from Hash: [#{total_created}]"
+    puts ">> Total SpellSchools Failed: [#{failed}]"
+  end
+
+
+  def self.drop_tribes
+    puts ""
+    puts ">> Dropping Tribes [CardTypeAttribute]"
+    total = PlayerClass.all.count
+    PlayerClass.destroy_all
+    puts ">> Dropped #{total} Tribes"
+  end
+
+
+  def self.drop_spell_schools
+    puts ""
+    puts ">> Dropping SpellSchools [CardTypeAttribute]"
+    total = PlayerClass.all.count
+    PlayerClass.destroy_all
+    puts ">> Dropped #{total} SpellSchools"
+  end
+
+
+  def self.drop_card_type_attributes
+    total = CardTypeAttributes.all.count
+    CardTypeAttributes.destroy_all
+    puts ">> Dropped #{total} CardTypeAttributes"
+  end
+
+# endregion
 
 
   # region Expansions
@@ -265,7 +311,6 @@ class ModelSeedController
     @drop_proc.call
   end
 
-
   def create_from_csv
     
     # create PlayerClasses to asscociate card data
@@ -298,3 +343,9 @@ end
 
 # p CardData.all_cards
 ModelSeedController.new.create_from_csv
+
+SeedMethods.drop_tribes
+SeedMethods.drop_spell_schools
+puts "=== Re-seeding ==="
+SeedMethods.seed_tribes
+SeedMethods.seed_spell_schools
