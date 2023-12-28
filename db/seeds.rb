@@ -191,7 +191,7 @@ class SeedMethods
       puts ">>>> Creating Tribe: #{name}"
       tribe = Tribe.find_or_create_by(name: name, description: description)
       if tribe.save
-        puts ">>>>> [Created New Tribe] #{tribe.name}: [#{new_class.description}]"
+        puts ">>>>> [Created New Tribe] #{tribe.name}: [#{tribe.description}]"
         total_created += 1
       else
         puts "Failed to Create #{name}"
@@ -218,7 +218,7 @@ class SeedMethods
       puts ">>>> Creating SpellSchool: #{name}"
       spell_school = SpellSchool.find_or_create_by(name: name, description: description)
       if spell_school.save
-        puts ">>>>> [Created New SpellSchool] #{spell_school.name}: [#{new_class.description}]"
+        puts ">>>>> [Created New SpellSchool] #{spell_school.name}: [#{spell_school.description}]"
         total_created += 1
       else
         puts "Failed to Create: #{name}"
@@ -274,12 +274,12 @@ class SeedMethods
       total = 0
       @@expansion_data.each do |name, data|
         puts "Creating PlayerClass: #{name}"
-        new_class = Expansion.new(id: data[:id], name: name, description: data[:description], tagline: data[:tagline])
+        expansion = Expansion.new(id: data[:id], name: name, description: data[:description], tagline: data[:tagline])
         total += 1
-        new_class.save
+        expansion.save
       end
 
-      puts "Created #{total} PlayerClasses"
+      puts "Created #{total} Expansions"
 
     end
 

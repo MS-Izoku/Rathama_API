@@ -1,3 +1,4 @@
+# A root class used in a simple STI relationship with Tribes and SpellSchools
 class CardTypeAttribute < ApplicationRecord
   validates :type, presence: true
   validates :name, uniqueness: true, presence: true
