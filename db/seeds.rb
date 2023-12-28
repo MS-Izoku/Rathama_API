@@ -401,8 +401,3 @@ SeedMethods.drop_spell_schools
 puts "=== Re-seeding ==="
 SeedMethods.seed_tribes
 SeedMethods.seed_spell_schools
-puts SeedText.spell_schools_title
-puts ""
-puts SeedText.tribes_title
-puts ""
-puts SeedText.card_type_attributes_title
