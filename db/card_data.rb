@@ -210,4 +210,48 @@ class CardData
   def self.all_cards
     @@cards
   end
+
+  def self.scale_powers
+    {
+      "DetainerPower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Detainer'
+      },
+      "KeeperPower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Keeper'
+      },
+      "SagePower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Sage'
+      },
+      "SeerPower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Seer'
+      },
+      "TrapperPower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Trapper'
+      },
+      "WardenPower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Warden'
+      },
+      "WatcherPower": {
+        description: 'Give your Hero +2 Attack this turn',
+        cost: 2,
+        player_class: 'Watcher'
+      }
+    }
+  end
+
+
+  def self.create_scale_powers_from_csv
+  end
 end
