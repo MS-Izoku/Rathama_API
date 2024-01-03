@@ -6,7 +6,7 @@ class CardTypeAttributesController < ApplicationController
   def tribes
     render json: Tribe.all
   end
-  
+
 
   # return a list of all Tribe Names
   def tribe_names
@@ -24,7 +24,6 @@ class CardTypeAttributesController < ApplicationController
   end
 
 # endregion
-
 
 
 # region: Spell Schools
