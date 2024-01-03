@@ -1,6 +1,5 @@
 class CardData
   attr_reader :cards
-  attr_reader :player_class_data
 
   def self.parse_card_data_csv
   end
@@ -67,42 +66,44 @@ class CardData
     }
   end
 
-  @@player_class_data = {
-    "Neutral": {
-      id: 0,
-      description: "No Class"
-    },
-    "Detainer": {
-      id: 1,
-      description: "A master of demons, who uses them at a cost to themselves for a greater reward"
-    },
-    "Keeper":{
-      id: 2,
-      description: "An overseer of the seal, capable of raising an army"
-    },
-    "Magus": {
-      id: 3,
-      description: "A spellcaster versed in many magics"
-    },
-    "Sage": {
-      id: 4,
-      description: "A master of body and soul, often native to Koden" 
-    },
-    "Seer": {
-      id: 5,
-      description: "One who sees the future, and prepares for it" 
-    },
-    "Trapper":{
-      id: 6,
-      description: "A well-versed demon hunter who prepares deadly traps"
-    },
-    "Warden": {
-      id: 7,
-      description: "A guardian who safeguards the seal" 
-    },
-    "Watcher": {
-      id: 8,
-      description: "An attendant of the seal who seeks new prey from the outside world" 
+  def self.player_class_data
+     {
+      "Neutral": {
+        id: 0,
+        description: "No Class"
+      },
+      "Detainer": {
+        id: 1,
+        description: "A master of demons, who uses them at a cost to themselves for a greater reward"
+      },
+      "Keeper":{
+        id: 2,
+        description: "An overseer of the seal, capable of raising an army"
+      },
+      "Magus": {
+        id: 3,
+        description: "A spellcaster versed in many magics"
+      },
+      "Sage": {
+        id: 4,
+        description: "A master of body and soul, often native to Koden" 
+      },
+      "Seer": {
+        id: 5,
+        description: "One who sees the future, and prepares for it" 
+      },
+      "Trapper":{
+        id: 6,
+        description: "A well-versed demon hunter who prepares deadly traps"
+      },
+      "Warden": {
+        id: 7,
+        description: "A guardian who safeguards the seal" 
+      },
+      "Watcher": {
+        id: 8,
+        description: "An attendant of the seal who seeks new prey from the outside world" 
+      }
     }
-  }
+  end
 end

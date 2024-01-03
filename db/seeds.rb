@@ -94,52 +94,52 @@ class SeedText
 
 def self.tribes_title
   <<-TEXT
-[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-------------------------------------------------------------------------------
+  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+  ------------------------------------------------------------------------------
 
-                 ████████╗██████╗ ██╗██████╗ ███████╗███████╗
-                 ╚══██╔══╝██╔══██╗██║██╔══██╗██╔════╝██╔════╝
-                    ██║   ██████╔╝██║██████╔╝█████╗  ███████╗
-                    ██║   ██╔══██╗██║██╔══██╗██╔══╝  ╚════██║
-                    ██║   ██║  ██║██║██████╔╝███████╗███████║
-                    ╚═╝   ╚═╝  ╚═╝╚═╝╚═════╝ ╚══════╝╚══════╝
-______________________________________________________________________________
-[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+                  ████████╗██████╗ ██╗██████╗ ███████╗███████╗
+                  ╚══██╔══╝██╔══██╗██║██╔══██╗██╔════╝██╔════╝
+                      ██║   ██████╔╝██║██████╔╝█████╗  ███████╗
+                      ██║   ██╔══██╗██║██╔══██╗██╔══╝  ╚════██║
+                      ██║   ██║  ██║██║██████╔╝███████╗███████║
+                      ╚═╝   ╚═╝  ╚═╝╚═╝╚═════╝ ╚══════╝╚══════╝
+  ______________________________________________________________________________
+  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
   TEXT
 end
 
 def self.spell_schools_title
   <<-TEXT
-[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-------------------------------------------------------------------------------
-      _____               _  _  _____        _                    _      
-     /  ___|             | || |/  ___|      | |                  | |     
-     \\ `--.  _ __    ___ | || |\ `--.    ___ | |__    ___    ___  | | ___ 
-      `--. \\| '_ \\  / _ \\| || | `--. \\ / __|| '_ \\  / _ \\  / _ \\ | |/ __|
-     /\\__/ /| |_) ||  __/| || |/\\__/ /| (__ | | | || (_) || (_) || |\\__ \\
-     \\____/ | .__/  \\___||_||_|\\____/  \\___||_| |_| \\___/  \\___/ |_||___/
-            | |                                                          
-            |_|      
-______________________________________________________________________________
-[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+  ------------------------------------------------------------------------------
+        _____               _  _  _____        _                    _      
+      /  ___|             | || |/  ___|      | |                  | |     
+      \\ `--.  _ __    ___ | || |\ `--.    ___ | |__    ___    ___  | | ___ 
+        `--. \\| '_ \\  / _ \\| || | `--. \\ / __|| '_ \\  / _ \\  / _ \\ | |/ __|
+      /\\__/ /| |_) ||  __/| || |/\\__/ /| (__ | | | || (_) || (_) || |\\__ \\
+      \\____/ | .__/  \\___||_||_|\\____/  \\___||_| |_| \\___/  \\___/ |_||___/
+              | |                                                          
+              |_|      
+  ______________________________________________________________________________
+  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
   TEXT
 end
 
 def self.card_type_attributes_title
-<<-TEXT
-[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-------------------------------------------------------------------------------
-   ___   __   ____  ____  ____  _  _  ____  ____                                           
-  / __) / _\\ (  _ \\(    \\(_  _)( \\/ )(  _ \\(  __)                                          
- ( (__ /    \\ )   / ) D (  )(   )  /  ) __/ ) _)                                           
-  \\___)\\_/\\_/(__\\_)(____/ (__) (__/  (__)  (____)                                          
-                   __   ____  ____  ____   __   ____  _  _  ____  ____  ____ 
-            ___   / _\\ (_  _)(_  _)(  _ \\ (  ) (  _ \\/ )( \\(_  _)(  __)/ ___)
-           (___) /    \\  )(    )(   )   /  )(   ) _ () \\/ (  )(   ) _) \\___ \\
-                 \\_/\\_/ (__)  (__) (__\\_) (__) (____/\\____/ (__) (____)(____/
-______________________________________________________________________________
-[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-TEXT
+  <<-TEXT
+  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+  ------------------------------------------------------------------------------
+    ___   __   ____  ____  ____  _  _  ____  ____                                           
+    / __) / _\\ (  _ \\(    \\(_  _)( \\/ )(  _ \\(  __)                                          
+  ( (__ /    \\ )   / ) D (  )(   )  /  ) __/ ) _)                                           
+    \\___)\\_/\\_/(__\\_)(____/ (__) (__/  (__)  (____)                                          
+                    __   ____  ____  ____   __   ____  _  _  ____  ____  ____ 
+              ___   / _\\ (_  _)(_  _)(  _ \\ (  ) (  _ \\/ )( \\(_  _)(  __)/ ___)
+            (___) /    \\  )(    )(   )   /  )(   ) _ () \\/ (  )(   ) _) \\___ \\
+                  \\_/\\_/ (__)  (__) (__\\_) (__) (____/\\____/ (__) (____)(____/
+  ______________________________________________________________________________
+  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+  TEXT
 end
 
   def self.inline_title_1(title)
@@ -283,15 +283,17 @@ class SeedMethods
 
     puts ">> Total SpellSchools Created from Hash: [#{total_created}]"
     puts ">> Total SpellSchools Failed: [#{failed}]"
+    puts ""
   end
 
 
   def self.drop_tribes
     puts ""
     puts ">> Dropping Tribes [CardTypeAttribute]"
-    total = PlayerClass.all.count
-    PlayerClass.destroy_all
+    total = Tribe.all.count
+    Tribe.destroy_all
     puts ">> Dropped #{total} Tribes"
+    puts ""
   end
 
 
@@ -301,19 +303,22 @@ class SeedMethods
     total = PlayerClass.all.count
     PlayerClass.destroy_all
     puts ">> Dropped #{total} SpellSchools"
+    puts ""
   end
 
 
   def self.drop_card_type_attributes
-    total = CardTypeAttributes.all.count
+    puts "Dropping ALL CardTypeAttributes [#{CardTypeAttributes.all.count}]"
+    CardTypeAttributes.all.count
     CardTypeAttributes.destroy_all
-    puts ">> Dropped #{total} CardTypeAttributes"
+    puts ">> Dropped #{CardTypeAttributes.all.count} CardTypeAttributes"
+    puts ""
   end
 
 # endregion
 
 
-  # region Expansions
+# region: Expansions
     def self.seed_expansions
       @@expansion_data = {
         "Core" => {
@@ -340,8 +345,45 @@ class SeedMethods
       Expansion.delete_all
       puts ">> Dropped #{total} PlayerClasses"
     end
-  # endregion
+# endregion
 
+
+# region: PlayerClasses
+  def seed_player_classes
+    created = 0
+    failed = 0
+    failed_names = []
+
+    puts ">> Creating Player Classes"
+
+    CardData.player_class_data.each do  |player_class_name, description|
+      begin
+        puts ">>> Creating Player Class: #{player_class_name}"
+        player_class = PlayerClass.find_or_create_by(name: player_class_name, description: description)
+        puts ">>>>> Created Player Class: #{player_class.name} | #{player_class.description}"
+      rescue
+        failed += 1
+        failed_names << player_class_names
+      end
+    end
+
+    puts ""
+    puts "Created #{created} PlayerClasses"
+    puts "Failed to created #{failed} PlayerClasses"
+    puts failed_names.flatten
+    puts ""
+
+  end
+
+
+  def drop_player_classes
+    puts "Attempting to drop #{PlayerClass.all.count} PlayerClasses"
+    PlayerClass.destroy_all
+    puts "Player classes dropped, #{PlayerClass.all.count} remain"
+    puts ""
+  end
+
+# endregion 
 end
 
 class ModelSeedController
@@ -396,8 +438,13 @@ end
 # p CardData.all_cards
 ModelSeedController.new.create_from_csv
 
+system('cls')
 SeedMethods.drop_tribes
 SeedMethods.drop_spell_schools
+SeedMethods.drop_player_classes
 puts "=== Re-seeding ==="
 SeedMethods.seed_tribes
 SeedMethods.seed_spell_schools
+SeedMethods.seed_player_classes
+puts ""
+puts "> Seed Complete"
