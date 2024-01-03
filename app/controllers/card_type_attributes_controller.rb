@@ -20,7 +20,7 @@ class CardTypeAttributesController < ApplicationController
   end
   
   # return a list of all Spell School Names
-  def spell_schools
+  def spell_school_names
     render json: SpellSchool.all.select(:name)
   end
 #endregion
