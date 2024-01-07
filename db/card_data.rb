@@ -288,7 +288,7 @@ class CardData
       keyword_attributes = Hash[headers.zip(row)]
 
       existing_keyword = Keyword.find_by(name: keyword_attributes['Name'])
-      #puts "Keyword: #{keyword_attributes} | #{keyword_attributes['Name']} #{keyword_attributes['Description']}"
+      # puts "Keyword: #{keyword_attributes} | #{keyword_attributes['Name']} #{keyword_attributes['Description']}"
 
       if existing_keyword.nil?
         puts 'Generating new Keyword'
@@ -316,7 +316,7 @@ class CardData
 
     nil
   end
-#
+# endregion
 
 # region Get Google Sheet Data
   def get_keywords_from_google_sheets_api
