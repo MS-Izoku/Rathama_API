@@ -286,3 +286,5 @@ end
 
 # p CardData.all_cards
 # ModelSeedController.new.create_from_csv
+
+CardData.create_keywords_from_csv
