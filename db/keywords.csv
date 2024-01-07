@@ -1,0 +1,39 @@
+Name,Description
+Anim,"When this minion dies, return it to the field with 1 health."
+Bane,"When damage is dealt by this, destroy the non-player target."
+Bastion,Absorb one hit of damage from the target before disappearing.
+Bind,Prevent the target from performing actions until the start of their next turn.
+Call,An effect that occurs when the Card is played from the hand.
+Chain,An effect that occurs when this card is played after another.
+Copy,Generates a copy of a target.
+Cusp,An effect that occurs at the end of the turn.
+Charge(x),A card that can be played X many times from hand for the same cost.
+Evoke,Summon a minion from your deck.
+Find,Finds an existing card from a selection. Added to the hand by default.
+Form,Generates a new card from a selection. Added to the hand by default.
+Fury,An effect that occurs when the target is damaged.
+Gag,Removes any/all effects from the target.
+Giant(x),A minion that summons powerful token cards in x other spaces (varies depending on the fiend).
+Hail,"Find 3 cards from your deck, pick one to put on top."
+Invoke,Activates the hero power of another card.
+Lift(x),An effect is active when certain mana threshold is reached.
+Link,A State shared between adjacent cards.
+Mime,"Can be played as many times as possible, for the base mana cost."
+Nexus,"An effect that occurs when this card enters the Nexus space at the center of the board, or after a Rook Swap."
+Overkill,An effect that occurs when damage is greater than the health of the target.
+Pact,An effect that becomes after after (x) friendly minions die while this is in hand.
+Raid(x),Able to attack (x) times per turn.
+Rale,An effect that applies when a Minion or Hero has been destroyed after being played to the board.
+Ressurrect,Brings back a Minion that has been destroyed on the board.
+Rite,Complete a set of specific steps to obtain a reward.
+Rook,An effect that occurs when a Rook enters a Rook space on the sides of a board.
+Root,An effect that occurs at the start of the game.
+Sap,Damage dealth restores Health to the Player.
+Sly,Cannot be targeted by Spells or Scale Powers.
+Spell Damage,"Increases the damage done by Spells, including Traps."
+Stand,An effect that occurs when this survives damage.
+Storm,Can attack any enemy character immediately.
+Trade,Shuffle this card back into your deck and draw a new card.
+Veil,Cannot be targeted until this attacks.
+Ward,"Enemies must attack this, or other Ward Fiends."
+Weight,An effect that occurs when you activate a Scale Power.
