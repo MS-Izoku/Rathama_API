@@ -16,7 +16,7 @@ class Card < ApplicationRecord
   validates :name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, presence: true
 
   # uniqueness checks
-  validates :name, uniqueness: { scope: :is_token, if: :should_validate_uniqueness? }
+  validates :name, uniqueness: { scope: :is_token, if: :should_validate_uniqueness_if_token? }
   validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
   validates :cost, numericality: { greater_than_or_equal_to: -1 }
@@ -77,8 +77,7 @@ class Card < ApplicationRecord
 
       # "Neutral" (PlayerClass) cannot be an option for Dual-Class Cards (Neutral is universal between all classes)
       if neutral_association_count > 0
-        errors.add(:base,
-                   'Cards cannot be Dual Class if they are Neutral (Neutral PlayerClass found in relationship PlayerClassCard)')
+        errors.add(:base, 'Cards cannot be Dual Class if they are Neutral (Neutral PlayerClass found in relationship PlayerClassCard)')
       else
         errors.add(:base, 'A Card can have no more than 2 associated Player Classes.')
       end
@@ -89,7 +88,7 @@ class Card < ApplicationRecord
     end
   end
 
-  def should_validate_uniqueness?
+  def should_validate_uniqueness_if_token?
     # if the card is not a token, it should have a unique name
     !is_token
   end
