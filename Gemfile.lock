@@ -77,11 +77,11 @@ GEM
       tzinfo (~> 2.0)
     ast (2.4.2)
     base64 (0.2.0)
+    bcrypt (3.1.20)
     bigdecimal (3.1.4)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     builder (3.2.4)
-    coderay (1.1.3)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
     crass (1.0.6)
@@ -111,7 +111,6 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.2)
-    method_source (1.0.0)
     mini_mime (1.1.5)
     minitest (5.20.0)
     msgpack (1.7.2)
@@ -134,9 +133,6 @@ GEM
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
-    pry (0.14.2)
-      coderay (~> 1.1)
-      method_source (~> 1.0)
     psych (5.1.1.1)
       stringio
     puma (6.4.0)
@@ -228,9 +224,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
   bootsnap
   debug
-  pry
   puma (>= 5.0)
   rails (~> 7.1.2)
   rubocop
