@@ -14,7 +14,6 @@ class FiendCard < Card
   # validate required base values of data
   validates :attack, numericality: { greater_than_or_equal_to: 0 }
   validates :health, numericality: { greater_than_or_equal_to: 1 }
-  validates :cost, numericality: { greater_than_or_equal_to: 0 }
 # endregion
 
   def tribe_names

@@ -19,7 +19,7 @@ class Card < ApplicationRecord
   validates :name, uniqueness: { scope: :is_token, if: :should_validate_uniqueness? }
   validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
-
+  validates :cost, numericality: { greater_than_or_equal_to: -1 }
 
 # region: Card Type Checks
   def fiend_card?
