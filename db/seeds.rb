@@ -6,166 +6,166 @@ require 'csv'
 
 
 class SeedText
-# region: titles
-  def self.main_title
+  # region: titles
+    def self.main_title
+      <<-TEXT
+      _________________________________________________________________
+      [#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]
+      =================================================================#{'   '}
+              ______      _   _#{'                           '}
+              | ___ \\    | | | |#{'                          '}
+              | |_/ /__ _| |_| |__   __ _ _ __ ___   __ _#{' '}
+              |    // _` | __| '_ \\ / _` | '_ ` _ \\ / _` |
+              | |\\ \\ (_| | |_| | | | (_| | | | | | | (_| |
+              \\_| \\_\\__,_|\\__|_| |_|\\__,_|_| |_| |_|\\__,_|
+
+                  (O==[(=::, Beasts of the Seal '::=)]==O)
+      _________________________________________________________________
+      [#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]
+      =================================================================#{'  '}
+
+      TEXT
+    end
+
+    def self.fiend_title
+      <<-TEXT
+
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+                  ____, ____, ____, ____,   ____,
+                  (-|_, (-|   (-|_, (-|  |  (-|  \\
+                  _|    _|__, _|__, _|  |_, _|__/
+                  (     (     (     (       (#{'     '}
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+
+      TEXT
+    end
+
+    def self.spell_title
+      <<-TEXT
+
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+                  ____  ___, ____, __    __#{'   '}
+                  (-(__`(-|_)(-|_, (-|   (-|#{'   '}
+                  ____) _|   _|__, _|__, _|__,
+                  (     (    (     (     (#{'     '}
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+
+      TEXT
+    end
+
+    def self.trap_title
+      <<-TEXT
+
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+                      ____, ___,   ___,   ___,
+                  (-|   (-|_)  (-|_\\_,(-|_)
+                      _|    _| \\_, _|  )  _|#{'  '}
+                  (     (      (      (#{' '}
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+
+      TEXT
+    end
+
+    def self.monument_title
+      <<-TEXT
+
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+      _____,   ____, ____,   __   _, _____,   ____, ____,   ____,
+      (-| | |  (-/  \\(-|  |  (-|  |  (-| | |  (-|_, (-|  |  (-|#{'   '}
+      _| | |_,  \\__/ _|  |_,  |__|_, _| | |_, _|__, _|  |_, _|#{'   '}
+      (              (               (        (     (       (#{'     '}
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+
+      TEXT
+    end
+
+    def self.hero_title
+      <<-TEXT
+
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+                  __   _, ____, ___,   ____,
+                  (-|__|  (-|_, (-|_)  (-/  \\
+                  _|  |_, _|__, _| \\_,  \\__/
+                  (       (     (#{'            '}
+      [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+
+      TEXT
+    end
+  # endregion
+
+  def self.tribes_title
     <<-TEXT
-    _________________________________________________________________
-    [#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]
-    =================================================================#{'   '}
-            ______      _   _#{'                           '}
-            | ___ \\    | | | |#{'                          '}
-            | |_/ /__ _| |_| |__   __ _ _ __ ___   __ _#{' '}
-            |    // _` | __| '_ \\ / _` | '_ ` _ \\ / _` |
-            | |\\ \\ (_| | |_| | | | (_| | | | | | | (_| |
-            \\_| \\_\\__,_|\\__|_| |_|\\__,_|_| |_| |_|\\__,_|
+    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+    ------------------------------------------------------------------------------
 
-                (O==[(=::, Beasts of the Seal '::=)]==O)
-    _________________________________________________________________
-    [#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]
-    =================================================================#{'  '}
-
+                    ████████╗██████╗ ██╗██████╗ ███████╗███████╗
+                    ╚══██╔══╝██╔══██╗██║██╔══██╗██╔════╝██╔════╝
+                        ██║   ██████╔╝██║██████╔╝█████╗  ███████╗
+                        ██║   ██╔══██╗██║██╔══██╗██╔══╝  ╚════██║
+                        ██║   ██║  ██║██║██████╔╝███████╗███████║
+                        ╚═╝   ╚═╝  ╚═╝╚═╝╚═════╝ ╚══════╝╚══════╝
+    ______________________________________________________________________________
+    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
     TEXT
   end
 
-  def self.fiend_title
+  def self.spell_schools_title
     <<-TEXT
-
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-                ____, ____, ____, ____,   ____,
-                (-|_, (-|   (-|_, (-|  |  (-|  \\
-                _|    _|__, _|__, _|  |_, _|__/
-                (     (     (     (       (#{'     '}
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-
+    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+    ------------------------------------------------------------------------------
+          _____               _  _  _____        _                    _      
+        /  ___|             | || |/  ___|      | |                  | |     
+        \\ `--.  _ __    ___ | || |\ `--.    ___ | |__    ___    ___  | | ___ 
+          `--. \\| '_ \\  / _ \\| || | `--. \\ / __|| '_ \\  / _ \\  / _ \\ | |/ __|
+        /\\__/ /| |_) ||  __/| || |/\\__/ /| (__ | | | || (_) || (_) || |\\__ \\
+        \\____/ | .__/  \\___||_||_|\\____/  \\___||_| |_| \\___/  \\___/ |_||___/
+                | |                                                          
+                |_|      
+    ______________________________________________________________________________
+    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
     TEXT
   end
 
-  def self.spell_title
+  def self.card_type_attributes_title
     <<-TEXT
-
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-                ____  ___, ____, __    __#{'   '}
-                (-(__`(-|_)(-|_, (-|   (-|#{'   '}
-                ____) _|   _|__, _|__, _|__,
-                (     (    (     (     (#{'     '}
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-
+    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
+    ------------------------------------------------------------------------------
+      ___   __   ____  ____  ____  _  _  ____  ____                                           
+      / __) / _\\ (  _ \\(    \\(_  _)( \\/ )(  _ \\(  __)                                          
+    ( (__ /    \\ )   / ) D (  )(   )  /  ) __/ ) _)                                           
+      \\___)\\_/\\_/(__\\_)(____/ (__) (__/  (__)  (____)                                          
+                      __   ____  ____  ____   __   ____  _  _  ____  ____  ____ 
+                ___   / _\\ (_  _)(_  _)(  _ \\ (  ) (  _ \\/ )( \\(_  _)(  __)/ ___)
+              (___) /    \\  )(    )(   )   /  )(   ) _ () \\/ (  )(   ) _) \\___ \\
+                    \\_/\\_/ (__)  (__) (__\\_) (__) (____/\\____/ (__) (____)(____/
+    ______________________________________________________________________________
+    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
     TEXT
   end
 
-  def self.trap_title
-    <<-TEXT
+    def self.inline_title_1(title)
+      <<-TEXT
+      <>+(O]|==~=={_}}-     #{title}   -{{_}==~==|[O)+<>
+      TEXT
+    end
 
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-                    ____, ___,   ___,   ___,
-                (-|   (-|_)  (-|_\\_,(-|_)
-                    _|    _| \\_, _|  )  _|#{'  '}
-                (     (      (      (#{' '}
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
+    def self.inline_title_2(title)
+      <<-TEXT
+              ==== #{title} ====
+      TEXT
+    end
 
-    TEXT
-  end
+    def self.inline_title_3(title)
+      <<-TEXT
+      .:*~*:._.:*~*:._.:*~*:. #{title} .:*~*:._.:*~*:._.:*~*:.
+      TEXT
+    end
 
-  def self.monument_title
-    <<-TEXT
-
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-    _____,   ____, ____,   __   _, _____,   ____, ____,   ____,
-    (-| | |  (-/  \\(-|  |  (-|  |  (-| | |  (-|_, (-|  |  (-|#{'   '}
-    _| | |_,  \\__/ _|  |_,  |__|_, _| | |_, _|__, _|  |_, _|#{'   '}
-    (              (               (        (     (       (#{'     '}
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-
-    TEXT
-  end
-
-  def self.hero_title
-    <<-TEXT
-
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-                __   _, ____, ___,   ____,
-                (-|__|  (-|_, (-|_)  (-/  \\
-                _|  |_, _|__, _| \\_,  \\__/
-                (       (     (#{'            '}
-    [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
-
-    TEXT
-  end
-# endregion
-
-def self.tribes_title
-  <<-TEXT
-  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-  ------------------------------------------------------------------------------
-
-                  ████████╗██████╗ ██╗██████╗ ███████╗███████╗
-                  ╚══██╔══╝██╔══██╗██║██╔══██╗██╔════╝██╔════╝
-                      ██║   ██████╔╝██║██████╔╝█████╗  ███████╗
-                      ██║   ██╔══██╗██║██╔══██╗██╔══╝  ╚════██║
-                      ██║   ██║  ██║██║██████╔╝███████╗███████║
-                      ╚═╝   ╚═╝  ╚═╝╚═╝╚═════╝ ╚══════╝╚══════╝
-  ______________________________________________________________________________
-  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-  TEXT
-end
-
-def self.spell_schools_title
-  <<-TEXT
-  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-  ------------------------------------------------------------------------------
-        _____               _  _  _____        _                    _      
-      /  ___|             | || |/  ___|      | |                  | |     
-      \\ `--.  _ __    ___ | || |\ `--.    ___ | |__    ___    ___  | | ___ 
-        `--. \\| '_ \\  / _ \\| || | `--. \\ / __|| '_ \\  / _ \\  / _ \\ | |/ __|
-      /\\__/ /| |_) ||  __/| || |/\\__/ /| (__ | | | || (_) || (_) || |\\__ \\
-      \\____/ | .__/  \\___||_||_|\\____/  \\___||_| |_| \\___/  \\___/ |_||___/
-              | |                                                          
-              |_|      
-  ______________________________________________________________________________
-  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-  TEXT
-end
-
-def self.card_type_attributes_title
-  <<-TEXT
-  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-  ------------------------------------------------------------------------------
-    ___   __   ____  ____  ____  _  _  ____  ____                                           
-    / __) / _\\ (  _ \\(    \\(_  _)( \\/ )(  _ \\(  __)                                          
-  ( (__ /    \\ )   / ) D (  )(   )  /  ) __/ ) _)                                           
-    \\___)\\_/\\_/(__\\_)(____/ (__) (__/  (__)  (____)                                          
-                    __   ____  ____  ____   __   ____  _  _  ____  ____  ____ 
-              ___   / _\\ (_  _)(_  _)(  _ \\ (  ) (  _ \\/ )( \\(_  _)(  __)/ ___)
-            (___) /    \\  )(    )(   )   /  )(   ) _ () \\/ (  )(   ) _) \\___ \\
-                  \\_/\\_/ (__)  (__) (__\\_) (__) (____/\\____/ (__) (____)(____/
-  ______________________________________________________________________________
-  [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
-  TEXT
-end
-
-  def self.inline_title_1(title)
-    <<-TEXT
-    <>+(O]|==~=={_}}-     #{title}   -{{_}==~==|[O)+<>
-    TEXT
-  end
-
-  def self.inline_title_2(title)
-    <<-TEXT
-            ==== #{title} ====
-    TEXT
-  end
-
-  def self.inline_title_3(title)
-    <<-TEXT
-    .:*~*:._.:*~*:._.:*~*:. #{title} .:*~*:._.:*~*:._.:*~*:.
-    TEXT
-  end
-
-  def self.message(text, level = 1)
-    msg = ''
-    level.times { |_i| msg += '>' }
-    "#{msg} #{text}"
-  end
+    def self.message(text, level = 1)
+      msg = ''
+      level.times { |_i| msg += '>' }
+      "#{msg} #{text}"
+    end
 end
 
 
@@ -209,56 +209,8 @@ class SeedMethods
         new_class = PlayerClass.find_or_create_by(id: data[:id], name: name, description: data[:description])
         
         puts ">>>>> [Created New PlayerClass] #{new_class.name}: [#{new_class.description}]" if new_class.save
-        
       end
-
-  def self.seed_player_classes
-    @@player_class_data = {
-      "Neutral": {
-        id: 0,
-        description: 'No Class'
-      },
-      "Detainer": {
-        id: 1,
-        description: 'A master of demons, who uses them at a cost to themselves for a greater reward'
-      },
-      "Keeper": {
-        id: 2,
-        description: 'An overseer of the seal, capable of raising an army'
-      },
-      "Magus": {
-        id: 3,
-        description: 'A spellcaster versed in many magics'
-      },
-      "Sage": {
-        id: 4,
-        description: 'A master of body and soul, often native to Koden'
-      },
-      "Seer": {
-        id: 5,
-        description: 'One who sees the future, and prepares for it'
-      },
-      "Trapper": {
-        id: 6,
-        description: 'A well-versed demon hunter who prepares deadly traps'
-      },
-      "Warden": {
-        id: 7,
-        description: 'A guardian who safeguards the seal'
-      },
-      "Watcher": {
-        id: 8,
-        description: 'An attendant of the seal who seeks new prey from the outside world'
-      }
-    }
-
-    @@player_class_data.each do |name, data|
-      puts ">>> Creating PlayerClass: #{name}"
-      new_class = PlayerClass.find_or_create_by(id: data[:id], name:, description: data[:description])
-      new_class.save
-
     end
-  end
 
   def self.drop_player_classes
     total = PlayerClass.all.count
@@ -364,16 +316,7 @@ class SeedMethods
           description: "Cards Included with the base version of the game.  Available to all players for free.",
           tagline: "Core of the Game"
         }
-      }
-    }
-
-    total = 0
-    @@expansion_data.each do |name, data|
-      puts "Creating PlayerClass: #{name}"
-      new_class = Expansion.new(id: data[:id], name:, description: data[:description], tagline: data[:tagline])
-      total += 1
-      new_class.save
-    end
+      }    
 
 
       total = 0
