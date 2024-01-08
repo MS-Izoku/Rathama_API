@@ -47,6 +47,26 @@ class Card < ApplicationRecord
   end
 # endregion
 
+
+  # region Card Rarity and Deck Limits
+  def self.valid_rarities
+    deck_limits_per_card_rarity.keys
+  end
+
+  def self.deck_limits_per_card_rarity
+    {
+        "Common": 2,
+        "Uncommon": 2,
+        "Rare": 2,
+        "Epic": 2,
+        "Legendary": 1,
+        "Artifact": 1
+    }
+  end
+  
+# endregion
+
+
   private
 
   def validate_player_class_requirements
@@ -74,20 +94,4 @@ class Card < ApplicationRecord
     !is_token
   end
 
-  # region Card Rarity and Deck Limits
-  def valid_rarities
-    deck_limits_per_card_rarity.keys
-  end
-
-  def self.deck_limits_per_card_rarity
-    {
-        "Common": 2,
-        "Uncommon": 2,
-        "Rare": 2,
-        "Epic": 2,
-        "Legendary": 1,
-        "Artifact": 1
-    }
-  end
-  # endregion
 end
