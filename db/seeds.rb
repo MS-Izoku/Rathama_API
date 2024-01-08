@@ -1,8 +1,9 @@
 require 'io/console'
-require_relative './card_data.rb'
+require_relative './card_data'
 require 'csv'
 
 # NOTE: Rails 7 switched out byebug with => binding.break
+
 
 class SeedText
 # region: titles
@@ -167,52 +168,41 @@ end
   end
 end
 
-# this is a comment!
+
 class SeedMethods
   # region Fiends
-    def self.seed_fiends
-    end
+  def self.seed_fiends; end
 
-    def self.drop_fiends
-    end
+  def self.drop_fiends; end
 
   # endregion
 
   # region Spells
-    def self.seed_spells
-    end
+  def self.seed_spells; end
 
-    def self.drop_spells
-    end
+  def self.drop_spells; end
   # endregion
 
   # region Traps
-    def self.seed_traps
-    end
+  def self.seed_traps; end
 
-    def self.drop_traps
-    end
+  def self.drop_traps; end
   # endregion
 
   # region Monuments
-    def self.seed_monuments
-    end
+  def self.seed_monuments; end
 
-    def self.drop_monuments
-    end
+  def self.drop_monuments; end
   # endregion
-
 
   # region Heroes
-    def self.seed_heroes
-    end
+  def self.seed_heroes; end
 
-    def self.drop_heroes
-    end
+  def self.drop_heroes; end
   # endregion
 
-
   # region PlayerClasses
+
     def self.seed_player_classes
       CardData.player_class_data.each do |name, data|
         puts ">>> Creating PlayerClass: #{name}"
@@ -221,14 +211,62 @@ class SeedMethods
         puts ">>>>> [Created New PlayerClass] #{new_class.name}: [#{new_class.description}]" if new_class.save
         
       end
-    end
 
-    def self.drop_player_classes
-      total = PlayerClass.all.count
-      PlayerClass.destroy_all
-      puts ">> Dropped #{total} PlayerClasses"
+  def self.seed_player_classes
+    @@player_class_data = {
+      "Neutral": {
+        id: 0,
+        description: 'No Class'
+      },
+      "Detainer": {
+        id: 1,
+        description: 'A master of demons, who uses them at a cost to themselves for a greater reward'
+      },
+      "Keeper": {
+        id: 2,
+        description: 'An overseer of the seal, capable of raising an army'
+      },
+      "Magus": {
+        id: 3,
+        description: 'A spellcaster versed in many magics'
+      },
+      "Sage": {
+        id: 4,
+        description: 'A master of body and soul, often native to Koden'
+      },
+      "Seer": {
+        id: 5,
+        description: 'One who sees the future, and prepares for it'
+      },
+      "Trapper": {
+        id: 6,
+        description: 'A well-versed demon hunter who prepares deadly traps'
+      },
+      "Warden": {
+        id: 7,
+        description: 'A guardian who safeguards the seal'
+      },
+      "Watcher": {
+        id: 8,
+        description: 'An attendant of the seal who seeks new prey from the outside world'
+      }
+    }
+
+    @@player_class_data.each do |name, data|
+      puts ">>> Creating PlayerClass: #{name}"
+      new_class = PlayerClass.find_or_create_by(id: data[:id], name:, description: data[:description])
+      new_class.save
+
     end
+  end
+
+  def self.drop_player_classes
+    total = PlayerClass.all.count
+    PlayerClass.destroy_all
+    puts ">> Dropped #{total} PlayerClasses"
+  end
   # endregion
+
 
 
 # region: Tribes and Spell Schools
@@ -327,6 +365,16 @@ class SeedMethods
           tagline: "Core of the Game"
         }
       }
+    }
+
+    total = 0
+    @@expansion_data.each do |name, data|
+      puts "Creating PlayerClass: #{name}"
+      new_class = Expansion.new(id: data[:id], name:, description: data[:description], tagline: data[:tagline])
+      total += 1
+      new_class.save
+    end
+
 
       total = 0
       @@expansion_data.each do |name, data|
@@ -337,8 +385,21 @@ class SeedMethods
       end
 
       puts "Created #{total} Expansions"
+  end
 
-    end
+  def self.drop_expansions
+    total = Expansion.all.count
+    Expansion.delete_all
+    puts ">> Dropped #{total} PlayerClasses"
+  end
+  # endregion
+
+
+  # region: Scale Powers
+  def self.seed_scale_powers
+    
+  end
+
 
     def self.drop_expansions
       total = Expansion.all.count
@@ -384,15 +445,16 @@ class SeedMethods
   end
 
 # endregion 
+
 end
 
 class ModelSeedController
   attr_reader :model_name
 
-  def initialize(model_name = "Undefined Model Name" , seed_proc = nil , drop_proc = nil)
+  def initialize(model_name = 'Undefined Model Name', seed_proc = nil, drop_proc = nil)
     @model_name = model_name
-    @seed_proc = seed_proc.nil? ? proc { puts "No Seed Method Set" } : seed_proc
-    @drop_proc = drop_proc.nil? ? proc { puts "No Drop Method Set" } : drop_proc
+    @seed_proc = seed_proc.nil? ? proc { puts 'No Seed Method Set' } : seed_proc
+    @drop_proc = drop_proc.nil? ? proc { puts 'No Drop Method Set' } : drop_proc
   end
 
   def create_model
@@ -406,7 +468,6 @@ class ModelSeedController
   end
 
   def create_from_csv
-    
     # create PlayerClasses to asscociate card data
     # SeedMethods.seed_player_classes
 
@@ -425,7 +486,7 @@ class ModelSeedController
     csv_filename = './cards.csv'
     csv_file_path = File.join(script_directory, csv_filename)
 
-    puts "attempting to load file at: " + csv_file_path
+    puts 'attempting to load file at: ' + csv_file_path
 
     # Read and parse the CSV file with headers
     CSV.foreach(csv_file_path, headers: true) do |row|
@@ -434,17 +495,8 @@ class ModelSeedController
   end
 end
 
-
 # p CardData.all_cards
-ModelSeedController.new.create_from_csv
 
-system('cls')
-SeedMethods.drop_tribes
-SeedMethods.drop_spell_schools
-SeedMethods.drop_player_classes
-puts "=== Re-seeding ==="
-SeedMethods.seed_tribes
-SeedMethods.seed_spell_schools
-SeedMethods.seed_player_classes
-puts ""
-puts "> Seed Complete"
+# ModelSeedController.new.create_from_csv
+
+CardData.create_keywords_from_csv

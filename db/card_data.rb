@@ -31,79 +31,82 @@ class CardData
     @@cards
   end
 
-  def self.spell_schools
-    {
-      # Magic Types
-      "Arcane": "Spells and Traps relating to the performance of Magic, typically using Mana",
-      "Alchemic": "Spells and Traps rooted in the use of Alchemy, both spiritual and physical",
-      "Sen": "Spells and Traps rooted in the use of Sage Arts",
+  # region Keyword Data from CSV
+  def self.get_keyword_csv_data
+    file_path = Rails.root.join('db', 'keywords.csv')
 
-      # elements
-      "Earth": "Spells and Traps relating to the element of Earth" ,
-      "Fire": "Spells and Traps relating to the element of Fire" ,
-      "Ice": "Spells and Traps relating to the element of Water and Ice" ,
-      "Life": "Spells and Traps relating to the element of Life and Nature",
-      "Lightning": "Spells and Traps relating to the elements of Thunder and Lightning",
-      "Light": "Spells and Traps relating to the element of Light",
-      "Metal": "Spells and Traps relating to the element of Metal",
-      "Shadow": "Spells and Traps relating to the element of Shadow" ,
-      "Wind": "Spells and Traps relating to the element of Wind and Air"
+    # Check if the file exists
+    if File.exist?(file_path)
+      # Read the CSV file
+      CSV.read(file_path)
 
-    }
+      # You can also render the data in a view if needed
+
+    else
+      puts 'Keyword CSV Not Found'
+      nil
+    end
   end
 
-  # Undead, Quillboar, Elemental, Beast, Mech, -, Totem, -, Naga, -, Pirate
-  def self.tribes
-    {
-        "Aquatic": "Fiends which reside in the Oceans and Waters",
-        "Chimera": "Fiends which resemble Animals",
-        "Dragon": "Fiends which resemble Reptilian Creatures",
-        "Flying": "Fiends which are able to Fly",
-        "Ghost": "Fiends which are notably etherial or resemble the living dead",
-        "Primal": "Fiends which have similarities to elements or elemental creatures",
-        "Eldritch": "Fiends which have similarities to otherworldly entities, incomprehensible to sane minds",
-        "All": "Fiends which have all possible tribes",
-    }
+  def self.create_keywords_from_csv
+    keyword_data = CardData.get_keyword_csv_data
+    return if keyword_data.nil?
+
+    # Assuming the first row contains headers (Name, Description)
+    headers = keyword_data.first
+
+    generated_keywords = 0
+    updated_keywords = 0
+    skipped_keywords = 0
+
+    puts 'Reading Keyword File...'
+    puts keyword_data[1..-1].class
+    # Iterate over the remaining rows and create keywords
+    keywords = keyword_data[1..-1].map do |row|
+      keyword_attributes = Hash[headers.zip(row)]
+
+      existing_keyword = Keyword.find_by(name: keyword_attributes['Name'])
+      # puts "Keyword: #{keyword_attributes} | #{keyword_attributes['Name']} #{keyword_attributes['Description']}"
+
+      if existing_keyword.nil?
+        puts 'Generating new Keyword'
+        new_keyword = Keyword.create(name: keyword_attributes['Name'], description: keyword_attributes['Description'])
+        generated_keywords += 1
+        puts new_keyword
+      else
+        current_description = existing_keyword.description
+        if current_description == keyword_attributes['Description']
+          puts "> (#{keyword_attributes['Name']}) No Fields to Update"
+          skipped_keywords += 1
+          next
+        end
+
+        existing_keyword.update(description: keyword_attributes['Description'])
+        updated_keywords += 1
+      end
+    end
+
+    puts '[= Keywords =]'
+    puts "Generated: #{generated_keywords}"
+    puts "Updated: #{updated_keywords}"
+    puts "Skipped: #{skipped_keywords}"
+    puts '=============='
+
+    nil
+  end
+# endregion
+
+# region Get Google Sheet Data
+  def get_keywords_from_google_sheets_api
+    nil
   end
 
-  def self.player_class_data
-     {
-      "Neutral": {
-        id: 0,
-        description: "No Class"
-      },
-      "Detainer": {
-        id: 1,
-        description: "A master of demons, who uses them at a cost to themselves for a greater reward"
-      },
-      "Keeper":{
-        id: 2,
-        description: "An overseer of the seal, capable of raising an army"
-      },
-      "Magus": {
-        id: 3,
-        description: "A spellcaster versed in many magics"
-      },
-      "Sage": {
-        id: 4,
-        description: "A master of body and soul, often native to Koden" 
-      },
-      "Seer": {
-        id: 5,
-        description: "One who sees the future, and prepares for it" 
-      },
-      "Trapper":{
-        id: 6,
-        description: "A well-versed demon hunter who prepares deadly traps"
-      },
-      "Warden": {
-        id: 7,
-        description: "A guardian who safeguards the seal" 
-      },
-      "Watcher": {
-        id: 8,
-        description: "An attendant of the seal who seeks new prey from the outside world" 
-      }
-    }
+  def get_cards_from_google_sheets_api
+    nil
   end
+
+  def get_heroes_from_google_sheets_api
+    nil
+  end
+# endregion
 end

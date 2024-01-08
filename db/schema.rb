@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema[7.1].define(version: 2023_12_26_165720) do
   create_table "card_type_attributes", force: :cascade do |t|
     t.string "name"
@@ -68,6 +69,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_26_165720) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "keywords", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "player_class_cards", force: :cascade do |t|
     t.integer "player_class_id"
     t.integer "card_id"
@@ -90,6 +98,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_26_165720) do
     t.integer "cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "hero_card_id"
   end
 
 end
