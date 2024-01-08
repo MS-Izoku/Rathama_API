@@ -1,5 +1,6 @@
 class MonumentCard < Card
 
+#region Card Type Validations
   # validate required data presence
   validates_presence_of :durability
 
@@ -9,4 +10,5 @@ class MonumentCard < Card
 
   # validate required base values of data
   validates :durability, numericality: { greater_than_or_equal_to: 1 }
+# endregion
 end
