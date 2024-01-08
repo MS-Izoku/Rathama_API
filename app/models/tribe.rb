@@ -1,0 +1,2 @@
+class Tribe < CardTypeAttribute
+end

@@ -1,8 +1,16 @@
 class Card < ApplicationRecord
 # region: relationships
+
+  # Player Class/es of the Card (In Case of Dual+ Class Cards)
   has_many :player_class_cards
   has_many :player_classes, through: :player_class_cards
+
+  # Cards have many CardTypeAttributes, being either Tribes or SpellSchools (validated on other models)
+  has_many :card_types
+  has_many :card_type_attributes, through: :card_types
+
 # endregion
+
 
   # presence checks
   validates :name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, presence: true
@@ -11,6 +19,7 @@ class Card < ApplicationRecord
   validates :name, uniqueness: { scope: :is_token, if: :should_validate_uniqueness? }
   validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
+
 
 # region: Card Type Checks
   def fiend_card?
@@ -60,10 +69,8 @@ class Card < ApplicationRecord
     end
   end
 
-
   def should_validate_uniqueness?
     # if the card is not a token, it should have a unique name
     !is_token
   end
-
 end
