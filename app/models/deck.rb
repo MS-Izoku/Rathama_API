@@ -1,7 +1,7 @@
 class Deck < ApplicationRecord
   has_many :deck_cards
   has_many :cards, through: :deck_cards
-
+  belongs_to :user, class: "User", foreign_key: "owner_id"
 
   # parse an existing deck code and return the Deck object
   def self.parse_deck_code(deck_code)
