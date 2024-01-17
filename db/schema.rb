@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_07_224903) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_08_223101) do
   create_table "card_type_attributes", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -49,6 +49,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_07_224903) do
     t.integer "child_card_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "deck_cards", force: :cascade do |t|
+    t.integer "deck_id"
+    t.string "card_id_integer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "decks", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "deck_code"
   end
 
   create_table "expansion_groups", force: :cascade do |t|
@@ -98,6 +114,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_07_224903) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "hero_card_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "password_digest"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

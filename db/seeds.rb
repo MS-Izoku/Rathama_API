@@ -4,11 +4,10 @@ require 'csv'
 
 # NOTE: Rails 7 switched out byebug with => binding.break
 
-
 class SeedText
   # region: titles
-    def self.main_title
-      <<-TEXT
+  def self.main_title
+    <<-TEXT
       _________________________________________________________________
       [#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]
       =================================================================#{'   '}
@@ -24,11 +23,11 @@ class SeedText
       [#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]~[#=#]
       =================================================================#{'  '}
 
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.fiend_title
-      <<-TEXT
+  def self.fiend_title
+    <<-TEXT
 
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
                   ____, ____, ____, ____,   ____,
@@ -37,11 +36,11 @@ class SeedText
                   (     (     (     (       (#{'     '}
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
 
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.spell_title
-      <<-TEXT
+  def self.spell_title
+    <<-TEXT
 
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
                   ____  ___, ____, __    __#{'   '}
@@ -50,11 +49,11 @@ class SeedText
                   (     (    (     (     (#{'     '}
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
 
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.trap_title
-      <<-TEXT
+  def self.trap_title
+    <<-TEXT
 
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
                       ____, ___,   ___,   ___,
@@ -63,11 +62,11 @@ class SeedText
                   (     (      (      (#{' '}
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
 
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.monument_title
-      <<-TEXT
+  def self.monument_title
+    <<-TEXT
 
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
       _____,   ____, ____,   __   _, _____,   ____, ____,   ____,
@@ -76,11 +75,11 @@ class SeedText
       (              (               (        (     (       (#{'     '}
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
 
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.hero_title
-      <<-TEXT
+  def self.hero_title
+    <<-TEXT
 
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
                   __   _, ____, ___,   ____,
@@ -89,8 +88,8 @@ class SeedText
                   (       (     (#{'            '}
       [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]
 
-      TEXT
-    end
+    TEXT
+  end
   # endregion
 
   def self.tribes_title
@@ -113,14 +112,14 @@ class SeedText
     <<-TEXT
     [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
     ------------------------------------------------------------------------------
-          _____               _  _  _____        _                    _      
-        /  ___|             | || |/  ___|      | |                  | |     
-        \\ `--.  _ __    ___ | || |\ `--.    ___ | |__    ___    ___  | | ___ 
+          _____               _  _  _____        _                    _#{'      '}
+        /  ___|             | || |/  ___|      | |                  | |#{'     '}
+        \\ `--.  _ __    ___ | || |\ `--.    ___ | |__    ___    ___  | | ___#{' '}
           `--. \\| '_ \\  / _ \\| || | `--. \\ / __|| '_ \\  / _ \\  / _ \\ | |/ __|
         /\\__/ /| |_) ||  __/| || |/\\__/ /| (__ | | | || (_) || (_) || |\\__ \\
         \\____/ | .__/  \\___||_||_|\\____/  \\___||_| |_| \\___/  \\___/ |_||___/
-                | |                                                          
-                |_|      
+                | |#{'                                                          '}
+                |_|#{'      '}
     ______________________________________________________________________________
     [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
     TEXT
@@ -130,11 +129,11 @@ class SeedText
     <<-TEXT
     [x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x]x[x][x]x[x]x[x]x[x]x[x]x[x]
     ------------------------------------------------------------------------------
-      ___   __   ____  ____  ____  _  _  ____  ____                                           
-      / __) / _\\ (  _ \\(    \\(_  _)( \\/ )(  _ \\(  __)                                          
-    ( (__ /    \\ )   / ) D (  )(   )  /  ) __/ ) _)                                           
-      \\___)\\_/\\_/(__\\_)(____/ (__) (__/  (__)  (____)                                          
-                      __   ____  ____  ____   __   ____  _  _  ____  ____  ____ 
+      ___   __   ____  ____  ____  _  _  ____  ____#{'                                           '}
+      / __) / _\\ (  _ \\(    \\(_  _)( \\/ )(  _ \\(  __)#{'                                          '}
+    ( (__ /    \\ )   / ) D (  )(   )  /  ) __/ ) _)#{'                                           '}
+      \\___)\\_/\\_/(__\\_)(____/ (__) (__/  (__)  (____)#{'                                          '}
+                      __   ____  ____  ____   __   ____  _  _  ____  ____  ____#{' '}
                 ___   / _\\ (_  _)(_  _)(  _ \\ (  ) (  _ \\/ )( \\(_  _)(  __)/ ___)
               (___) /    \\  )(    )(   )   /  )(   ) _ () \\/ (  )(   ) _) \\___ \\
                     \\_/\\_/ (__)  (__) (__\\_) (__) (____/\\____/ (__) (____)(____/
@@ -143,31 +142,30 @@ class SeedText
     TEXT
   end
 
-    def self.inline_title_1(title)
-      <<-TEXT
+  def self.inline_title_1(title)
+    <<-TEXT
       <>+(O]|==~=={_}}-     #{title}   -{{_}==~==|[O)+<>
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.inline_title_2(title)
-      <<-TEXT
+  def self.inline_title_2(title)
+    <<-TEXT
               ==== #{title} ====
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.inline_title_3(title)
-      <<-TEXT
+  def self.inline_title_3(title)
+    <<-TEXT
       .:*~*:._.:*~*:._.:*~*:. #{title} .:*~*:._.:*~*:._.:*~*:.
-      TEXT
-    end
+    TEXT
+  end
 
-    def self.message(text, level = 1)
-      msg = ''
-      level.times { |_i| msg += '>' }
-      "#{msg} #{text}"
-    end
+  def self.message(text, level = 1)
+    msg = ''
+    level.times { |_i| msg += '>' }
+    "#{msg} #{text}"
+  end
 end
-
 
 class SeedMethods
   # region Fiends
@@ -203,14 +201,14 @@ class SeedMethods
 
   # region PlayerClasses
 
-    def self.seed_player_classes
-      CardData.player_class_data.each do |name, data|
-        puts ">>> Creating PlayerClass: #{name}"
-        new_class = PlayerClass.find_or_create_by(id: data[:id], name: name, description: data[:description])
-        
-        puts ">>>>> [Created New PlayerClass] #{new_class.name}: [#{new_class.description}]" if new_class.save
-      end
+  def self.seed_player_classes
+    CardData.player_class_data.each do |name, data|
+      puts ">>> Creating PlayerClass: #{name}"
+      new_class = PlayerClass.find_or_create_by(id: data[:id], name:, description: data[:description])
+
+      puts ">>>>> [Created New PlayerClass] #{new_class.name}: [#{new_class.description}]" if new_class.save
     end
+  end
 
   def self.drop_player_classes
     total = PlayerClass.all.count
@@ -219,27 +217,24 @@ class SeedMethods
   end
   # endregion
 
-
-
 # region: Tribes and Spell Schools
 
   def self.seed_tribes
-    puts ""
-    puts ">> Seeding Tribes"
+    puts ''
+    puts '>> Seeding Tribes'
 
     total_created = 0
     failed = 0
     CardData.tribes.each do |name, description|
       puts ">>>> Creating Tribe: #{name}"
-      tribe = Tribe.find_or_create_by(name: name, description: description)
+      tribe = Tribe.find_or_create_by(name:, description:)
       if tribe.save
         puts ">>>>> [Created New Tribe] #{tribe.name}: [#{tribe.description}]"
         total_created += 1
       else
         puts "Failed to Create #{name}"
         tribe.errors.each do |error|
-          
-          puts ">>> " + error.full_message
+          puts '>>> ' + error.full_message
         end
         failed += 1
       end
@@ -249,23 +244,22 @@ class SeedMethods
     puts ">> Total Tribes Failed: [#{failed}]"
   end
 
-
   def self.seed_spell_schools
-    puts ""
-    puts ">> Seeding Spell Schools"
+    puts ''
+    puts '>> Seeding Spell Schools'
 
     total_created = 0
     failed = 0
     CardData.spell_schools.each do |name, description|
       puts ">>>> Creating SpellSchool: #{name}"
-      spell_school = SpellSchool.find_or_create_by(name: name, description: description)
+      spell_school = SpellSchool.find_or_create_by(name:, description:)
       if spell_school.save
         puts ">>>>> [Created New SpellSchool] #{spell_school.name}: [#{spell_school.description}]"
         total_created += 1
       else
         puts "Failed to Create: #{name}"
         spell_school.errors.each do |error|
-          puts ">>> " + error.full_message
+          puts '>>> ' + error.full_message
         end
         failed += 1
       end
@@ -273,61 +267,56 @@ class SeedMethods
 
     puts ">> Total SpellSchools Created from Hash: [#{total_created}]"
     puts ">> Total SpellSchools Failed: [#{failed}]"
-    puts ""
+    puts ''
   end
 
-
   def self.drop_tribes
-    puts ""
-    puts ">> Dropping Tribes [CardTypeAttribute]"
+    puts ''
+    puts '>> Dropping Tribes [CardTypeAttribute]'
     total = Tribe.all.count
     Tribe.destroy_all
     puts ">> Dropped #{total} Tribes"
-    puts ""
+    puts ''
   end
 
-
   def self.drop_spell_schools
-    puts ""
-    puts ">> Dropping SpellSchools [CardTypeAttribute]"
+    puts ''
+    puts '>> Dropping SpellSchools [CardTypeAttribute]'
     total = PlayerClass.all.count
     PlayerClass.destroy_all
     puts ">> Dropped #{total} SpellSchools"
-    puts ""
+    puts ''
   end
-
 
   def self.drop_card_type_attributes
     puts "Dropping ALL CardTypeAttributes [#{CardTypeAttributes.all.count}]"
     CardTypeAttributes.all.count
     CardTypeAttributes.destroy_all
     puts ">> Dropped #{CardTypeAttributes.all.count} CardTypeAttributes"
-    puts ""
+    puts ''
   end
 
 # endregion
 
-
 # region: Expansions
-    def self.seed_expansions
-      @@expansion_data = {
-        "Core" => {
-          id: 0,
-          description: "Cards Included with the base version of the game.  Available to all players for free.",
-          tagline: "Core of the Game"
-        }
-      }    
+  def self.seed_expansions
+    @@expansion_data = {
+      'Core' => {
+        id: 0,
+        description: 'Cards Included with the base version of the game.  Available to all players for free.',
+        tagline: 'Core of the Game'
+      }
+    }
 
+    total = 0
+    @@expansion_data.each do |name, data|
+      puts "Creating PlayerClass: #{name}"
+      expansion = Expansion.new(id: data[:id], name:, description: data[:description], tagline: data[:tagline])
+      total += 1
+      expansion.save
+    end
 
-      total = 0
-      @@expansion_data.each do |name, data|
-        puts "Creating PlayerClass: #{name}"
-        expansion = Expansion.new(id: data[:id], name: name, description: data[:description], tagline: data[:tagline])
-        total += 1
-        expansion.save
-      end
-
-      puts "Created #{total} Expansions"
+    puts "Created #{total} Expansions"
   end
 
   def self.drop_expansions
@@ -337,20 +326,15 @@ class SeedMethods
   end
   # endregion
 
-
   # region: Scale Powers
-  def self.seed_scale_powers
-    
+  def self.seed_scale_powers; end
+
+  def self.drop_expansions
+    total = Expansion.all.count
+    Expansion.delete_all
+    puts ">> Dropped #{total} PlayerClasses"
   end
-
-
-    def self.drop_expansions
-      total = Expansion.all.count
-      Expansion.delete_all
-      puts ">> Dropped #{total} PlayerClasses"
-    end
 # endregion
-
 
 # region: PlayerClasses
   def seed_player_classes
@@ -358,37 +342,32 @@ class SeedMethods
     failed = 0
     failed_names = []
 
-    puts ">> Creating Player Classes"
+    puts '>> Creating Player Classes'
 
-    CardData.player_class_data.each do  |player_class_name, description|
-      begin
-        puts ">>> Creating Player Class: #{player_class_name}"
-        player_class = PlayerClass.find_or_create_by(name: player_class_name, description: description)
-        puts ">>>>> Created Player Class: #{player_class.name} | #{player_class.description}"
-      rescue
-        failed += 1
-        failed_names << player_class_names
-      end
+    CardData.player_class_data.each do |player_class_name, description|
+      puts ">>> Creating Player Class: #{player_class_name}"
+      player_class = PlayerClass.find_or_create_by(name: player_class_name, description:)
+      puts ">>>>> Created Player Class: #{player_class.name} | #{player_class.description}"
+    rescue StandardError
+      failed += 1
+      failed_names << player_class_names
     end
 
-    puts ""
+    puts ''
     puts "Created #{created} PlayerClasses"
     puts "Failed to created #{failed} PlayerClasses"
     puts failed_names.flatten
-    puts ""
-
+    puts ''
   end
-
 
   def drop_player_classes
     puts "Attempting to drop #{PlayerClass.all.count} PlayerClasses"
     PlayerClass.destroy_all
     puts "Player classes dropped, #{PlayerClass.all.count} remain"
-    puts ""
+    puts ''
   end
 
-# endregion 
-
+# endregion
 end
 
 class ModelSeedController
@@ -411,19 +390,6 @@ class ModelSeedController
   end
 
   def create_from_csv
-    # create PlayerClasses to asscociate card data
-    # SeedMethods.seed_player_classes
-
-    # reference each Player Class
-    # detainer = PlayerClass.find_or_create_by(name: "Detainer")
-    # keeper = PlayerClass.find_or_create_by(name: "Keeper")
-    # magus = PlayerClass.find_or_create_by(name: "Magus")
-    # sage = PlayerClass.find_or_create_by(name: "Sage")
-    # seer = PlayerClass.find_or_create_by(name: "Seer")
-    # trapper = PlayerClass.find_or_create_by(name: "Trapper")
-    # warden = PlayerClass.find_or_create_by(name: "Warden")
-    # watcher = PlayerClass.find_or_create_by(name: "Watcher")
-
     system('cls')
     script_directory = File.dirname(__FILE__)
     csv_filename = './cards.csv'
@@ -442,4 +408,7 @@ end
 
 # ModelSeedController.new.create_from_csv
 
+SeedMethods.seed_tribes
+SeedMethods.seed_spell_schools
+CardData.seed_player_classes
 CardData.create_keywords_from_csv
