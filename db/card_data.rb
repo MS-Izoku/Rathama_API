@@ -1,8 +1,98 @@
 class CardData
   attr_reader :cards
 
-  def self.parse_card_data_csv
+  # region: Create Cards from CSV
+  
+  # read the CSV of Card Data
+  def self.get_card_csv_data
+    file_path = Rails.root.join('db', 'cards.csv')
+
+    # Check if the file exists
+    if File.exist?(file_path)
+      # Read the CSV file
+      CSV.read(file_path)
+    else
+      puts 'Keyword CSV Not Found'
+      nil
+    end
   end
+
+
+  # Read the card CSV data and create cards from it
+  def self.create_cards_from_csv
+    # "Card Name" | "Player Class" | "Type" | "Cost" | "Flavor Text" | "Rarity" | Attack | Health | Armor | Durability | Expansion Id | Is Token? | Tribe or School | Inspiration
+
+    card_data = CardData.get_card_csv_data
+    return if card_data.nil?
+
+    # Assuming the first row contains headers (Name, Description)
+    headers = card_data.first
+
+    generated_cards = 0
+    updated_cards = 0
+    skipped_cards = 0
+
+    puts 'Reading Card File...'
+    puts card_data[1..-1].class
+    # Iterate over the remaining rows and create keywords
+    cards = card_data[1..-1].map do |row|
+      card_attributes = Hash[headers.zip(row)]
+
+      existing_card = Card.find_by(name: card_attributes['Name'])
+      # puts "Keyword: #{keyword_attributes} | #{keyword_attributes['Name']} #{keyword_attributes['Description']}"
+
+      if existing_card.nil?
+        puts 'Generating new Card'
+        new_card = Card.create(name: keyword_attributes['Card Name'], type: keyword_attributes[""])
+        generated_cards += 1
+        puts new_card
+      else
+        # update the fields from the CSV
+
+        existing_card.update()
+        updated_cards += 1
+      end
+    end
+
+    puts '[= Cards =]'
+    puts "Generated: #{generated_cards}"
+    puts "Updated: #{updated_cards}"
+    puts "Skipped: #{skipped_cards}"
+    puts '=============='
+
+    nil
+  end
+
+
+  # validte and format incoming card-data to be added to or updated in the database
+  def validate_csv_card_data(parsed_csv_card_data)
+    valid_card_types = %[Fiend Spell Trap Weapon Monument]
+    card_type = parsed_csv_card_data["Type"]
+    is_valid_type = valid_card_types.include?(card_type)
+
+    return false unless is_valid_type
+    
+
+    player_class_id = PlayerClass.find_by(name: parsed_csv_card_data["Card Name"]).id
+
+    return {
+      name: parsed_csv_card_data["Card Name"],
+      type: card_type,
+      cost: 0,
+      flavor_text: "",
+      rarity: "",
+      attack: 0,
+      health: 0,
+      durability: 0,
+      expansion_id: 0,
+      is_token: false,
+      card_attributes: []
+    }
+
+  end
+
+
+  # endregion
 
   def self.create_cards
     cards = []
@@ -27,9 +117,11 @@ class CardData
     end
   end
 
+
   def self.all_cards
     @@cards
   end
+
 
   # region Keyword Data from CSV
   def self.get_keyword_csv_data
@@ -47,6 +139,7 @@ class CardData
       nil
     end
   end
+
 
   def self.create_keywords_from_csv
     keyword_data = CardData.get_keyword_csv_data
@@ -96,17 +189,22 @@ class CardData
   end
 # endregion
 
+
 # region Get Google Sheet Data
+
   def get_keywords_from_google_sheets_api
     nil
   end
+
 
   def get_cards_from_google_sheets_api
     nil
   end
 
+
   def get_heroes_from_google_sheets_api
     nil
   end
+
 # endregion
 end
