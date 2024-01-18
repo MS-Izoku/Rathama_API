@@ -219,57 +219,6 @@ class SeedMethods
 
 # region: Tribes and Spell Schools
 
-  def self.seed_tribes
-    puts ''
-    puts '>> Seeding Tribes'
-
-    total_created = 0
-    failed = 0
-    CardData.tribes.each do |name, description|
-      puts ">>>> Creating Tribe: #{name}"
-      tribe = Tribe.find_or_create_by(name:, description:)
-      if tribe.save
-        puts ">>>>> [Created New Tribe] #{tribe.name}: [#{tribe.description}]"
-        total_created += 1
-      else
-        puts "Failed to Create #{name}"
-        tribe.errors.each do |error|
-          puts '>>> ' + error.full_message
-        end
-        failed += 1
-      end
-    end
-
-    puts ">> Total Tribes Created from Hash: [#{total_created}]"
-    puts ">> Total Tribes Failed: [#{failed}]"
-  end
-
-  def self.seed_spell_schools
-    puts ''
-    puts '>> Seeding Spell Schools'
-
-    total_created = 0
-    failed = 0
-    CardData.spell_schools.each do |name, description|
-      puts ">>>> Creating SpellSchool: #{name}"
-      spell_school = SpellSchool.find_or_create_by(name:, description:)
-      if spell_school.save
-        puts ">>>>> [Created New SpellSchool] #{spell_school.name}: [#{spell_school.description}]"
-        total_created += 1
-      else
-        puts "Failed to Create: #{name}"
-        spell_school.errors.each do |error|
-          puts '>>> ' + error.full_message
-        end
-        failed += 1
-      end
-    end
-
-    puts ">> Total SpellSchools Created from Hash: [#{total_created}]"
-    puts ">> Total SpellSchools Failed: [#{failed}]"
-    puts ''
-  end
-
   def self.drop_tribes
     puts ''
     puts '>> Dropping Tribes [CardTypeAttribute]'
@@ -408,7 +357,8 @@ end
 
 # ModelSeedController.new.create_from_csv
 
-SeedMethods.seed_tribes
-SeedMethods.seed_spell_schools
+CardData.seed_tribes
+CardData.seed_spell_schools
 CardData.seed_player_classes
 CardData.create_keywords_from_csv
+CardData.create_cards_from_csv

@@ -1,7 +1,7 @@
 class CardData
   attr_reader :cards
 
-  # region: Create Cards from CSV
+# region: Create Cards from CSV
   
   # read the CSV of Card Data
   def self.get_card_csv_data
@@ -92,7 +92,7 @@ class CardData
   end
 
 
-  # endregion
+# endregion
 
   def self.create_cards
     cards = []
@@ -123,7 +123,7 @@ class CardData
   end
 
 
-  # region Keyword Data from CSV
+# region Keyword Data from CSV
   def self.get_keyword_csv_data
     file_path = Rails.root.join('db', 'keywords.csv')
 
@@ -190,6 +190,83 @@ class CardData
 # endregion
 
 
+# region Card Type Attributes (SpellSchools and Tribes)
+  def self.seed_tribes_and_spell_schools
+    tribe_data = CardData.read_local_csv("tribes_and_spell_schools.csv")
+    CardData.seed_tribes
+    CardData.seed_spell_schools
+  end
+
+  def self.seed_single_attribute(name, description, type)
+    puts ">>>> Creating #{type}: #{name}"
+      attribute = SpellSchool.find_or_create_by(name: name, description: description, type: type)
+      if attribute.save
+        puts ">>>>> [Created New #{type}] #{attribute.name}: [#{attribute.description}]"
+      else
+        puts "Failed to Create: #{name}"
+        attribute.errors.each do |error|
+          puts '>>> ' + error.full_message
+        end        
+      end
+  end
+
+  def self.seed_tribes(tribe_data)
+    return if tribe_data.nil?
+
+    puts ''
+    puts '>> Seeding Tribes'
+
+    
+    total_created = 0
+    failed = 0
+    tribe_data.each do |name, description|
+      puts ">>>> Creating Tribe: #{name}"
+      tribe = Tribe.find_or_create_by(name:, description:)
+      if tribe.save
+        puts ">>>>> [Created New Tribe] #{tribe.name}: [#{tribe.description}]"
+        total_created += 1
+      else
+        puts "Failed to Create #{name}"
+        tribe.errors.each do |error|
+          puts '>>> ' + error.full_message
+        end
+        failed += 1
+      end
+    end
+
+    puts ">> Total Tribes Created from Hash: [#{total_created}]"
+    puts ">> Total Tribes Failed: [#{failed}]"
+  end
+
+
+  def self.seed_spell_schools(spell_school_data)
+    puts ''
+    puts '>> Seeding Spell Schools'
+
+    total_created = 0
+    failed = 0
+    CardData.spell_schools.each do |name, description|
+      puts ">>>> Creating SpellSchool: #{name}"
+      spell_school = SpellSchool.find_or_create_by(name:, description:)
+      if spell_school.save
+        puts ">>>>> [Created New SpellSchool] #{spell_school.name}: [#{spell_school.description}]"
+        total_created += 1
+      else
+        puts "Failed to Create: #{name}"
+        spell_school.errors.each do |error|
+          puts '>>> ' + error.full_message
+        end
+        failed += 1
+      end
+    end
+
+    puts ">> Total SpellSchools Created from Hash: [#{total_created}]"
+    puts ">> Total SpellSchools Failed: [#{failed}]"
+    puts ''
+  end
+# endregion
+
+
 # region Get Google Sheet Data
 
   def get_keywords_from_google_sheets_api
@@ -207,4 +284,22 @@ class CardData
   end
 
 # endregion
+
+
+
+private
+  
+  def self.read_local_csv(csv_name)
+    file_path = Rails.root.join('db', csv_name)
+
+    # Check if the file exists
+    if File.exist?(file_path)
+      # Read the CSV file
+      CSV.read(file_path)
+    else
+      puts "CSV Not Found [#{csv_name}] | [#{file_path}]"
+      nil
+    end
+  end
+
 end
