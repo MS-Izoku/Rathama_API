@@ -1,9 +1,15 @@
 Rails.application.routes.draw do
+
+  get 'users/profile'
+  get 'users/grant_api_key'
+  get 'users/rotate_api_key'
+
   get 'decks/index'
   get 'decks/show'
   get 'decks/create'
   get 'decks/update'
   get 'decks/destroy'
+  
 #region CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
@@ -26,5 +32,7 @@ Rails.application.routes.draw do
 # endregion
 
 
+post "/login", to: 'users#login'
+get "/login", to: 'users#authenticate_token'
 
 end
