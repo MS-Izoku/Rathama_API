@@ -1,5 +1,18 @@
 Rails.application.routes.draw do
 
+  resources :cards, only: [:index, :show, :create, :update, :destroy] do
+    put 'cards/change_image', to: "cards#change_image"
+    # put 'cards/add_variant_image', to: ""
+  end
+
+  # get 'cards/index'
+  # get 'cards/show'
+  # get 'cards/create'
+  # get 'cards/update'
+  # get 'cards/destroy'
+  # get 'cards/change_image'
+  # get 'cards/add_variant_image'
+
   get 'users/profile'
   get 'users/grant_api_key'
   get 'users/rotate_api_key'
@@ -9,7 +22,7 @@ Rails.application.routes.draw do
   get 'decks/create'
   get 'decks/update'
   get 'decks/destroy'
-  
+
 #region CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
