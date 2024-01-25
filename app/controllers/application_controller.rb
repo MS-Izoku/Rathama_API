@@ -16,14 +16,14 @@ class ApplicationController < ActionController::API
 
 
     def authorize_api_key
-        api_key = request.headers['X-API-Key']
+        api_key = request.headers[API_KEY_HEADER]
         unless valid_api_key?(api_key)
           render json: { error: 'Unauthorized, API Key is invalid or missing' }, status: :unauthorized
         end
     end
 
     def authorize_jwt
-        api_key = request.headers['Authorization']
+        api_key = request.headers[API_KEY_HEADER]
         unless valid_api_key?(api_key)
           render json: { error: 'Unauthorized' }, status: :unauthorized
         end
@@ -34,16 +34,16 @@ private
 
 # authenticate a user using their headers and credentials
     def authenticate_user
-        api_key = request.headers['Authorization']
-        custom_header = request.headers['X-Your-Custom-Header']
+        api_key = request.headers[AUTHORIZATION_KEY_HEADER]
+        custom_header = request.headers[API_KEY_HEADER]
     
         # Add your authentication logic based on the presence of API key and custom header
         # For example, check the database for a user with the provided API key
     
-        @current_user = User.find_by(api_key: api_key)
+        @current_user = User.find_by(api_key:)
     
+        # Authentication successful
         if @current_user && custom_header_valid?(custom_header)
-          # Authentication successful
           @current_user
         else
           render json: { error: 'Unauthorized' }, status: :unauthorized
