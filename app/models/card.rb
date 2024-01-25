@@ -1,4 +1,9 @@
 class Card < ApplicationRecord
+# region: ActiveStorage
+  has_one_attached :card_img
+  has_one_attached :card_art_img
+# endregion
+
 # region: relationships
 
   # Player Class/es of the Card (In Case of Dual+ Class Cards)
@@ -64,6 +69,18 @@ class Card < ApplicationRecord
     }
   end
   
+# endregion
+
+
+# region Does the Card have Art / Images attached via ActiveStorage?
+  def has_card_img
+    has_one_attached :card_img
+  end
+
+
+  def has_card_art
+    has_one_attached :card_art_img
+  end
 # endregion
 
 
