@@ -1,7 +1,9 @@
 class Card < ApplicationRecord
 # region: ActiveStorage
-  has_one_attached :card_img
-  has_one_attached :card_art_img
+  has_one_attached :card_img          # the entire card rendered
+  has_one_attached :card_art_img      # the main card-art image
+
+  has_many_attached :card_art_images  # all card-art asscociated with this card (ie: golden, rarities, variants, etc)
 # endregion
 
 # region: relationships
@@ -73,13 +75,13 @@ class Card < ApplicationRecord
 
 
 # region Does the Card have Art / Images attached via ActiveStorage?
-  def has_card_img
-    has_one_attached :card_img
+  def has_card_img?
+    card.card_img.attached?
   end
 
 
-  def has_card_art
-    has_one_attached :card_art_img
+  def has_card_art?
+     card.card_art_img.attached?
   end
 # endregion
 
