@@ -2,16 +2,9 @@ Rails.application.routes.draw do
 
   resources :cards, only: [:index, :show, :create, :update, :destroy] do
     put 'cards/change_image', to: "cards#change_image"
+    post 'search', to: "cards#search"   # using POST since it can have a request body 
     # put 'cards/add_variant_image', to: ""
   end
-
-  # get 'cards/index'
-  # get 'cards/show'
-  # get 'cards/create'
-  # get 'cards/update'
-  # get 'cards/destroy'
-  # get 'cards/change_image'
-  # get 'cards/add_variant_image'
 
   get 'users/profile'
   get 'users/grant_api_key'
