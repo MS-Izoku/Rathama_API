@@ -89,6 +89,7 @@ class CardsController < ApplicationController
   end
 # endregion
 
+
 private
 # region: Strong Params
   def card_create_params

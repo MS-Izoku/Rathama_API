@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'api_keys/issue'
+  get 'api_keys/deactivate_key'
+  get 'api_keys/change_permissions'
 
   resources :cards, only: [:index, :show, :create, :update, :destroy] do
     put 'cards/change_image', to: "cards#change_image"

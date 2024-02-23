@@ -6,6 +6,9 @@ class ApplicationController < ActionController::API
     AUTHORIZATION_KEY_HEADER = "Authorization"
 # endregion
 
+    def self.api_key_header
+        API_KEY_HEADER
+    end
 
     def render_error(model_with_errors, message)
         { 
@@ -21,6 +24,7 @@ class ApplicationController < ActionController::API
           render json: { error: 'Unauthorized, API Key is invalid or missing' }, status: :unauthorized
         end
     end
+
 
     def authorize_jwt
         api_key = request.headers[API_KEY_HEADER]
@@ -51,13 +55,16 @@ private
     end
 
 
-    def valid_api_key?(api_key)
+    def valid_api_key?(api_key, user_id)
         # Implement your logic to validate the API key
         # This could involve checking against a database or some other mechanism
         # Return true if the key is valid, false otherwise
+
+        found_key = api_key.where()
+
     end
 
-# region JWT Validation
+# region JWT Validation for AUTH
 
     def jwt_key
         Rails.application.credentials.jwt_key

@@ -357,7 +357,7 @@ end
 
 # ModelSeedController.new.create_from_csv
 
-CardData.seed_tribes
+# CardData.seed_tribes
 CardData.seed_spell_schools
 CardData.seed_player_classes
 CardData.create_keywords_from_csv
