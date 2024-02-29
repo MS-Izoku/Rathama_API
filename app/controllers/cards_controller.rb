@@ -56,9 +56,11 @@ class CardsController < ApplicationController
     end
   end
 
+
   def change_image
   end
 
+  
   def add_variant_image
   end
 
@@ -91,13 +93,14 @@ class CardsController < ApplicationController
 
 
 private
+
 # region: Strong Params
   def card_create_params
     params.require(:card).permit(:id, :type, :attack, :health, :armor, :durability, :expansion_id)
   end
 
   def card_update_params
-    params.require(:card).permit(:id, :name, )
+    params.require(:card).permit(:id, :name, :expansion_id, :attack, :health, :armor, :durability)
   end
 
   def card_destroy_params

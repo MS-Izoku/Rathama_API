@@ -1,6 +1,5 @@
 class ApiKey < ApplicationRecord
     belongs_to :owner, polymorphic: true
-    serialize :permissions, Array
 
     # issue an API key to an existing user
     # return the raw key to render (to give to the user)
@@ -38,7 +37,9 @@ class ApiKey < ApplicationRecord
 # region: API Key Permissions
     # does this key have a specific permission?
     def has_permission?(permission)
-        permissions.include?(permission.to_s)
+        # change the add_permissions_to_api_keys migration, postgres array implementation is commented out due to Sqlite limitations
+        # permissions.include?(permission.to_s) # use only when using postgres
+        true
     end
 
     

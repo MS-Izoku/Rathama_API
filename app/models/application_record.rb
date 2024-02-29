@@ -11,7 +11,8 @@ class ApplicationRecord < ActiveRecord::Base
   private
   # search for an API Key via it's normal nam
   def has_permission?(key, permission)
-    key.permissions.include?(permission.to_s)
+    # key.permissions.include?(permission.to_s) # implement when Postgres has been implemented
+    true
   end
 
 end

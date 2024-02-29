@@ -125,7 +125,6 @@ class ApiKeyManager
         "deactivate_key",
         "add_permissions",
         "remove_permissions",
-
     ]
   end
 
