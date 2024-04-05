@@ -22,7 +22,7 @@ class Card < ApplicationRecord
   validates :name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, presence: true
 
   # uniqueness checks
-  validates :name, uniqueness: { scope: :is_token, if: :should_validate_uniqueness_if_token? } # if a card is a token, it can have a repeat name
+  validates :name, uniqueness: { scope: :is_generated_card, if: :should_validate_uniqueness_if_token? } # if a card is a token, it can have a repeat name
   validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
   validates :cost, numericality: { greater_than_or_equal_to: -1 }
@@ -60,12 +60,12 @@ class Card < ApplicationRecord
 
   def self.deck_limits_per_card_rarity
     {
-      "Common": 2,
-      "Uncommon": 2,
-      "Rare": 2,
-      "Epic": 2,
-      "Legendary": 1,
-      "Artifact": 1
+      "Common" => 2,
+      "Uncommon" => 2,
+      "Rare" => 2,
+      "Epic" => 2,
+      "Legendary" => 1,
+      "Artifact" => 1
     }
   end
 
@@ -105,6 +105,6 @@ class Card < ApplicationRecord
 
   def should_validate_uniqueness_if_token?
     # if the card is not a token, it should have a unique name
-    !is_token
+    !is_generated_card
   end
 end

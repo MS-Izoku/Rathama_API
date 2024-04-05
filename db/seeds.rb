@@ -358,7 +358,45 @@ end
 # ModelSeedController.new.create_from_csv
 
 # CardData.seed_tribes
-CardData.seed_spell_schools
-CardData.seed_player_classes
-CardData.create_keywords_from_csv
-CardData.create_cards_from_csv
+# CardData.seed_spell_schools
+# CardData.seed_player_classes
+# CardData.create_keywords_from_csv
+# CardData.create_cards_from_csv
+
+
+# region temp card generation
+
+def generate_random_string(length)
+  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  random_string = ''
+  
+  length.times do
+    random_string << characters[rand(characters.length)]
+  end
+  
+  random_string
+end
+
+30.times do |card|
+  card_name = generate_random_string(12)
+  card = SpellCard.new(
+    name: card_name,
+    cost: 0,
+    flavor_text: "Testing Card Generation #{card_name}",
+    card_art_url: "shouldgohere#{card_name}",
+    expansion_id: 0,
+    rarity: "Common",
+    is_generated_card: false,
+    card_text: "Test Me Baby!"
+    )
+  
+    if card.save
+    puts card.name + " was generated!"
+  else
+    puts "Failed to save #{card.name}"
+    card.errors.each do |error|
+      p error
+    end
+  end
+end
+# endregion

@@ -8,6 +8,8 @@ private
     def validate_deck_card_count
         if deck.present? && card.present?
             card_count = deck.deck_cards.where(card: card).count
+            card_count = 0 if card_count.nil?
+
             max_card_count = Card.deck_limits_per_card_rarity[card.rarity]
 
             if card_count > max_card_count

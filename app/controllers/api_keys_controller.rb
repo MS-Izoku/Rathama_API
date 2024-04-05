@@ -5,6 +5,9 @@ class ApiKeysController < ApplicationController
   def deactivate_key
   end
 
+  def rotate
+  end
+
   def change_permissions
   end
 end

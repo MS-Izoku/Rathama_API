@@ -128,7 +128,7 @@ class ApiKeyManager
     ]
   end
 
-  def authorize(permission)
+  def self.authorize(permission)
     unless has_permission?(permission)
       errors.add(:base, 'Unauthorized')
       throw(:abort)

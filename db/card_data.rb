@@ -85,7 +85,7 @@ class CardData
       health: 0,
       durability: 0,
       expansion_id: 0,
-      is_token: false,
+      is_generated_card: false,
       card_attributes: []
     }
 

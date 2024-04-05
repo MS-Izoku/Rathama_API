@@ -1,4 +1,6 @@
 class DecksController < ApplicationController
+  #before_action :authenticate_user! # assuming you have authentication set up
+  
   def index
   end
 
@@ -6,13 +8,19 @@ class DecksController < ApplicationController
   end
 
   def create
-    deck = Deck.create(deck_parms)
+    deck = Deck.create(name: deck_params[:name], description: deck_params[:description], owner_id: deck_params[:owner_id])
+    p deck_params[:card_ids]
+    deck_params[:card_ids].each do |card_id|
+      DeckCard.create(deck_id: deck.id, card_id: card_id)
+    end
+
     unless deck.errors.any?
       render json: deck
     else
       render json: render_error(deck, "Failed to Save new Deck")
     end
   end
+
 
   def update
     deck = Deck.find_by(id: deck_params[:id])
@@ -32,14 +40,22 @@ class DecksController < ApplicationController
 
 
   def destroy
-    deck = Deck.find_by(id: deck_delete_params[:id])
-
+    deck = Deck.find(params[:id])
+    
+    # Check if the deck belongs to the current user
+    if deck.user_id == current_user.id
+      deck.destroy
+      render json: { message: 'Deck deleted successfully' }, status: :ok
+    else
+      render json: { error: 'You are not authorized to delete this deck' }, status: :unauthorized
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Deck not found' }, status: :not_found
   end
-
 
   private
   def deck_params
-    params.require(:deck).permit(:id, :name, :description, card_ids: [])
+    params.require(:deck).permit(:id, :name, :description, :owner_id, card_ids: [])
   end
   
 
@@ -48,6 +64,6 @@ class DecksController < ApplicationController
   end
 
   def deck_delete_params
-    params.require(:deck).permit(:id)
+    params.require(:deck).permit(:id, :user_id)
   end
 end

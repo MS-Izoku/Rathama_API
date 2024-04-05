@@ -23,6 +23,11 @@ class ApiKey < ApplicationRecord
         ApiKeyManager.validate_api_key(input_api_key, api_key_digest)
     end
 
+    def validate_permission(permission)
+        #self.permissions.include?(permission)
+        true
+    end
+
     # deactivate the API key without destroying it
     def deactivate
         self.is_active = false

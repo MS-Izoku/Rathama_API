@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-    before_action :authorize_api_key
+    #before_action :authorize_api_key
 
 # region: Constant Declarations
     API_KEY_HEADER = 'X-API-Key'
@@ -26,17 +26,7 @@ class ApplicationController < ActionController::API
     end
 
 
-    def authorize_jwt
-        api_key = request.headers[API_KEY_HEADER]
-        unless valid_api_key?(api_key)
-          render json: { error: 'Unauthorized' }, status: :unauthorized
-        end
-    end
-
-
-private
-
-# authenticate a user using their headers and credentials
+    # authenticate a user using their headers and credentials
     def authenticate_user
         api_key = request.headers[AUTHORIZATION_KEY_HEADER]
         custom_header = request.headers[API_KEY_HEADER]
@@ -54,14 +44,19 @@ private
         end
     end
 
-
+    private
+    # returns true if the API key belongs to the user and is currently active
     def valid_api_key?(api_key, user_id)
-        # Implement your logic to validate the API key
-        # This could involve checking against a database or some other mechanism
-        # Return true if the key is valid, false otherwise
+        api_key_string = request.headers[API_KEY_HEADER]
 
-        found_key = api_key.where()
+        # find the API Key in the databse
+        # return true of false based on whether the api_key's is_active field is true/false and belongs to the user
+    end
 
+    # check if the API Key has the required permissions to perform an action
+    def validate_api_key_permissions(required_permissions)
+        api_key_string = request.headers[API_KEY_HEADER]
+        true
     end
 
 # region JWT Validation for AUTH
@@ -92,7 +87,13 @@ private
 
     # get the current user by their Id
     def current_user
-        user ||= User.find_by(id: user_id)
+        return @current_user if defined?(@current_user)
+    
+        token = request.headers[AUTHORIZATION_KEY_HEADER]&.split&.last
+        return unless token
+    
+        decoded_token = decode_jwt(token)
+        @current_user ||= User.find_by(id: decoded_token["user_id"])
     end
 
     # is the current user valid (not null and found)

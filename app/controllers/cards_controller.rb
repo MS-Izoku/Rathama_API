@@ -1,4 +1,6 @@
 class CardsController < ApplicationController
+  
+
 # region: Index Routes
   def index
     @cards = Card.all
@@ -22,6 +24,7 @@ class CardsController < ApplicationController
 # endregion
 
 
+# region General CRUD
   def show
     @card = Card.find_by(id: params[:id])
     render json: @card
@@ -55,12 +58,13 @@ class CardsController < ApplicationController
       render_error(@card, @card.error)
     end
   end
+# endregion
 
 
   def change_image
   end
 
-  
+
   def add_variant_image
   end
 
