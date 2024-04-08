@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_27_164556) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_08_205555) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -81,6 +81,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_27_164556) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_generated_card"
+    t.string "deck_size_modifier_type", default: "None"
+    t.integer "deck_size_modifier_value"
   end
 
   create_table "connected_cards", force: :cascade do |t|
@@ -104,6 +106,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_27_164556) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "deck_code"
+    t.string "generation_status"
   end
 
   create_table "expansion_groups", force: :cascade do |t|

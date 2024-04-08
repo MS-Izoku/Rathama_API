@@ -69,6 +69,10 @@ class Card < ApplicationRecord
     }
   end
 
+  def self.deck_size_modifier_types
+    ["None", "Add", "Subtract", "Override"]
+  end
+
 # endregion
 
 # region Does the Card have Art / Images attached via ActiveStorage?
@@ -106,5 +110,9 @@ class Card < ApplicationRecord
   def should_validate_uniqueness_if_token?
     # if the card is not a token, it should have a unique name
     !is_generated_card
+  end
+
+  def validate_deck_size_modifier
+    errors.add(:base, "Deck-Size Modifier is invalid") unless deck_size_modifier_type.includes?(Card.deck_size_modifier_types)
   end
 end
