@@ -8,7 +8,7 @@ class DecksController < ApplicationController
   def create
     p 'Starting Deck Creation'
 
-    return render json: { errors: 'User not Found' } unless User.find_by(id: deck_params[:owner_id])
+    return render json: { errors: ['User not Found'] } if User.find_by(id: deck_params[:owner_id]).nil?
 
     ActiveRecord::Base.transaction do
       @deck = Deck.create_deck_from_params(deck_params)
@@ -16,7 +16,7 @@ class DecksController < ApplicationController
         p @deck.errors
         raise ActiveRecord::Rollback 
       end
-    rescue StandardError
+    rescue
       raise ActiveRecord::Rollback
     end
 
