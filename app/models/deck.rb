@@ -67,17 +67,16 @@ class Deck < ApplicationRecord
 
   # a method to create a deck and cards using a single transaction
   def self.create_deck_from_params(input_params)
-    p "==================================================> Creating Deck from Params" 
+
     card_list = input_params[:card_ids]
     deck = Deck.new(input_params.except(:card_ids))
     deck.generation_status = 'Initialized'
-    p "==================================================> Deck Initializing..."
+
     deck.save!
 
-    p "==================================================> Deck Initialized"
     # create the DeckCards using the provided list of Ids
     Deck.create_deck_cards(deck, card_list)
-    p "==================================================> Deck Cards Added"
+
     deck.generation_status = 'GameReady'
     deck.save
 
@@ -87,9 +86,27 @@ class Deck < ApplicationRecord
 
   # update the card list of a given Deck
   def self.update_card_list(input_params)
-    p "Creating Deck Cards => 2"
-    card_list = input_params[:card_ids]
-    deck = Deck.create!(input_params.except(:card_ids))
+    card_list = input_params[:card_ids] # this is an array/list of integers
+
+    # get information regarding current deck_cards
+    deck_card_ids = deck_cards.pluck(:id) # ids of the DeckCards of this Deck
+    current_card_ids = deck_cards.pluck(:card_id) # ids of the cards themselves
+    
+    # get lists of cards to add and remove based on their ids
+    deck_cards_to_add = []
+    deck_cards_to_destroy = []
+
+    # destroy the deck_cards not found in the cards list
+    # create deck_cards found in the list
+
+    # Find cards to add and remove
+    cards_to_add = card_list - current_card_ids
+    cards_to_remove = current_card_ids - card_list
+
+    # Destroy DeckCards for cards to remove
+    deck.deck_cards.where(card_id: cards_to_remove).destroy_all
+
+    Deck.create_deck_cards(@deck, cards_to_add)
 
     # create the DeckCards using the provided list of Ids
     Deck.create_deck_cards(deck, card_list)
@@ -103,7 +120,10 @@ class Deck < ApplicationRecord
   end
 
   # a method to create and destroy Deck Cards for a given deck
+  # can also be used using a partial-list during Update instead of a full list during create
   def self.create_deck_cards(deck, card_ids)
+    return unless Card.where(id: card_ids).count == card_ids.size # detects invalid card ids
+
     card_ids.each do |card_id|
       DeckCard.create(deck_id: deck.id, card_id:)
     end
@@ -140,6 +160,7 @@ class Deck < ApplicationRecord
     puts 'Modifying Deck Code'
     self.deck_code = generate_deck_code
   end
+
 
   # validation to ensure that each card has an appropriate count
   def validate_deck_card_count

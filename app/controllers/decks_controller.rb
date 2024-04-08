@@ -28,22 +28,18 @@ class DecksController < ApplicationController
   end
 
   def update
-    # deck = Deck.find_by(id: deck_params[:id])
-    # deck.update(name: deck_params[:name], description: deck_params[:description])
-
-    # cards_in_deck = Card.where(id: card_ids)
-
-    # if deck.errors.any?
-    #   render json: render_error(deck, 'Failed to Save new Deck')
-    # else
-    #   render json: deck
-    # end
+    user = User.find_by(id: deck_params[:owner_id])
+    return render json: { errors: ['User not Found'] } if user.nil?
 
     ActiveRecord::Base.transaction do
       @deck = Deck.find_by(id: deck_update_params[:id])
-      DeckCard.where(deck_id: @deck.id).destroy_all
+      if @deck.owner_id != user.id
+        return render json: { errors: ["Not Authorized to modify this deck"] }, status: :unauthorized
+      end
+      
+      deck.assign_attributes(deck_update_params.except(:card_ids))
 
-      Deck.create_deck_cards(@deck, card_list)
+      Deck.update_card_list(deck, deck_update_params[:card_ids])
 
       raise ActiveRecord::Rollback if @deck.errors.any?
     rescue StandardError
