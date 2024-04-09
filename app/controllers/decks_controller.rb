@@ -14,9 +14,9 @@ class DecksController < ApplicationController
       @deck = Deck.create_deck_from_params(deck_params)
       if @deck.errors.any?
         p @deck.errors
-        raise ActiveRecord::Rollback 
+        raise ActiveRecord::Rollback
       end
-    rescue
+    rescue StandardError
       raise ActiveRecord::Rollback
     end
 
@@ -34,9 +34,9 @@ class DecksController < ApplicationController
     ActiveRecord::Base.transaction do
       @deck = Deck.find_by(id: deck_update_params[:id])
       if @deck.owner_id != user.id
-        return render json: { errors: ["Not Authorized to modify this deck"] }, status: :unauthorized
+        return render json: { errors: ['Not Authorized to modify this deck'] }, status: :unauthorized
       end
-      
+
       deck.assign_attributes(deck_update_params.except(:card_ids))
 
       Deck.update_card_list(deck, deck_update_params[:card_ids])
@@ -54,16 +54,6 @@ class DecksController < ApplicationController
   end
 
   def destroy
-    deck = Deck.find(params[:id])
-    # Check if the deck belongs to the current user
-    if deck.user_id == current_user.id
-      deck.destroy
-      render json: { message: 'Deck deleted successfully' }, status: :ok
-    else
-      render json: { error: 'You are not authorized to delete this deck' }, status: :unauthorized
-    end
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Deck not found' }, status: :not_found
   end
 
   private
@@ -77,6 +67,6 @@ class DecksController < ApplicationController
   end
 
   def deck_delete_params
-    params.require(:deck).permit(:id, :user_id)
+    params.require(:deck).permit(:id)
   end
 end

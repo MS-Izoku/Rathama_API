@@ -1,10 +1,12 @@
 class AuthenticationController < ApplicationController
+    
+    # user needs a profile serializer
     def login
-        user = User.find_by(id: params[:id])
-        if user && user.authenticate(params[:password])
-            payload = {user_id: user.id}
-            token = encode(payload)
-            render json: { user , token }
+        user = User.find_by(email: login_params[:email])
+        if user && user.authenticate(login_params[:password])
+            payload = { user_id: user.id }
+            token = encode_jwt(payload)
+            render json: { user: user, token: token }
         end
     end
 
@@ -18,6 +20,6 @@ class AuthenticationController < ApplicationController
 
 private 
     def login_params
-        params.require(:user).permit(:id , :password)
+        params.require(:user).permit(:email, :password)
     end
 end
