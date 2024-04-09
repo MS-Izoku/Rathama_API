@@ -1,17 +1,14 @@
 class DecksController < ApplicationController
-  # before_action :authenticate_user! # assuming you have authentication set up
+  before_action :authenticate_user # assuming you have authentication set up
 
   def index; end
 
   def show; end
 
-  def create
-    p 'Starting Deck Creation'
-
-    return render json: { errors: ['User not Found'] } if User.find_by(id: deck_params[:owner_id]).nil?
-
+  def create   
     ActiveRecord::Base.transaction do
-      @deck = Deck.create_deck_from_params(deck_params)
+      @deck = Deck.create_deck_from_params(deck_params, current_user.id)
+
       if @deck.errors.any?
         p @deck.errors
         raise ActiveRecord::Rollback
@@ -23,7 +20,7 @@ class DecksController < ApplicationController
     if @deck.errors.any?
       render json: { errors: @deck.errors }, status: :bad_request
     else
-      render json: @deck
+      render json: { deck: @deck, card_count: @deck.deck_cards.count }
     end
   end
 

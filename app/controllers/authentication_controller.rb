@@ -4,18 +4,23 @@ class AuthenticationController < ApplicationController
     def login
         user = User.find_by(email: login_params[:email])
         if user && user.authenticate(login_params[:password])
-            payload = { user_id: user.id }
+            payload = { USER_ID => user.id, API_KEY_DIGEST => user.api_key_digest }
             token = encode_jwt(payload)
             render json: { user: user, token: token }
         end
     end
 
     def authenticate_token
-        token = request.headers["Authorization"]
-        apiKey = request.headers["X-API-Key"]
+        token = request.headers[AUTHORIZATION_KEY_HEADER]
 
-        user = User.find_by(id: decode(token)["user_id"])
+        user = User.find_by(id: decode(token)[USER_ID])
         render json: user
+    end
+
+    def authenticate_api_key
+        api_key = request.headers[API_KEY_HEADER]
+        key_model = User.find_by(id: decode(token)[API_KEY_DIGEST])
+        render json: key_model
     end
 
 private 

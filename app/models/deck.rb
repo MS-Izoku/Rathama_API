@@ -66,19 +66,36 @@ class Deck < ApplicationRecord
   end
 
   # a method to create a deck and cards using a single transaction
-  def self.create_deck_from_params(input_params)
-
+  def self.create_deck_from_params(input_params, user_id)
     card_list = input_params[:card_ids]
+
+    p "Creating Deck for User::#{user_id}"
+    p card_list
+    p "=================================="
+
     deck = Deck.new(input_params.except(:card_ids))
+    deck.owner_id = user_id
     deck.generation_status = 'Initialized'
 
+    p ">>>     Preparing to Save Deck"
     deck.save!
+    p ">>>     Deck Initialized, preparing to add cards"
 
     # create the DeckCards using the provided list of Ids
-    Deck.create_deck_cards(deck, card_list)
+    
+    #cards_created = Deck.create_deck_cards(deck, card_list)
+    return deck unless Deck.create_deck_cards(deck, card_list)
+    p ">>>     Cards added to deck, performing final save"
+
+    # unless Deck.create_deck_cards(deck, cards_to_add)
+    #   deck.errors.add(:base, "Invalid Card Ids Found")
+    #   deck.save
+    #   return deck
+    # end
 
     deck.generation_status = 'GameReady'
     deck.save
+    p "Deck Saved with Cards"
 
     deck
   end
@@ -103,7 +120,9 @@ class Deck < ApplicationRecord
     # Destroy DeckCards for cards to remove
     deck.deck_cards.where(card_id: cards_to_remove).destroy_all
 
-    Deck.create_deck_cards(deck, cards_to_add)
+    unless Deck.create_deck_cards(deck, cards_to_add)
+      
+    end
 
     if deck.errors.any?
       p "Errors creating Deck List"
@@ -117,11 +136,26 @@ class Deck < ApplicationRecord
   # a method to create and destroy Deck Cards for a given deck
   # can also be used using a partial-list during Update instead of a full list during create
   def self.create_deck_cards(deck, card_ids)
-    return unless Card.where(id: card_ids).count == card_ids.size # detects invalid card ids
+    p ">>>     Creating Deck Cards from Params"
+
+    valid_cards = Card.where(id: card_ids)
+    invalid_ids = card_ids - valid_card_ids
+
+    unless invalid_cards.empty?
+      deck.errors.add("Invalid Cards Found:: [#{invalid_ids}]")
+      return false
+    end
+
+    unless valid_cards.count == card_ids.uniq.size  # error-free (checks for duplicate ids)
+        deck.errors.add(:base, "Invalid Cards Found")
+        return false
+     end
 
     card_ids.each do |card_id|
       DeckCard.create(deck_id: deck.id, card_id:)
     end
+
+    true
   end
 
   private

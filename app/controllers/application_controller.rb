@@ -29,19 +29,25 @@ class ApplicationController < ActionController::API
     # authenticate a user using their headers and credentials
     def authenticate_user
         api_key = request.headers[AUTHORIZATION_KEY_HEADER]
-        custom_header = request.headers[API_KEY_HEADER]
+        bearer = get_bearer
     
         # Add your authentication logic based on the presence of API key and custom header
         # For example, check the database for a user with the provided API key
     
-        @current_user = User.find_by(api_key:)
+        @current_user = User.find_by(id: decode_jwt(bearer)[USER_ID])
     
         # Authentication successful
-        if @current_user && custom_header_valid?(custom_header)
+        if @current_user
           @current_user
         else
           render json: { error: 'Unauthorized' }, status: :unauthorized
         end
+    end
+
+
+    # when used, returns the user_id (and eventually, API Key data)
+    def decode_jwt(token)
+        token = JWT.decode(token, secret_key, true, {algorithm: 'HS256'})[0]
     end
 
     private
@@ -71,11 +77,6 @@ class ApplicationController < ActionController::API
     end
 
     
-    def decode_jwt
-        JWT.decode(token, "anything", true, {algorithm: 'HS256'})[0]
-    end
-
-    
     # validate an existing JWT 
     def validate_jwt
     end
@@ -94,6 +95,16 @@ class ApplicationController < ActionController::API
     
         decoded_token = decode_jwt(token)
         @current_user ||= User.find_by(id: decoded_token["user_id"])
+    end
+
+    def get_bearer
+        bearer = request.headers[AUTHORIZATION_KEY_HEADER]
+        bearer = bearer.sub "Bearer " , ""
+
+        p "======================================="
+        p bearer
+
+        bearer
     end
 
     # is the current user valid (not null and found)
