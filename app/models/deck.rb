@@ -136,20 +136,21 @@ class Deck < ApplicationRecord
   # a method to create and destroy Deck Cards for a given deck
   # can also be used using a partial-list during Update instead of a full list during create
   def self.create_deck_cards(deck, card_ids)
-    p ">>>     Creating Deck Cards from Params"
+    puts ">>>     Creating Deck Cards from Params"
 
-    valid_cards = Card.where(id: card_ids)
+    valid_cards = Card.where(id: card_ids.uniq, is_generated_card: false)
+    valid_card_ids = valid_cards.pluck(:id)
     invalid_ids = card_ids - valid_card_ids
 
-    unless invalid_cards.empty?
-      deck.errors.add("Invalid Cards Found:: [#{invalid_ids}]")
+    # check if all cards exist
+    unless invalid_ids.count == 0
+      deck.errors.add(:base, "Invalid Card Id#{invalid_ids.count > 1 ? "s" : ""} Found::#{invalid_ids}")
       return false
     end
 
-    unless valid_cards.count == card_ids.uniq.size  # error-free (checks for duplicate ids)
-        deck.errors.add(:base, "Invalid Cards Found")
-        return false
-     end
+
+
+    # check deck size first?
 
     card_ids.each do |card_id|
       DeckCard.create(deck_id: deck.id, card_id:)
@@ -206,7 +207,6 @@ class Deck < ApplicationRecord
 
       next unless current_count > max_limit
 
-       # p "Invalid Card Count Found x0x0x0x00x0x0x0x0x0x00x0x0x0x0x0x00x0x0x0x"
       errors.add(:base,
                  "Invalid Card Quantities found for [#{Card.find_by(id: current_id).name}].  Maximum cards: #{max_limit}, found #{current_count}")
     end
