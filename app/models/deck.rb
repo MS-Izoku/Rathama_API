@@ -85,33 +85,10 @@ class Deck < ApplicationRecord
 
 
   # update the card list of a given Deck
-  def self.update_card_list(input_params)
-    new_decklist = input_params[:card_ids] # this is an array/list of integers
+  def self.update_card_list(deck, card_ids)
+    new_decklist = card_ids # this is an array/list of integers
+    return if new_decklist == deck.deck_cards.pluck(:id)
 
-    # get information regarding current deck_cards
-    deck_card_ids = deck_cards.pluck(:id) # ids of the DeckCards of this Deck
-    current_card_ids = deck_cards.pluck(:card_id) # ids of the cards themselves
-
-    # destroy the deck_cards not found in the cards list
-    # create deck_cards found in the list
-
-    # Find cards to add and remove
-    cards_to_add = new_decklist - current_card_ids # leave only the cards to be added in this collection
-    cards_to_remove = current_card_ids - new_decklist # remove unused cards from the other
-
-    # Destroy DeckCards for cards to remove
-    deck.deck_cards.where(card_id: cards_to_remove).destroy_all
-
-    unless Deck.create_deck_cards(deck, cards_to_add)
-
-    end
-
-    if deck.errors.any?
-      p 'Errors creating Deck List'
-      p deck.errors
-    else
-      p 'No Errors creating Deck List'
-    end
     deck
   end
 
