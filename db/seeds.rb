@@ -167,277 +167,113 @@ class SeedText
   end
 end
 
-class SeedMethods
-  # region Fiends
-  def self.seed_fiends; end
+# region: Card Generation
 
-  def self.drop_fiends; end
 
-  # endregion
 
-  # region Spells
-  def self.seed_spells; end
-
-  def self.drop_spells; end
-  # endregion
-
-  # region Traps
-  def self.seed_traps; end
-
-  def self.drop_traps; end
-  # endregion
-
-  # region Monuments
-  def self.seed_monuments; end
-
-  def self.drop_monuments; end
-  # endregion
-
-  # region Heroes
-  def self.seed_heroes; end
-
-  def self.drop_heroes; end
-  # endregion
-
-  # region PlayerClasses
-
-  def self.seed_player_classes
-    CardData.player_class_data.each do |name, data|
-      puts ">>> Creating PlayerClass: #{name}"
-      new_class = PlayerClass.find_or_create_by(id: data[:id], name:, description: data[:description])
-
-      puts ">>>>> [Created New PlayerClass] #{new_class.name}: [#{new_class.description}]" if new_class.save
-    end
-  end
-
-  def self.drop_player_classes
-    total = PlayerClass.all.count
-    PlayerClass.destroy_all
-    puts ">> Dropped #{total} PlayerClasses"
-  end
-  # endregion
-
-# region: Tribes and Spell Schools
-
-  def self.drop_tribes
-    puts ''
-    puts '>> Dropping Tribes [CardTypeAttribute]'
-    total = Tribe.all.count
-    Tribe.destroy_all
-    puts ">> Dropped #{total} Tribes"
-    puts ''
-  end
-
-  def self.drop_spell_schools
-    puts ''
-    puts '>> Dropping SpellSchools [CardTypeAttribute]'
-    total = PlayerClass.all.count
-    PlayerClass.destroy_all
-    puts ">> Dropped #{total} SpellSchools"
-    puts ''
-  end
-
-  def self.drop_card_type_attributes
-    puts "Dropping ALL CardTypeAttributes [#{CardTypeAttributes.all.count}]"
-    CardTypeAttributes.all.count
-    CardTypeAttributes.destroy_all
-    puts ">> Dropped #{CardTypeAttributes.all.count} CardTypeAttributes"
-    puts ''
-  end
 
 # endregion
 
-# region: Expansions
-  def self.seed_expansions
-    @@expansion_data = {
-      'Core' => {
-        id: 0,
-        description: 'Cards Included with the base version of the game.  Available to all players for free.',
-        tagline: 'Core of the Game'
-      }
-    }
-
-    total = 0
-    @@expansion_data.each do |name, data|
-      puts "Creating PlayerClass: #{name}"
-      expansion = Expansion.new(id: data[:id], name:, description: data[:description], tagline: data[:tagline])
-      total += 1
-      expansion.save
-    end
-
-    puts "Created #{total} Expansions"
-  end
-
-  def self.drop_expansions
-    total = Expansion.all.count
-    Expansion.delete_all
-    puts ">> Dropped #{total} PlayerClasses"
-  end
-  # endregion
-
-  # region: Scale Powers
-  def self.seed_scale_powers; end
-
-  def self.drop_expansions
-    total = Expansion.all.count
-    Expansion.delete_all
-    puts ">> Dropped #{total} PlayerClasses"
-  end
+# region: Seed Config
+generate_test_user = true
+generate_random_base_cards = true
+generate_deck_size_cards = true
+generate_player_classes = true
 # endregion
 
-# region: PlayerClasses
-  def seed_player_classes
-    created = 0
-    failed = 0
-    failed_names = []
-
-    puts '>> Creating Player Classes'
-
-    CardData.player_class_data.each do |player_class_name, description|
-      puts ">>> Creating Player Class: #{player_class_name}"
-      player_class = PlayerClass.find_or_create_by(name: player_class_name, description:)
-      puts ">>>>> Created Player Class: #{player_class.name} | #{player_class.description}"
-    rescue StandardError
-      failed += 1
-      failed_names << player_class_names
-    end
-
-    puts ''
-    puts "Created #{created} PlayerClasses"
-    puts "Failed to created #{failed} PlayerClasses"
-    puts failed_names.flatten
-    puts ''
-  end
-
-  def drop_player_classes
-    puts "Attempting to drop #{PlayerClass.all.count} PlayerClasses"
-    PlayerClass.destroy_all
-    puts "Player classes dropped, #{PlayerClass.all.count} remain"
-    puts ''
-  end
-
-# endregion
-end
-
-class ModelSeedController
-  attr_reader :model_name
-
-  def initialize(model_name = 'Undefined Model Name', seed_proc = nil, drop_proc = nil)
-    @model_name = model_name
-    @seed_proc = seed_proc.nil? ? proc { puts 'No Seed Method Set' } : seed_proc
-    @drop_proc = drop_proc.nil? ? proc { puts 'No Drop Method Set' } : drop_proc
-  end
-
-  def create_model
-    puts "> Seeding #{@model_name}"
-    @seed_proc.call
-  end
-
-  def drop_model
-    puts "> Dropping existing records of #{@model_name}"
-    @drop_proc.call
-  end
-
-  def create_from_csv
-    system('cls')
-    script_directory = File.dirname(__FILE__)
-    csv_filename = './cards.csv'
-    csv_file_path = File.join(script_directory, csv_filename)
-
-    puts 'attempting to load file at: ' + csv_file_path
-
-    # Read and parse the CSV file with headers
-    CSV.foreach(csv_file_path, headers: true) do |row|
-      puts "Row: #{row.inspect}"
-    end
-  end
-end
-
-# p CardData.all_cards
-
-# ModelSeedController.new.create_from_csv
-
-# CardData.seed_tribes
-# CardData.seed_spell_schools
-# CardData.seed_player_classes
-# CardData.create_keywords_from_csv
-# CardData.create_cards_from_csv
 
 
-# region temp card generation
 
 def generate_random_string(length)
   characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   random_string = ''
-  
+
   length.times do
     random_string << characters[rand(characters.length)]
   end
-  
+
   random_string
 end
 
-30.times do |card|
-  card_name = generate_random_string(12)
-  card = SpellCard.new(
-    name: card_name,
-    cost: 0,
-    flavor_text: "Testing Card Generation #{card_name}",
-    card_art_url: "shouldgohere#{card_name}",
-    expansion_id: 0,
-    rarity: "Common",
-    is_generated_card: false,
-    card_text: "Test Me Baby!"
+if generate_test_user
+  User.create(username: "TestUser123", email: "testemail123@email.com", password: "Password1!")
+end
+
+if generate_random_base_cards
+  30.times do |card|
+    card_name = generate_random_string(12)
+    card = SpellCard.new(
+      name: card_name,
+      cost: 0,
+      flavor_text: "Testing Card Generation #{card_name}",
+      card_art_url: "shouldgohere#{card_name}",
+      expansion_id: 0,
+      rarity: 'Common',
+      is_generated_card: false,
+      card_text: 'Test Me Baby!'
     )
   
     if card.save
-    puts card.name + " was generated!"
-  else
-    puts "Failed to save #{card.name}"
-    card.errors.each do |error|
-      p error
+      puts card.name + ' was generated!'
+    else
+      puts "Failed to save #{card.name}"
+      card.errors.each do |error|
+        p error
+      end
     end
   end
 end
 
-
-adder_card = SpellCard.create(
-  name: "Add 20",
-  cost: 0,
-  flavor_text: "Testing Card Generation ADD",
-  card_art_url: "shouldgohere ADD",
-  expansion_id: 0,
-  rarity: "Common",
-  is_generated_card: false,
-  card_text: "Test Me Baby!",
-  deck_size_modifier_type: "Add",
-  deck_size_modifier_value: "20"
-  )
-
-subtractor_card = SpellCard.create(
-    name: "Subtract 15",
-    cost: 0,
-    flavor_text: "Testing Card Generation SUBTRACTOR",
-    card_art_url: "shouldgohere SUBTRACTOR",
-    expansion_id: 0,
-    rarity: "Common",
-    is_generated_card: false,
-    card_text: "Test Me Baby!",
-    deck_size_modifier_type: "Subtract",
-    deck_size_modifier_value: "15"
+if generate_deck_size_cards
+  # Add to Deck Limit
+    SpellCard.create(
+      name: 'Add 20',
+      cost: 0,
+      flavor_text: 'Testing Card Generation ADD',
+      card_art_url: 'shouldgohere ADD',
+      expansion_id: 0,
+      rarity: 'Common',
+      is_generated_card: false,
+      card_text: 'Test Me Baby!',
+      deck_size_modifier_type: 'Add',
+      deck_size_modifier_value: '20'
     )
 
-override_card = SpellCard.create(
-      name: "Overrride Deck Size",
+  # Reduce Deck Limit
+    subtractor_card = SpellCard.create(
+      name: 'Subtract 15',
       cost: 0,
-      flavor_text: "Testing Card Generation OVERRIDE",
-      card_art_url: "shouldgohere OVERRIDE",
+      flavor_text: 'Testing Card Generation SUBTRACTOR',
+      card_art_url: 'shouldgohere SUBTRACTOR',
       expansion_id: 0,
-      rarity: "Common",
+      rarity: 'Common',
       is_generated_card: false,
-      card_text: "Test Me Baby!",
-      deck_size_modifier_type: "Override",
-      deck_size_modifier_value: "15"
-      )
+      card_text: 'Test Me Baby!',
+      deck_size_modifier_type: 'Subtract',
+      deck_size_modifier_value: '15'
+    )
 
-# endregion
+  # Override Deck Limit
+  override_card = SpellCard.create(
+    name: 'Overrride Deck Size',
+    cost: 0,
+    flavor_text: 'Testing Card Generation OVERRIDE',
+    card_art_url: 'shouldgohere OVERRIDE',
+    expansion_id: 0,
+    rarity: 'Common',
+    is_generated_card: false,
+    card_text: 'Test Me Baby!',
+    deck_size_modifier_type: 'Override',
+    deck_size_modifier_value: '15'
+  )
+
+end
+
+if generate_player_classes
+  PlayerClass.create(name: "Neutral", description: "True Neutral", id: 0)
+  PlayerClass.create(name: "Magus", description: "Blue")
+  PlayerClass.create(name: "Detainer", description: "Purple / Black")
+  PlayerClass.create(name: "Warden", description: "Red")
+  PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
+  PlayerClass.create(name: "Trapper", description: "Green")
+end

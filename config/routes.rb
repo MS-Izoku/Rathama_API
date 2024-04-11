@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get 'users/rotate_api_key', to: 'users#rotate_api_key'
 
   post 'users/', to: 'users#create'
+  delete 'users/', to: "users#destroy"
 
   get 'decks/index', to: 'decks#index'
   get 'decks/show', to: 'decks#show'

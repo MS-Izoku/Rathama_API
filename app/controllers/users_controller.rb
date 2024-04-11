@@ -31,11 +31,20 @@ class UsersController < ApplicationController
 
     # create the user and check for errors
     user = User.create!(user_creation_params)
-    render json: user, status: :created
+
+    payload = { USER_ID => user.id, API_KEY_DIGEST => user.api_key_digest }
+    token = encode_jwt(payload)
+    render json: { user: user, token: token }, status: :created
   end
 
   def show
     render json: @current_user
+  end
+
+
+  def destroy
+    @current_user.destroy
+    render json: { user_data: @current_user, message: "User has been deleted" }, status: :ok
   end
 
 # region: API Keys

@@ -1,12 +1,16 @@
 require 'json'
 require 'base64'
+
 class Deck < ApplicationRecord
   has_many :deck_cards
   has_many :cards, through: :deck_cards
   belongs_to :user, class_name: 'User', foreign_key: 'owner_id'
 
-  before_save :validate_deck_count
+  validate :validate_deck_count # custom validation required due to possible deck-size modification via cards
+  validate :validate_deck_player_class  # custom validation for dual-class decks (cannot include 3 non-neutral classes)
+  
   before_save :modify_deck_code
+  
 
   # parse an existing deck code and return the Deck object
   def self.parse_deck_code(deck_code)
@@ -32,12 +36,14 @@ class Deck < ApplicationRecord
     JSON.generate(deck_json)
   end
 
+
   # Initialized => Ready to Add Cards, but not ready for gameplay
   # GameReady => Correct number of cards and initialized
   # NotReady => Incorrect number of cards or other errors, but already initialized
   def generation_status_values
     %w[Initialized GameReady NotReady]
   end
+
 
   # generate a Base64 Deck Code out of the associated Cards in the deck
   def generate_deck_code(debug = false)
@@ -64,41 +70,23 @@ class Deck < ApplicationRecord
     validate_checksum # Call validate_checksum internally
   end
 
+
   # a method to create a deck and cards using a single transaction
   def self.create_deck_from_params(input_params, user_id)
     card_list = input_params[:card_ids]
 
-    p "Creating Deck for User::#{user_id}"
-    p card_list
-    p '=================================='
-
     deck = Deck.new(input_params.except(:card_ids))
     deck.owner_id = user_id
     deck.generation_status = 'Initialized'
-
-    p '>>>     Preparing to Save Deck'
     deck.save!
-    p '>>>     Deck Initialized, preparing to add cards'
 
-    # create the DeckCards using the provided list of Ids
-
-    # cards_created = Deck.create_deck_cards(deck, card_list)
     return deck unless Deck.create_deck_cards(deck, card_list)
-
-    p '>>>     Cards added to deck, performing final save'
-
-    # unless Deck.create_deck_cards(deck, cards_to_add)
-    #   deck.errors.add(:base, "Invalid Card Ids Found")
-    #   deck.save
-    #   return deck
-    # end
 
     deck.generation_status = 'GameReady'
     deck.save
-    p 'Deck Saved with Cards'
-
     deck
   end
+
 
   # update the card list of a given Deck
   def self.update_card_list(input_params)
@@ -131,11 +119,10 @@ class Deck < ApplicationRecord
     deck
   end
 
+
   # a method to create and destroy Deck Cards for a given deck
   # can also be used using a partial-list during Update instead of a full list during create
   def self.create_deck_cards(deck, card_ids)
-    puts '>>>     Creating Deck Cards from Params'
-
     valid_cards = Card.where(id: card_ids.uniq, is_generated_card: false)
     valid_card_ids = valid_cards.pluck(:id)
     invalid_ids = card_ids - valid_card_ids
@@ -146,8 +133,6 @@ class Deck < ApplicationRecord
       return false
     end
 
-    # check deck size first?
-
     card_ids.each do |card_id|
       DeckCard.create(deck_id: deck.id, card_id:)
     end
@@ -155,6 +140,7 @@ class Deck < ApplicationRecord
     true
   end
 
+  #  START OF PRIVATE / VALIDATIONS
   private
 
 # region Checksum Validation for Deck Codes
@@ -168,7 +154,7 @@ class Deck < ApplicationRecord
       "#{card[:id]}:#{card[:count]}"
     end
 
-                                                            checksum_string = checksum_string.join(',')}"
+    checksum_string = checksum_string.join(',')}"
 
     # Calculate the CRC32 checksum
     Zlib.crc32(checksum_string)
@@ -250,9 +236,11 @@ class Deck < ApplicationRecord
     end
   end
 
+
   def get_card_counts
     card_counts = cards.group(:id, :rarity).count
   end
+
 
   def correct_number_of_cards_in_deck
     deck_size = 30
@@ -267,6 +255,7 @@ class Deck < ApplicationRecord
 
     deck.cards == deck_size
   end
+
 
   def modify_deck_code
     return if generation_status == 'Initialized' || generation_status.nil?
@@ -284,4 +273,10 @@ class Deck < ApplicationRecord
       self.deck_code = generate_deck_code
     end
   end
+
+  def validate_deck_player_class
+     classes = cards.where.not(player_class_id: 0).pluck(:player_class_id)     
+     errors.add(:base, "Too Many Classes in this Deck") if classes.count > 2
+  end
+
 end
