@@ -51,16 +51,12 @@ class Deck < ApplicationRecord
     card_string = cards.map { |card| "#{card[:id]}-#{card[:count]}" }.join(',')
     card_string = "[#{card_string}]"
 
-    puts "[]===>> CardString::#{card_string}" if debug
-
     player_class_identifier = '[Class Identifier]'
     # Construct the deck string: [Name],[Class],[CardString]
     deck_string = "#{name},#{player_class_identifier},#{card_string}"
 
     # Base64 encode the deck string
     full_code = Base64.strict_encode64(deck_string)
-
-    puts "Parsed Code:\n#{Deck.parse_deck_code(full_code)}" if debug
 
     full_code
   end

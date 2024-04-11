@@ -167,12 +167,6 @@ class SeedText
   end
 end
 
-# region: Card Generation
-
-
-
-
-# endregion
 
 # region: Seed Config
 generate_test_user = true
