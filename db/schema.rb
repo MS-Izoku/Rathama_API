@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_08_205555) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_11_191926) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -107,6 +107,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_08_205555) do
     t.datetime "updated_at", null: false
     t.string "deck_code"
     t.string "generation_status"
+    t.boolean "is_playable", default: false
+    t.string "playability_status"
   end
 
   create_table "expansion_groups", force: :cascade do |t|

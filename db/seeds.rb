@@ -399,4 +399,45 @@ end
     end
   end
 end
+
+
+adder_card = SpellCard.create(
+  name: "Add 20",
+  cost: 0,
+  flavor_text: "Testing Card Generation ADD",
+  card_art_url: "shouldgohere ADD",
+  expansion_id: 0,
+  rarity: "Common",
+  is_generated_card: false,
+  card_text: "Test Me Baby!",
+  deck_size_modifier_type: "Add",
+  deck_size_modifier_value: "20"
+  )
+
+subtractor_card = SpellCard.create(
+    name: "Subtract 15",
+    cost: 0,
+    flavor_text: "Testing Card Generation SUBTRACTOR",
+    card_art_url: "shouldgohere SUBTRACTOR",
+    expansion_id: 0,
+    rarity: "Common",
+    is_generated_card: false,
+    card_text: "Test Me Baby!",
+    deck_size_modifier_type: "Subtract",
+    deck_size_modifier_value: "15"
+    )
+
+override_card = SpellCard.create(
+      name: "Overrride Deck Size",
+      cost: 0,
+      flavor_text: "Testing Card Generation OVERRIDE",
+      card_art_url: "shouldgohere OVERRIDE",
+      expansion_id: 0,
+      rarity: "Common",
+      is_generated_card: false,
+      card_text: "Test Me Baby!",
+      deck_size_modifier_type: "Override",
+      deck_size_modifier_value: "15"
+      )
+
 # endregion

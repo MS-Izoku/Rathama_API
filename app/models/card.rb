@@ -113,6 +113,8 @@ class Card < ApplicationRecord
   end
 
   def validate_deck_size_modifier
-    errors.add(:base, "Deck-Size Modifier is invalid") unless deck_size_modifier_type.includes?(Card.deck_size_modifier_types)
+    #errors.add(:base, "Deck-Size Modifier is invalid") unless deck_size_modifier_type.includes?(Card.deck_size_modifier_types)
+    errors.add(:base, "Deck-Size Modifier has invalid type::[#{deck_size_modifier_type}]") if deck_size_modifier_types.includes?(deck_size_modifier_type)
+
   end
 end
