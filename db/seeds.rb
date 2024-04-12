@@ -1,5 +1,5 @@
 require 'io/console'
-require_relative './card_data'
+#require_relative './card_data'
 require 'csv'
 
 # NOTE: Rails 7 switched out byebug with => binding.break
@@ -193,7 +193,20 @@ if generate_test_user
   User.create(username: "TestUser123", email: "testemail123@email.com", password: "Password1!")
 end
 
-def generate_random_cards(player_class = "Neutral")
+if generate_player_classes
+  PlayerClass.create(name: "Neutral", description: "True Neutral", id: 0)
+  PlayerClass.create(name: "Magus", description: "Blue")
+  PlayerClass.create(name: "Detainer", description: "Purple / Black")
+  PlayerClass.create(name: "Warden", description: "Red")
+  PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
+  PlayerClass.create(name: "Trapper", description: "Green")
+end
+
+
+
+
+def generate_random_cards(player_class_1_name = "Neutral", player_class_2_name = "")
+
   30.times do |card|
     card_name = generate_random_string(12)
     card = SpellCard.new(
@@ -206,9 +219,18 @@ def generate_random_cards(player_class = "Neutral")
       is_generated_card: false,
       card_text: 'Test Me Baby!'
     )
-  
+
     if card.save
       puts card.name + ' was generated!'
+
+      player_class_id_1 = PlayerClass.find_by(name: player_class_1_name)
+      PlayerClassCard.create(player_class_id: player_class_id_1.id, card_id: card.id)
+
+      if player_class_2_name != "" && player_class_1_name != "Neutral" && palyer_class_2_name != "Neutral"
+        player_class_id_2 = PlayerClass.find_by(name: player_class_2_name)
+        PlayerClassCard.create(player_class_id: player_class_id_2.id, card_id: card.id)
+      end
+
     else
       puts "Failed to save #{card.name}"
       card.errors.each do |error|
@@ -220,6 +242,27 @@ end
 
 if generate_random_base_cards
   generate_random_cards
+
+  puts ""
+  puts ">>  Creating Warden Cards"
+  warden_cards = generate_random_cards("Warden")
+
+  puts ""
+  puts ">>  Creating Magus Cards"
+  magus_cards = generate_random_cards("Magus")
+
+  puts ""
+  puts ">>  Creating Detainer Cards"
+  detainer_cards = generate_random_cards("Detainer")
+
+  puts ""
+  puts ">>  Creating Trapper Cards"
+  trapper_cards = generate_random_cards("Trapper")
+
+  puts ""
+  puts ">>  Creating Sage Cards"
+  sage_cards = generate_random_cards("Sage")
+
 end
 
 if generate_deck_size_cards
@@ -267,11 +310,4 @@ if generate_deck_size_cards
 
 end
 
-if generate_player_classes
-  PlayerClass.create(name: "Neutral", description: "True Neutral", id: 0)
-  PlayerClass.create(name: "Magus", description: "Blue")
-  PlayerClass.create(name: "Detainer", description: "Purple / Black")
-  PlayerClass.create(name: "Warden", description: "Red")
-  PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
-  PlayerClass.create(name: "Trapper", description: "Green")
-end
+
