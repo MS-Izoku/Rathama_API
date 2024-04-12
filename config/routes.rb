@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   delete 'users/', to: "users#destroy"
 
   get 'decks/index', to: 'decks#index'
-  get 'decks/show', to: 'decks#show'
+  get 'decks/:id', to: 'decks#show'
   post 'decks/', to: 'decks#create'
   patch 'decks/', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'

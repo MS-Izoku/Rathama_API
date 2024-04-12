@@ -1,9 +1,12 @@
 class DecksController < ApplicationController
-  before_action :authenticate_user # assuming you have authentication set up
+  before_action :authenticate_user # @current_user is available
 
   def index; end
 
-  def show; end
+  def show
+    @deck = Deck.find_by(id: params[:id])
+    render json: { deck_code: @deck.deck_code, name: @deck.name, description: @deck.description}
+  end
 
   def create
     # data transaction

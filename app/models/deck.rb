@@ -7,7 +7,7 @@ class Deck < ApplicationRecord
   belongs_to :user, class_name: 'User', foreign_key: 'owner_id'
 
   validate :validate_deck_count # custom validation required due to possible deck-size modification via cards
-  validate :validate_deck_player_class  # custom validation for dual-class decks (cannot include 3 non-neutral classes)
+  #validate :validate_deck_player_class  # custom validation for dual-class decks (cannot include 3 non-neutral classes)
   
   before_save :modify_deck_code
   
@@ -125,10 +125,12 @@ class Deck < ApplicationRecord
 
     # check if all cards exist
     unless invalid_ids.count == 0
+      puts "Invalid Deck Card Ids Found"
       deck.errors.add(:base, "Invalid Card Id#{invalid_ids.count > 1 ? 's' : ''} Found::#{invalid_ids}")
       return false
     end
 
+    puts "Creating Deck Cards"
     card_ids.each do |card_id|
       DeckCard.create(deck_id: deck.id, card_id:)
     end
@@ -221,12 +223,15 @@ class Deck < ApplicationRecord
     # adjust playability here
     p "Current Deck Cards:: #{deck_cards.count} || Expecting::#{deck_limit}"
     if deck_limit > deck_cards.count
+      puts "Too Few Cards"
       self.is_playable = false
       self.playability_status = 'Too Few Cards'
     elsif deck_limit < deck_cards.count
+      puts "Too Many Cards"
       self.is_playable = false
       self.playability_status = 'Too Many Cards'
     else
+      puts "Correct number of Cards"
       self.is_playable = true
       self.playability_status = 'Ready'
     end
@@ -270,9 +275,6 @@ class Deck < ApplicationRecord
     end
   end
 
-  def validate_deck_player_class
-     classes = cards.where.not(player_class_id: 0).pluck(:player_class_id)     
-     errors.add(:base, "Too Many Classes in this Deck") if classes.count > 2
-  end
+ 
 
 end
