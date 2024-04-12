@@ -8,6 +8,9 @@ class Card < ApplicationRecord
 
 # region: relationships
 
+  has_many :card_ownerships
+  has_many :users, through: :card_ownerships
+
   # Player Class/es of the Card (In Case of Dual+ Class Cards)
   has_many :player_class_cards
   has_many :player_classes, through: :player_class_cards

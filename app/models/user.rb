@@ -3,7 +3,8 @@ class User < ApplicationRecord
   has_many :api_keys, as: :owner
   has_many :decks, foreign_key: 'owner_id', dependent: :destroy
 
-  has_many :cards
+  has_many :card_ownerships
+  has_many :cards, through: :card_ownerships
 
   validates :email, uniqueness: true
   validate :validate_email
