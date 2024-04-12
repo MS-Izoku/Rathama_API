@@ -100,10 +100,6 @@ class ApplicationController < ActionController::API
     def get_bearer
         bearer = request.headers[AUTHORIZATION_KEY_HEADER]
         bearer = bearer.sub "Bearer " , ""
-
-        p "======================================="
-        p bearer
-
         bearer
     end
 

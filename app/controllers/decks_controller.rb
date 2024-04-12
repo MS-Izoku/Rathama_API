@@ -9,9 +9,20 @@ class DecksController < ApplicationController
   end
 
   def create
+    return render json: { error: "No Player Classes Found ([ deck_class:[] ] param not found)" } if deck_params[:deck_classes].nil? || deck_params[:deck_classes] == 0
+
     # data transaction
     ActiveRecord::Base.transaction do
       @deck = Deck.create_deck_from_params(deck_params, current_user.id)
+      
+      valid_player_classes = deck_params[:deck_classes].select { |class_name| class_name != "Neutral" }
+      valid_player_classes.each do |dc_name|  # deck_class_name
+        puts dc_name
+        player_class = PlayerClass.find_by(name: dc_name)
+        raise ActiveRecord::Rollback if player_class.nil?
+
+        DeckClass.create(player_class: player_class, deck: @deck)
+      end
 
       if @deck.errors.any?
         p @deck.errors
@@ -25,7 +36,7 @@ class DecksController < ApplicationController
     if @deck.errors.any?
       render json: { errors: @deck.errors }, status: :bad_request
     else
-      render json: { deck: @deck, card_count: @deck.deck_cards.count }
+      render json: { deck: @deck, card_count: @deck.deck_cards.count, deck_classes: @deck.deck_classes }
     end
   end
 
@@ -84,7 +95,7 @@ class DecksController < ApplicationController
   private
 
   def deck_params
-    params.require(:deck).permit(:id, :name, :description, :owner_id, card_ids: [])
+    params.require(:deck).permit(:id, :name, :description, :owner_id, card_ids: [], deck_classes: [])
   end
 
   def deck_update_params

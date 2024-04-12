@@ -72,14 +72,13 @@ class Deck < ApplicationRecord
 
   # a method to create a deck and cards using a single transaction
   def self.create_deck_from_params(input_params, user_id)
-    card_list = input_params[:card_ids]
-
-    deck = Deck.new(input_params.except(:card_ids))
+    deck = Deck.new(input_params.except(:card_ids, :deck_classes))
     deck.owner_id = user_id
     deck.generation_status = 'Initialized'
+    
     deck.save!
 
-    return deck unless Deck.create_deck_cards(deck, card_list)
+    return deck unless Deck.create_deck_cards(deck, input_params[:card_ids])
 
     deck.generation_status = 'GameReady'
     deck.save
@@ -278,4 +277,10 @@ class Deck < ApplicationRecord
     end
   end
 
+  def validate_deck_classes
+    player_classes = deck.cards.player_classes
+    player_classes.each do |c|
+      puts "Deck Includes PlayerClass::#{c.name}"
+    end
+  end
 end

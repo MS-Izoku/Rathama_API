@@ -193,7 +193,7 @@ if generate_test_user
   User.create(username: "TestUser123", email: "testemail123@email.com", password: "Password1!")
 end
 
-if generate_random_base_cards
+def generate_random_cards(player_class = "Neutral")
   30.times do |card|
     card_name = generate_random_string(12)
     card = SpellCard.new(
@@ -216,6 +216,10 @@ if generate_random_base_cards
       end
     end
   end
+end
+
+if generate_random_base_cards
+  generate_random_cards
 end
 
 if generate_deck_size_cards
