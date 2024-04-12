@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   def create
     found_user = User.where(email: user_creation_params[:email]).or(User.where(username: user_creation_params[:username])).first
 
-    # basic validation
+    # basic validation messaging
     if found_user # if the user is found, tell the user which field matches
       if found_user.email == user_creation_params[:email] && found_user.username == user_creation_params[:username]
         return render json: { errors: ['Username and Email already in use'] }, status: :bad_request
@@ -19,7 +19,9 @@ class UsersController < ApplicationController
       else
         return render json: { errors: ['Username already in use'] }, status: :bad_request
       end
-    elsif user_creation_params[:password] != user_creation_params[:password_confirmation]
+    end
+    
+    if user_creation_params[:password] != user_creation_params[:password_confirmation]
       return render json: { errors: ['Passwords must match'] }, status: :bad_request
     end
 

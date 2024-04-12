@@ -87,7 +87,25 @@ class Deck < ApplicationRecord
   # update the card list of a given Deck
   def self.update_card_list(deck, card_ids)
     new_decklist = card_ids # this is an array/list of integers
-    return if new_decklist == deck.deck_cards.pluck(:id)
+    return if new_decklist == deck.deck_cards.pluck(:id) # return if the card_ids already match
+
+    valid_cards = Card.where(id: card_ids.uniq, is_generated_card: false)
+    valid_card_ids = valid_cards.pluck(:id)
+    invalid_ids = card_ids - valid_card_ids
+
+    # check if all cards exist
+    unless invalid_ids.count == 0
+      deck.errors.add(:base, "Invalid Card Id#{invalid_ids.count > 1 ? 's' : ''} Found::#{invalid_ids}")
+      return false
+    end
+
+    current_card_list = deck.deck_cards.pluck(:card_id)
+
+    cards_to_remove = [] # compare the current card list with the input card_ids (find those not found from current_card_list)
+    cards_to_add = []     # compare the current card list with the input card_ids (find the card_ids not found)
+
+    # remove the card_ids from cards_to_remove
+    # add the ids from cards_to_add
 
     deck
   end

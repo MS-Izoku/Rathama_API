@@ -5,6 +5,12 @@ class User < ApplicationRecord
 
   has_many :cards
 
+  validates :email, uniqueness: true
+  validate :validate_email
+
+  validates :username, uniqueness: true 
+  validate :validate_username
+
     # the general  "Collection" of a user is their owned cards
   def collection
     cards
@@ -43,4 +49,15 @@ class User < ApplicationRecord
       # Otherwise, return the raw_password
     errors.empty? ? raw_password : errors
   end
+
+  def validate_username
+    # profanity filter
+  end
+
+  def validate_email
+    # formatting check, may be replaced with a gem in the future
+    email_matching_pattern = /^[A-Za-z0-9+_.-]+@([A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/
+    errors.add(:base, "Invalid Email Format") unless email =~ email_matching_pattern
+  end
+
 end
