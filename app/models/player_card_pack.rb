@@ -1,0 +1,2 @@
+class PlayerCardPack < ApplicationRecord
+end
