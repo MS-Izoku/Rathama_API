@@ -39,6 +39,20 @@ class UsersController < ApplicationController
     render json: { user: user, token: token }, status: :created
   end
 
+  def update_username
+  end
+
+  # sends an email to a users email address to confirm the change
+  def change_email
+  end
+
+  # reached via link to confirm that a users email is correct and belongs to them
+  def confirm_change_email
+  end
+
+  def change_password
+  end
+
   def show
     render json: @current_user
   end
@@ -59,5 +73,17 @@ class UsersController < ApplicationController
 
   def user_creation_params
     params.permit(:username, :password, :password_confirmation, :email)
+  end
+
+  def change_password_params
+    params.require(:user).permit(:password, password_confirmation)
+  end
+
+  def change_email_params
+    params.require(:user).permit(:email)
+  end
+
+  def confirm_change_email_params
+    params.permit(:email, :confirmation_id)
   end
 end

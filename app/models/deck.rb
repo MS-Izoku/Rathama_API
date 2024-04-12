@@ -2,7 +2,7 @@ require 'json'
 require 'base64'
 
 class Deck < ApplicationRecord
-  has_many :deck_cards
+  has_many :deck_cards, dependent: :destroy
   has_many :cards, through: :deck_cards
   belongs_to :user, class_name: 'User', foreign_key: 'owner_id'
 
@@ -101,11 +101,16 @@ class Deck < ApplicationRecord
 
     current_card_list = deck.deck_cards.pluck(:card_id)
 
-    cards_to_remove = [] # compare the current card list with the input card_ids (find those not found from current_card_list)
-    cards_to_add = []     # compare the current card list with the input card_ids (find the card_ids not found)
-
-    # remove the card_ids from cards_to_remove
-    # add the ids from cards_to_add
+    cards_to_remove = current_card_list - valid_card_ids
+    cards_to_add = valid_card_ids - current_card_list
+  
+    # Remove cards that are no longer in the updated list
+    deck.deck_cards.where(card_id: cards_to_remove).destroy_all
+  
+    # Add new cards to the deck
+    cards_to_add.each do |card_id|
+      deck.deck_cards.create(card_id: card_id)
+    end
 
     deck
   end

@@ -55,6 +55,27 @@ class DecksController < ApplicationController
 
 
   def destroy
+    @deck = Deck.find_by(id: deck_delete_params[:id])
+    return render json: { error: "Deck not Found" }, status: :not_found if deck.nil?
+
+    return render json: { error: "Deck does not belong to user" }, status: :unauthorized if @current_user.id != @deck.owner_id
+  
+    ActiveRecord::Base.transaction do
+      @deck.destroy
+      if @deck.errors.any?
+        raise ActiveRecord::Rollback
+      end
+    rescue StandardError
+      raise ActiveRecord::Rollback
+    end
+
+
+    if @deck.errors.any?
+      render json: { errors: @deck.errors }, status: :bad_request
+    else
+      render json: { deck: @deck, card_count: @deck.deck_cards.count }
+    end
+
   end
 
   private

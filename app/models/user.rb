@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
   has_many :api_keys, as: :owner
-  has_many :decks, foreign_key: 'owner_id'
+  has_many :decks, foreign_key: 'owner_id', dependent: :destroy
 
   has_many :cards
 
