@@ -6,6 +6,9 @@ class Deck < ApplicationRecord
   has_many :cards, through: :deck_cards
   belongs_to :user, class_name: 'User', foreign_key: 'owner_id'
 
+  has_many :deck_classes
+  has_many :player_classes, through: :deck_classes
+
   validate :validate_deck_count # custom validation required due to possible deck-size modification via cards
   #validate :validate_deck_player_class  # custom validation for dual-class decks (cannot include 3 non-neutral classes)
   
@@ -274,7 +277,5 @@ class Deck < ApplicationRecord
       self.deck_code = generate_deck_code
     end
   end
-
- 
 
 end

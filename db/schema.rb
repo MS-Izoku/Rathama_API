@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_11_191926) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_12_201633) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -95,6 +95,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_191926) do
   create_table "deck_cards", force: :cascade do |t|
     t.integer "deck_id"
     t.integer "card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "deck_classes", force: :cascade do |t|
+    t.integer "deck_id"
+    t.integer "player_class_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
