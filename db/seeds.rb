@@ -216,21 +216,6 @@ def generate_random_string(length)
   random_string
 end
 
-if generate_test_user
-  User.create(username: "TestUser123", email: "testemail123@email.com", password: "Password1!")
-end
-
-if generate_player_classes
-  PlayerClass.create(name: "Neutral", description: "True Neutral", id: 0)
-  PlayerClass.create(name: "Magus", description: "Blue")
-  PlayerClass.create(name: "Detainer", description: "Purple / Black")
-  PlayerClass.create(name: "Warden", description: "Red")
-  PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
-  PlayerClass.create(name: "Trapper", description: "Green")
-end
-
-
-
 def generate_random_cards(player_class_1_name = "Neutral", player_class_2_name = "")
 
   30.times do |card|
@@ -264,6 +249,20 @@ def generate_random_cards(player_class_1_name = "Neutral", player_class_2_name =
       end
     end
   end
+end
+
+
+if generate_test_user
+  User.create(username: "TestUser123", email: "testemail123@email.com", password: "Password1!")
+end
+
+if generate_player_classes
+  PlayerClass.create(name: "Neutral", description: "True Neutral", id: 0)
+  PlayerClass.create(name: "Magus", description: "Blue")
+  PlayerClass.create(name: "Detainer", description: "Purple / Black")
+  PlayerClass.create(name: "Warden", description: "Red")
+  PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
+  PlayerClass.create(name: "Trapper", description: "Green")
 end
 
 if generate_random_base_cards
@@ -335,7 +334,6 @@ if generate_deck_size_cards
   )
 
 end
-
 
 if generate_keywords
   import_keywords_from_csv

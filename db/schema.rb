@@ -156,14 +156,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "player_card_packs", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "card_pack_id"
-    t.datetime "date_opened"
-    t.boolean "opened"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "player_card_packs" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
   create_table "player_class_cards", force: :cascade do |t|
     t.integer "player_class_id"
