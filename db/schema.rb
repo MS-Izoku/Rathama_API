@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_215121) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -53,6 +53,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215121) do
   create_table "card_ownerships", force: :cascade do |t|
     t.integer "user_id"
     t.integer "card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "card_packs", force: :cascade do |t|
+    t.integer "expansion_id"
+    t.integer "cards_per_pack"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -145,6 +152,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215121) do
   create_table "keywords", force: :cascade do |t|
     t.string "name"
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "player_card_packs", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "card_pack_id"
+    t.datetime "date_opened"
+    t.boolean "opened"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -1,5 +1,6 @@
 require 'io/console'
 #require_relative './card_data'
+#require_relative './keywords.csv'
 require 'csv'
 
 # NOTE: Rails 7 switched out byebug with => binding.break
@@ -169,12 +170,38 @@ end
 
 
 # region: Seed Config
-generate_test_user = true
-generate_random_base_cards = true
-generate_deck_size_cards = true
-generate_player_classes = true
+generate_test_user = false
+generate_random_base_cards = false
+generate_deck_size_cards = false
+generate_player_classes = false
+generate_keywords = true
 # endregion
 
+
+
+def import_keywords_from_csv
+  # Ensure that the CSV file exists
+  csv_file_path = "db/keywords.csv"
+  unless File.exist?(csv_file_path)
+    puts "Keyword CSV file not found"
+    return
+  end
+
+  total_created = 0
+
+  # Open the CSV file for reading
+  CSV.foreach(csv_file_path, headers: true) do |row|
+    # Extract 'Name' and 'Description' from each row
+    name = row['Name']
+    description = row['Description']
+
+    # Create a new Keyword record with the extracted data
+    total_created += 1 if Keyword.create!(name: name, description: description)    
+  end
+
+  puts ">> Created Keywords::#{total_created}"
+  puts "Import completed successfully!"
+end
 
 
 
@@ -201,7 +228,6 @@ if generate_player_classes
   PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
   PlayerClass.create(name: "Trapper", description: "Green")
 end
-
 
 
 
@@ -311,3 +337,6 @@ if generate_deck_size_cards
 end
 
 
+if generate_keywords
+  import_keywords_from_csv
+end
