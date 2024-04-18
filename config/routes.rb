@@ -21,22 +21,25 @@ Rails.application.routes.draw do
   patch 'decks/', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
 
+
+  post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
+
 # region CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
-  get 'card_type_attributes/tribes', to: 'card_type_attributes#tribes'
+  get 'card-type-attributes/tribes', to: 'card_type_attributes#tribes'
   get 'tribes', to: 'card_type_attributes#tribes'
 
-  get 'card_type_attributes/tribe_names', to: 'card_type_attributes#tribe_names'
+  get 'card-type-attributes/tribe_names', to: 'card_type_attributes#tribe_names'
   get 'tribes/names', to: 'card_type_attributes#tribe_names'
   # endregion
 
   # region Spell Schools
-  get 'card_type_attributes/spell_schools', to: 'card_type_attributes#spell_schools'
-  get 'card_type_attributes/spell_school_names', to: 'card_type_attributes#spell_school_names'
+  get 'card-type_attributes/spell_schools', to: 'card_type_attributes#spell_schools'
+  get 'card-type_attributes/spell_school_names', to: 'card_type_attributes#spell_school_names'
 
-  get 'spell_schools', to: 'card_type_attributes#spell_schools'
-  get 'spell_schools/names', to: 'card_attributes#spell_school_names'
+  get 'spell-schools', to: 'card_type_attributes#spell_schools'
+  get 'spell-schools/names', to: 'card_attributes#spell_school_names'
   # endregion
 
 # endregion

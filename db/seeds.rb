@@ -338,3 +338,11 @@ end
 if generate_keywords
   import_keywords_from_csv
 end
+
+if generate_quests
+  Quest.create(name: "Play20Cards", description: "Play 20 Cards")
+  Quest.create(name: "Destroy30Fiends", description: "Destroy 30 Fiends")
+  Quest.create(name: "Play10Momuments", description: "Play 5 Monuments")
+  Quest.create(name: "Play5Games", description: "Play 5 Games")
+  Quest.create(name: "Play20Cards", description: "Play 20 Cards")
+end
