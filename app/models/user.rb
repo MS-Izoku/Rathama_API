@@ -6,6 +6,9 @@ class User < ApplicationRecord
   has_many :card_ownerships
   has_many :cards, through: :card_ownerships
 
+  has_many :player_quests
+  has_many :quests, through: :player_quests
+
   validates :email, uniqueness: true
   validate :validate_email
 
