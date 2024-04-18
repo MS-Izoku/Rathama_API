@@ -1,6 +1,6 @@
 require 'io/console'
-#require_relative './card_data'
-#require_relative './keywords.csv'
+# require_relative './card_data'
+# require_relative './keywords.csv'
 require 'csv'
 
 # NOTE: Rails 7 switched out byebug with => binding.break
@@ -168,22 +168,20 @@ class SeedText
   end
 end
 
-
 # region: Seed Config
-generate_test_user = false
-generate_random_base_cards = false
-generate_deck_size_cards = false
-generate_player_classes = false
+generate_test_user = true
+generate_random_base_cards = true
+generate_deck_size_cards = true
+generate_player_classes = true
 generate_keywords = true
+generate_quests = true
 # endregion
-
-
 
 def import_keywords_from_csv
   # Ensure that the CSV file exists
-  csv_file_path = "db/keywords.csv"
+  csv_file_path = 'db/keywords.csv'
   unless File.exist?(csv_file_path)
-    puts "Keyword CSV file not found"
+    puts 'Keyword CSV file not found'
     return
   end
 
@@ -196,14 +194,12 @@ def import_keywords_from_csv
     description = row['Description']
 
     # Create a new Keyword record with the extracted data
-    total_created += 1 if Keyword.create!(name: name, description: description)    
+    total_created += 1 if Keyword.create!(name:, description:)
   end
 
   puts ">> Created Keywords::#{total_created}"
-  puts "Import completed successfully!"
+  puts 'Import completed successfully!'
 end
-
-
 
 def generate_random_string(length)
   characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -216,10 +212,10 @@ def generate_random_string(length)
   random_string
 end
 
-def generate_random_cards(player_class_1_name = "Neutral", player_class_2_name = "")
-
+def generate_random_cards(player_class_1_name = 'Neutral', player_class_2_name = '')
   30.times do |card|
     card_name = generate_random_string(12)
+
     card = SpellCard.new(
       name: card_name,
       cost: 0,
@@ -237,7 +233,7 @@ def generate_random_cards(player_class_1_name = "Neutral", player_class_2_name =
       player_class_id_1 = PlayerClass.find_by(name: player_class_1_name)
       PlayerClassCard.create(player_class_id: player_class_id_1.id, card_id: card.id)
 
-      if player_class_2_name != "" && player_class_1_name != "Neutral" && palyer_class_2_name != "Neutral"
+      if player_class_2_name != '' && player_class_1_name != 'Neutral' && palyer_class_2_name != 'Neutral'
         player_class_id_2 = PlayerClass.find_by(name: player_class_2_name)
         PlayerClassCard.create(player_class_id: player_class_id_2.id, card_id: card.id)
       end
@@ -251,73 +247,70 @@ def generate_random_cards(player_class_1_name = "Neutral", player_class_2_name =
   end
 end
 
-
-if generate_test_user
-  User.create(username: "TestUser123", email: "testemail123@email.com", password: "Password1!")
-end
+User.create(username: 'TestUser123', email: 'testemail123@email.com', password: 'Password1!') if generate_test_user
 
 if generate_player_classes
-  PlayerClass.create(name: "Neutral", description: "True Neutral", id: 0)
-  PlayerClass.create(name: "Magus", description: "Blue")
-  PlayerClass.create(name: "Detainer", description: "Purple / Black")
-  PlayerClass.create(name: "Warden", description: "Red")
-  PlayerClass.create(name: "Sage", description: "White (Brown / Metal)")
-  PlayerClass.create(name: "Trapper", description: "Green")
+  PlayerClass.create(name: 'Neutral', description: 'True Neutral', id: 0)
+  PlayerClass.create(name: 'Magus', description: 'Blue')
+  PlayerClass.create(name: 'Detainer', description: 'Purple / Black')
+  PlayerClass.create(name: 'Warden', description: 'Red')
+  PlayerClass.create(name: 'Sage', description: 'White (Brown / Metal)')
+  PlayerClass.create(name: 'Trapper', description: 'Green')
 end
 
 if generate_random_base_cards
   generate_random_cards
 
-  puts ""
-  puts ">>  Creating Warden Cards"
-  warden_cards = generate_random_cards("Warden")
+  puts ''
+  puts '>>  Creating Warden Cards'
+  warden_cards = generate_random_cards('Warden')
 
-  puts ""
-  puts ">>  Creating Magus Cards"
-  magus_cards = generate_random_cards("Magus")
+  puts ''
+  puts '>>  Creating Magus Cards'
+  magus_cards = generate_random_cards('Magus')
 
-  puts ""
-  puts ">>  Creating Detainer Cards"
-  detainer_cards = generate_random_cards("Detainer")
+  puts ''
+  puts '>>  Creating Detainer Cards'
+  detainer_cards = generate_random_cards('Detainer')
 
-  puts ""
-  puts ">>  Creating Trapper Cards"
-  trapper_cards = generate_random_cards("Trapper")
+  puts ''
+  puts '>>  Creating Trapper Cards'
+  trapper_cards = generate_random_cards('Trapper')
 
-  puts ""
-  puts ">>  Creating Sage Cards"
-  sage_cards = generate_random_cards("Sage")
+  puts ''
+  puts '>>  Creating Sage Cards'
+  sage_cards = generate_random_cards('Sage')
 
 end
 
 if generate_deck_size_cards
   # Add to Deck Limit
-    SpellCard.create(
-      name: 'Add 20',
-      cost: 0,
-      flavor_text: 'Testing Card Generation ADD',
-      card_art_url: 'shouldgohere ADD',
-      expansion_id: 0,
-      rarity: 'Common',
-      is_generated_card: false,
-      card_text: 'Test Me Baby!',
-      deck_size_modifier_type: 'Add',
-      deck_size_modifier_value: '20'
-    )
+  SpellCard.create(
+    name: 'Add 20',
+    cost: 0,
+    flavor_text: 'Testing Card Generation ADD',
+    card_art_url: 'shouldgohere ADD',
+    expansion_id: 0,
+    rarity: 'Common',
+    is_generated_card: false,
+    card_text: 'Test Me Baby!',
+    deck_size_modifier_type: 'Add',
+    deck_size_modifier_value: '20'
+  )
 
   # Reduce Deck Limit
-    subtractor_card = SpellCard.create(
-      name: 'Subtract 15',
-      cost: 0,
-      flavor_text: 'Testing Card Generation SUBTRACTOR',
-      card_art_url: 'shouldgohere SUBTRACTOR',
-      expansion_id: 0,
-      rarity: 'Common',
-      is_generated_card: false,
-      card_text: 'Test Me Baby!',
-      deck_size_modifier_type: 'Subtract',
-      deck_size_modifier_value: '15'
-    )
+  subtractor_card = SpellCard.create(
+    name: 'Subtract 15',
+    cost: 0,
+    flavor_text: 'Testing Card Generation SUBTRACTOR',
+    card_art_url: 'shouldgohere SUBTRACTOR',
+    expansion_id: 0,
+    rarity: 'Common',
+    is_generated_card: false,
+    card_text: 'Test Me Baby!',
+    deck_size_modifier_type: 'Subtract',
+    deck_size_modifier_value: '15'
+  )
 
   # Override Deck Limit
   override_card = SpellCard.create(
@@ -335,14 +328,14 @@ if generate_deck_size_cards
 
 end
 
-if generate_keywords
-  import_keywords_from_csv
-end
+import_keywords_from_csv if generate_keywords
 
 if generate_quests
-  Quest.create(name: "Play20Cards", description: "Play 20 Cards")
-  Quest.create(name: "Destroy30Fiends", description: "Destroy 30 Fiends")
-  Quest.create(name: "Play10Momuments", description: "Play 5 Monuments")
-  Quest.create(name: "Play5Games", description: "Play 5 Games")
-  Quest.create(name: "Play20Cards", description: "Play 20 Cards")
+  Quest.create(name: 'Play20Cards', description: 'Play 20 Cards', target_completion_value: 20, quest_type: 'Weekly')
+  Quest.create(name: 'Destroy30Fiends', description: 'Destroy 30 Fiends', target_completion_value: 30,
+               quest_type: 'Weekly')
+  Quest.create(name: 'Play10Momuments', description: 'Play 10 Monuments', target_completion_value: 10,
+               quest_type: 'Weekly')
+  Quest.create(name: 'Play5Games', description: 'Play 5 Games', target_completion_value: 5, quest_type: 'Weekly')
+  Quest.create(name: 'GimmeTree50', description: 'Gimme 3.50', target_completion_value: 5, quest_type: 'Weekly')
 end

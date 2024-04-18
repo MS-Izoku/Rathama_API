@@ -1,2 +1,0 @@
-class QuestReward < ApplicationRecord
-end

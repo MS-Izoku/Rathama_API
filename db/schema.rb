@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_18_195335) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -171,6 +171,35 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "player_quests", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "quest_id"
+    t.integer "current_completion_value", default: 0
+    t.integer "target_completion_value", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "quests", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.integer "target_completion_value"
+    t.string "quest_type", default: "Daily"
+    t.datetime "expiration"
+    t.boolean "can_expire", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "rewards", force: :cascade do |t|
+    t.integer "quantity"
+    t.string "rewardable_type", null: false
+    t.integer "rewardable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rewardable_type", "rewardable_id"], name: "index_rewards_on_rewardable"
   end
 
   create_table "scale_powers", force: :cascade do |t|

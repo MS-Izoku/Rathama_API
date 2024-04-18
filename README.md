@@ -1,9 +1,6 @@
 # Rathama API
 
-
-## Data Models
-
-### Cards
+## Cards
 Cards are set into 6 basic categories (3 of which are considered a "basic" type of card that are always included in all classes), each handled via Single Table Inheritance.
 
 ### Fiend Cards (Minions, Monsters)
@@ -38,14 +35,36 @@ Scale Powers are abilities players can use once per turn for a set mana cost.  S
 * 
 
 
-
-### Decks
+## Decks
 ### Expansions
 
 ### API Keys
 
 #### Permissions
 
+
+
+## Quests and Rewards
+### Quests
+Quests are models that have any number of rewards. They can be Daily, Weekly, Monthly, Special, or Seasonal.
+
+### PlayerQuests
+A joiner class between Quests and Players, which contains data regarding the completion of that quest for a specific player.
+
+### Rewards
+Rewards involve the polymorphic rewardable relationship, where rewards can be anything from Cards to InGameCurrency.
+
+To make a model rewardable (ie: player cosmetics or whatever), add the following line to that model
+```
+belongs_to :rewardable, polymorphic: true
+```
+
+A Reward Mdoel also has an integer field for :quantity, which exists to give a numerical value to whatever reward is present.  If you want to give 2 Cards instead of one, simply provide the reward model with a number.
+
+```
+reward1 = quest.rewards.create(amount: 200, rewardable: InGameCurrency.first)
+reward2 = quest.rewards.create(amount: 300, rewardable: InGameCurrency.last)
+```
 
 ## Development Notes
 
