@@ -1,9 +1,11 @@
 class QuestsController < ApplicationController
+  before_action :authenticate_user, only: %i[give_player_weekly_quests give_player_quest]
+
+
   def give_player_quest
     return render json: { error: 'Quest not Found' }, status: :not_found if Quest.find_by(id: quest_params[:quest_id])
-    return render json: { error: 'Player not Found' }, status: :not_found if Quest.find_by(id: quest_params[:user_id])
 
-    @player_quest = PlayerQuest.new(player_quest_params)
+    @player_quest = PlayerQuest.new(quest_id: player_quest_params, user_id: @current_user.id)
     if @player_quest.save!
       render json: @player_quest
     else
@@ -11,25 +13,43 @@ class QuestsController < ApplicationController
     end
   end
 
-    # def give_player_weekly_quests
-    #     return render json: {error: "User not Found" }, status: :not_found if User.find_by(id: params[:id]).nil?
-    #     @quests = Quest.order("RANDOM()").limit(3)
 
-    #     @player_quests = []
-    #     @quests.each do |quest|
-    #         new_pq = PlayerQuest.create!(user_id: params[:id], quest_id: quest.id)
-    #         @player_quests << new_pq
-    #     end
+  def give_player_random_daily_quest
+    @daily_quest = Quest.where(quest_type: 'Daily').order('RANDOM()').limit(3)
+    @player_quest = PlayerQuest.new(quest_id: @daily_quest.id, user_id: @current_user.id)
 
-    #     render json: @player_quests
-    # end
+    if @player_quest.save!
+      render json: @player_quest
+    else
+      render json: { error: 'Failed to Save PlayerQuest', messages: @player_quest.errors.full_messages }
+    end
+  end
+
+
+  def give_all_players_random_daily_quest
+    User.all.each do |user|
+      @daily_quest = Quest.where(quest_type: 'Daily').order('RANDOM()').limit(3)
+      @player_quest = PlayerQuest.new(quest_id: @daily_quest.id, user_id: user.id)
+
+      if @player_quest.save!
+        render json: @player_quest
+      else
+        render json: { error: 'Failed to Save PlayerQuest', messages: @player_quest.errors.full_messages }
+      end
+    end
+  end
+
+  
+  def replace_player_quest
+    @current_player_quest = PlayerQuest.find_by(id: replace_player_quest_params[:player_quest_id])
+    render json: {error: "Cannot Reroll Another Player's Quests"}, status: :unauthorized if @current_player_quest.id != @current_user.id
+
+  end
+
 
   def give_player_weekly_quests
-    user = User.find_by(id: params[:id])
-    return render json: { error: 'User not Found' }, status: :not_found if user.nil?
-
     ActiveRecord::Base.transaction do
-      @quests = Quest.where(quest_type: "Weekly").order('RANDOM()').limit(3)
+      @quests = Quest.random("Weekly", 3)
       @player_quests = []
       @quests.each do |quest|
         new_pq = PlayerQuest.create!(user_id: user.id, quest_id: quest.id)
@@ -43,11 +63,58 @@ class QuestsController < ApplicationController
   end
 
 
-  def create; end
+  def show_player_quests
+    @player_quests = PlayerQuest.where(user_id: params[:id])
+    if @player_quests.nil?
+      render json: { error: "Player Quests are Nil" }, status: :not_found
+    else
+      render json: @player_quests
+    end
+  end
 
-  def update; end
 
-  def destroy; end
+# region: Quest CRUD
+
+  def show
+    @quest = Quest.find_by(id:params[:id])
+    if @quest.nil
+      render json: { error: "Quest not Found" }, status: :not_found
+    else
+      render json: @quest
+    end
+  end
+
+
+  def create
+    @quest = Quest.new(quest_params)
+    if @quest.save
+      render json: @quest, status: :created
+    else
+      render json: { errors: @quest.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+
+  def update
+    @quest = Quest.find_by(id: params[:id])
+    if @quest.update(quest_params)
+      render json: { quest: @quest, status: 'Destroyed' }
+    else
+      render json: { error: @quest.errors.full_messages, status: 'Failed to Destroy' }
+    end
+  end
+
+
+  def destroy
+    @quest = Quest.find_by(id: params[:id])
+    if @quest.destroy
+      render json: { quest: @quest, status: 'Destroyed' }
+    else
+      render json: { error: @quest.errors.full_messages, status: 'Failed to Destroy' }
+    end
+  end
+
+# endregion
 
   private
 
@@ -57,5 +124,9 @@ class QuestsController < ApplicationController
 
   def player_quest_params
     params.require(:player_quest).permit(:quest_id, :user_id)
+  end
+
+  def replace_player_quest_params
+    params.require(:player_quest).permit(:player_quest_id)
   end
 end

@@ -9,8 +9,20 @@ class Quest < ApplicationRecord
 
   has_many :rewards, as: :rewardable # quests can have many kinds of rewards, which means they belong to the rewardable ploymprhic class
 
+  # all types of Quests that can exist
   def quest_types
     %w[Daily Weekly Monthly Seasonal Special]
+  end
+
+  # get an array of a number of x-type of Quests, or if the quantity is 1, just that record
+  def self.random(current_quest_type = "Daily", quantity = 1)
+    raise StandardError.new "Invalid Quantity" if quantity <= 0
+
+    if quantity > 1
+      Quest.where(quest_type: current_quest_type).order('RANDOM()').limit(quantity)
+    else
+      Quest.where(quest_type: current_quest_type).order('RANDOM()').limit(1)[0]
+    end
   end
 
   private
