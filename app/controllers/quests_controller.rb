@@ -61,11 +61,12 @@ class QuestsController < ApplicationController
 
 
   def give_player_weekly_quests
+    
     ActiveRecord::Base.transaction do
       @quests = Quest.random("Weekly", 3)
       @player_quests = []
       @quests.each do |quest|
-        new_pq = PlayerQuest.create!(user_id: user.id, quest_id: quest.id)
+        new_pq = PlayerQuest.create!(user_id: @current_user.id, quest_id: quest.id)
         @player_quests << new_pq
       end
     end

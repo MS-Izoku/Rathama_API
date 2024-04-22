@@ -6,22 +6,30 @@ class PlayerQuest < ApplicationRecord
   belongs_to :quest
 
   before_create :copy_target_completion_rate
-  before_create :validate_quest_count
+  validate :validate_quest_count
 
   private
 
   def copy_target_completion_rate
-    self.target_completion_rate = quest.target_completion_rate
+    self.target_completion_value = quest.target_completion_value
   end
 
   def validate_quest_count
-    quest_type = quest.quest_type
-    quest_count = PlayerQuest.where(user_id: user.id).quests.where(quest_type:) # also cross-seach based on quest-type (Weekly/Daily)
 
-    if quest_type == 'Daily'
-      errors.add(:base, 'Daily Quest Cap Reached') if quest_count >= MAX_DAILY_QUESTS
-    elsif quest_type == 'Weekly'
-      errors.add(:base, 'Weekly Quest Cap Reached') if quest_count >= MAX_WEEKLY_QUESTS
+    current_quests = PlayerQuest.where(user_id: user_id)
+    return if current_quests.count == 0
+
+    my_quest_type = quest.quest_type
+    
+    other_quests_of_type = user.quests.where(quest_type: my_quest_type) #user.quests.where(quest_type: current_quests.quest.quest_type)
+
+    p "==> My quest type is:: #{my_quest_type} and I have:: #{other_quests_of_type.count}"
+   
+
+    if my_quest_type == "Weekly" && other_quests_of_type.count >= MAX_WEEKLY_QUESTS
+        self.errors.add(:base, "Too Many Weekly Quests")
+    elsif my_quest_type == "Daily" && other_quests_of_type >= MAX_DAILY_QUESTS
+        self.errors.add(:base, "Too Many Weekly Quests")
     end
   end
 end

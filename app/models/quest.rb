@@ -14,7 +14,7 @@ class Quest < ApplicationRecord
     %w[Daily Weekly Monthly Seasonal Special]
   end
 
-  
+
   # get an array of a number of x-type of Quests, or if the quantity is 1, just that record
   def self.random(current_quest_type = "Daily", quantity = 1, exception = nil)
     raise StandardError.new "Invalid Quantity" if quantity <= 0

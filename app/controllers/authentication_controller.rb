@@ -3,10 +3,14 @@ class AuthenticationController < ApplicationController
     # user needs a profile serializer
     def login
         user = User.find_by(email: login_params[:email])
+        return render json: {error: "User not Found" }, status: :not_found  if user.nil?
+
         if user && user.authenticate(login_params[:password])
             payload = { USER_ID => user.id, API_KEY_DIGEST => user.api_key_digest }
             token = encode_jwt(payload)
             render json: { user: user, token: token }
+        else
+            render json: { error: "Invalid Credentials" }, status: :unauthorized
         end
     end
 
