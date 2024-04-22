@@ -27,9 +27,9 @@ class PlayerQuest < ApplicationRecord
    
 
     if my_quest_type == "Weekly" && other_quests_of_type.count >= MAX_WEEKLY_QUESTS
-        self.errors.add(:base, "Too Many Weekly Quests")
+        errors.add(:base, "Too Many Weekly Quests")
     elsif my_quest_type == "Daily" && other_quests_of_type >= MAX_DAILY_QUESTS
-        self.errors.add(:base, "Too Many Weekly Quests")
+        errors.add(:base, "Too Many Weekly Quests")
     end
   end
 end
