@@ -40,10 +40,23 @@ class QuestsController < ApplicationController
   end
 
   
-  def replace_player_quest
+  def reroll_player_quest
     @current_player_quest = PlayerQuest.find_by(id: replace_player_quest_params[:player_quest_id])
-    render json: {error: "Cannot Reroll Another Player's Quests"}, status: :unauthorized if @current_player_quest.id != @current_user.id
+    return render json: {error: "Cannot Reroll Another Player's Quests"}, status: :unauthorized if @current_player_quest.id != @current_user.id
 
+    ActiveRecord::Base.transaction do
+      # get a random quest that the current player does not have
+      @new_quest = Quest.random(@current_player_quest.quest.quest_type, 1, @current_player.quests.pluck(:id))
+      @new_player_quest = PlayerQuest.new(user_id: @current_user.id, quest_id: @new_quest.id)
+    
+      @current_player_quest.destroy
+      @new_player_quest.save
+    rescue StandardError => e
+      ActiveRecord::Base.connection.rollback_db_transaction
+      return render json: {error: "Failed to Reroll Quest::#{e.message}"}
+    end
+
+    render json: { new_quest: @new_player_quest, replaced: @current_player_quest }
   end
 
 

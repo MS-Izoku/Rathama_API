@@ -14,16 +14,26 @@ class Quest < ApplicationRecord
     %w[Daily Weekly Monthly Seasonal Special]
   end
 
+  
   # get an array of a number of x-type of Quests, or if the quantity is 1, just that record
-  def self.random(current_quest_type = "Daily", quantity = 1)
+  def self.random(current_quest_type = "Daily", quantity = 1, exception = nil)
     raise StandardError.new "Invalid Quantity" if quantity <= 0
 
     if quantity > 1
-      Quest.where(quest_type: current_quest_type).order('RANDOM()').limit(quantity)
+      quests = Quest.where(quest_type: current_quest_type)
+                    .where.not(id: exception&.id) # Exclude the exception quest if provided
+                    .order('RANDOM()')
+                    .limit(quantity)
+      quests
     else
-      Quest.where(quest_type: current_quest_type).order('RANDOM()').limit(1)[0]
+      quests = Quest.where(quest_type: current_quest_type)
+                    .where.not(id: exception&.id) # Exclude the exception quest if provided
+                    .order('RANDOM()')
+                    .limit(1)
+      quests.first
     end
   end
+
 
   private
 
