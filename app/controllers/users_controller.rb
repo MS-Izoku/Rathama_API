@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     end
     
     if user_creation_params[:password] != user_creation_params[:password_confirmation]
-      return render json: { errors: ['Passwords must match'] }, status: :bad_request
+      return render json: { errors: ['Passwords must match'] }, status: :bad_requestpcreate
     end
 
     # password validation returns either an array of errors or the raw password

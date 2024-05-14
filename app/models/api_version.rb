@@ -1,0 +1,2 @@
+class ApiVersion < ApplicationRecord
+end
