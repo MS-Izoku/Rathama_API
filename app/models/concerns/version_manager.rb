@@ -11,24 +11,28 @@ module VersionManager
     # This block runs when the module is included in a model
   end
 
-
   class_methods do
+    
+    # turn the hashed version number into a string
+    def stringify_version(version_hash)
+      "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
+    end
 
-      # turn the hashed version into a string
-      def stringify_version(version_hash)
-        "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
-      end
 
+    # get the latest release
     def latest
       order(created_at: :desc).first
     end
 
+
+    # increment the patch-version of the latest release
     def create_patch_number
       version = latest.parse_version
       version[:patch] += 1
       stringify_version(version)
     end
 
+    # increment the minor-version of the latest release
     def create_minor_increment
       version = latest.parse_version
       version[:minor] += 1
@@ -37,8 +41,7 @@ module VersionManager
     end
 
 
-
-
+    # increment the major-version of the lastest release
     def create_major_increment
       version = latest.parse_version
 
@@ -48,10 +51,10 @@ module VersionManager
 
       stringify_version(version)
     end
-
   end
 
 
+  # parse the current version number and return a hash of :major, :minor, and :patch
   def parse_version
     split_string = version_number.split('.').map(&:to_i)
 
@@ -61,5 +64,4 @@ module VersionManager
       patch: split_string[2]
     }
   end
-
 end
