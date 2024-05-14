@@ -10,6 +10,7 @@ module VersionManager
   included do
   end
 
+
   class_methods do
     
     # turn the hashed version number into a string
@@ -30,6 +31,7 @@ module VersionManager
       version[:patch] += 1
       stringify_version(version)
     end
+
 
     # increment the minor-version of the latest release
     def create_minor_increment
@@ -52,6 +54,8 @@ module VersionManager
     end
   end
 
+  
+  # instance_methods
 
   # parse the current version number and return a hash of :major, :minor, and :patch
   def parse_version
