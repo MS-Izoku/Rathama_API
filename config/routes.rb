@@ -5,6 +5,18 @@ Rails.application.routes.draw do
     # put 'cards/add_variant_image', to: ""
   end
 
+# region: Versioning
+
+  post 'versioning/api/new_version', to: 'versions#create_api_version'
+  post 'versioning/api/new_feature', to: 'versions#create_api_feature'
+  post 'versioning/api/new_patch', to: 'versions#create_api_patch'
+
+  post 'versioning/client/new_version', to: 'versions#create_client_version'
+  post 'versioning/client/new_feature', to: 'versions#create_client_feature'
+  post 'versioning/client/new_patch', to: 'versions#create_client_patch'
+
+# endregion
+
 
   post 'login', to: 'authentication#login'
 
@@ -13,7 +25,7 @@ Rails.application.routes.draw do
   get 'users/rotate_api_key', to: 'users#rotate_api_key'
 
   post 'users/', to: 'users#create'
-  delete 'users/', to: "users#destroy"
+  delete 'users/', to: 'users#destroy'
 
   get 'decks/index', to: 'decks#index'
   get 'decks/:id', to: 'decks#show'
@@ -21,7 +33,7 @@ Rails.application.routes.draw do
   patch 'decks/', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
 
-# region CardTypeAttributes (Tribes and SpellSchools)
+# region: CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
   get 'card_type_attributes/tribes', to: 'card_type_attributes#tribes'

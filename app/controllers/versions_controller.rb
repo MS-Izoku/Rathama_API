@@ -1,4 +1,7 @@
 class VersionsController < ApplicationController
+    
+# validate api key to ensure versioning is done by someone authorized
+
 # region: API Versioning
   def create_api_version
     @new_version = ApiVersion.create_version(api_version_params[:version_name])
