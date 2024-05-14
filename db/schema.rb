@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_14_152502) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -48,6 +48,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.boolean "is_active"
     t.index ["api_key_digest"], name: "index_api_keys_on_api_key_digest", unique: true
     t.index ["owner_id", "owner_type"], name: "index_api_keys_on_owner_id_and_owner_type"
+  end
+
+  create_table "api_versions", force: :cascade do |t|
+    t.string "version_name"
+    t.string "version_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "card_ownerships", force: :cascade do |t|
@@ -97,6 +104,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.boolean "is_generated_card"
     t.string "deck_size_modifier_type", default: "None"
     t.integer "deck_size_modifier_value"
+  end
+
+  create_table "client_versions", force: :cascade do |t|
+    t.string "version_name"
+    t.string "version_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "connected_cards", force: :cascade do |t|

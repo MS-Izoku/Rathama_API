@@ -1,3 +1,3 @@
 class ClientVersion < ApplicationRecord
-    include LatestVersion
+    include VersionManager
 end

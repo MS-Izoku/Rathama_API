@@ -175,6 +175,7 @@ generate_random_base_cards = false
 generate_deck_size_cards = false
 generate_player_classes = false
 generate_keywords = true
+initialize_version = true
 # endregion
 
 
@@ -337,4 +338,10 @@ end
 
 if generate_keywords
   import_keywords_from_csv
+end
+
+
+if initialize_version
+  ApiVersion.create(version_number: "0.0.0", version_name: "Initial")
+  ClientVersion.create(version_number: "0.0.0", version_name: "Initial")
 end
