@@ -7,6 +7,9 @@ Rails.application.routes.draw do
 
 # region: Versioning
 
+  get 'versioning/api', to: 'versions#get_latest_api_version'
+  get 'versioning/client', to: 'versions#get_latest_client_version'
+
   post 'versioning/api/new_version', to: 'versions#create_api_version'
   post 'versioning/api/new_feature', to: 'versions#create_api_feature'
   post 'versioning/api/new_patch', to: 'versions#create_api_patch'

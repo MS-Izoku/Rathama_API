@@ -1,6 +1,16 @@
 class VersionsController < ApplicationController
-    
+
 # validate api key to ensure versioning is done by someone authorized
+
+    def get_latest_api_version
+        @version = ApiVersion.latest
+        render json: @version
+    end
+
+    def get_latest_client_version
+        @version = ClientVersion.latest
+        render json: @version
+    end
 
 # region: API Versioning
   def create_api_version
