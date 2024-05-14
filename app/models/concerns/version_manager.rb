@@ -7,8 +7,7 @@ module VersionManager
   extend ActiveSupport::Concern
 
   included do
-    puts "VersionManager included in #{name}"
-    # This block runs when the module is included in a model
+
   end
 
   class_methods do
