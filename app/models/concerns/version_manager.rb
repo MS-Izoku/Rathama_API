@@ -6,8 +6,8 @@
 module VersionManager
   extend ActiveSupport::Concern
 
+  # occurs when this module is included in a class
   included do
-
   end
 
   class_methods do
