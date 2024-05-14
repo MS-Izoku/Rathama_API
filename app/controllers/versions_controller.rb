@@ -1,6 +1,6 @@
 class VersionsController < ApplicationController
 
-# validate api key to ensure versioning is done by someone authorized
+# validate api key to ensure versioning is done by someone authorized (for updating versions)
 
     def get_latest_api_version
         @version = ApiVersion.latest
