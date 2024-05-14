@@ -1,3 +1,5 @@
+# not currently configured for https
+
 Rails.application.routes.draw do
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
