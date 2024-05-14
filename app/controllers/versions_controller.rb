@@ -27,7 +27,7 @@ class VersionsController < ApplicationController
 
     def release_patch
         if increment_patch_params.is_client
-            
+            @version = ClientVersion.latest
         end
     end
 
@@ -68,5 +68,4 @@ private
     def increment_version_params
         params.require(:version).permit(:is_client)
     end
-
 end
