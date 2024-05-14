@@ -13,6 +13,24 @@ module VersionManager
 
   class_methods do
     
+    # region: Create New Version
+
+    # create a new version
+    def create_version(name)
+        create(version_number: create_major_increment, version_name: name)
+    end
+
+    def create_feature
+        create(version_number: create_minor_increment, version_name: latest.version_name)
+    end
+
+    def create_patch
+        create(version_number: create_patch_number , version_name: latest.version_name)
+    end
+
+    # endregion
+
+
     # turn the hashed version number into a string
     def stringify_version(version_hash)
       "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
@@ -54,7 +72,7 @@ module VersionManager
     end
   end
 
-  
+
   # instance_methods
 
   # parse the current version number and return a hash of :major, :minor, and :patch
