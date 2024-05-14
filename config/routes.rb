@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
 # region: Versioning
 
+  # use query-strings when getting the API/Client Versions
   get 'versioning/api', to: 'versions#get_latest_api_version'
   get 'versioning/client', to: 'versions#get_latest_client_version'
 
