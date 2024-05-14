@@ -4,10 +4,12 @@ class VersionsController < ApplicationController
     
     # update the current version of the API (prompting the Server to Update when it "gets" the latest API Version)
     def update_api_version
+        # create a new API Version object with a unique name and version number
     end
 
     # get the current version of the API serviced (to check if the server needs to update)
     def get_api_version
+        # get the API Version with the latest datetime (created_at)
     end
 
 # endregion
