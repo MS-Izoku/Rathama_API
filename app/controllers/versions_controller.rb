@@ -12,10 +12,38 @@ class VersionsController < ApplicationController
         render json: @version
     end
 
+    def get_api_version_with_notes
+        @version = ApiVersion.find_by(version_number: get_version_with_note_params[:version_number])
+        if @version
+            render json: { version: @version, notes: @version.release_notes }
+        else
+            render json: { error: "Version not found" }
+        end
+    end
+
+    def get_client_version_with_notes
+        @version = ClientVersion.find_by(version_number: get_version_with_note_params[:version_number])
+        if @version
+            render json: { version: @version, notes: @version.release_notes }
+        else
+            render json: { error: "Version not found" }
+        end
+    end
+
 
     def add_note
         @note = ReleaseNote.create(add_note_params)
         render json: @note
+    end
+
+    def update_note
+        @note = ReleaseNote.find_by(id: update_note_params[:id])
+        if @note
+            @note.update(update_note_params[:text])
+            render json: @release_note
+        else
+            render json: {error: "Release-Note not found with Id #{update_note_params[:id]}"}
+        end
     end
 
     def delete_note
@@ -26,7 +54,6 @@ class VersionsController < ApplicationController
         else
             render json: {error: "Release-Note with Id #{delete_note_params[:id]} not found"}
         end
-
     end
 
 # region: API Versioning
@@ -76,11 +103,22 @@ class VersionsController < ApplicationController
     params.require(:client_version).permit(:version_name)
   end
 
+
+  # Release Notes
   def add_note_params
     params.require(:release_note).permit(:version_id, :text)
   end
 
+  def update_note_params
+    params.require(:release_note).permit(:id, :text)
+  end
+
   def delete_note_params
     params.require(:release_note).permit(:id)
+  end
+
+  # Get Version with Notes
+  def get_version_with_note_params
+    params.permit(:version_number)
   end
 end
