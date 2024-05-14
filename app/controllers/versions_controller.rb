@@ -1,3 +1,5 @@
+
+
 class VersionsController < ApplicationController
 
 # region: API Versioning
@@ -23,6 +25,26 @@ class VersionsController < ApplicationController
 
 # endregion
 
+    def release_patch
+        if increment_patch_params.is_client
+            
+        end
+    end
+
+    def release_new_feature
+        if increment_feature_params.is_client
+
+        end
+    end
+
+    def release_new_version
+        if increment_version_params.is_client
+
+        end
+    end
+
+
+
 private
 
     def update_api_version_params
@@ -31,7 +53,20 @@ private
 
 
     def update_client_version_parms
-        params.requre(:client_version).permit(:version_number, :version_name)
+        params.require(:client_version).permit(:version_number, :version_name)
+    end
+
+
+    def increment_patch_params
+        params.requre(:version).permit(:is_client)
+    end
+
+    def increment_feature_params
+        params.require(:version).permit(:is_client)
+    end
+
+    def increment_version_params
+        params.require(:version).permit(:is_client)
     end
 
 end
