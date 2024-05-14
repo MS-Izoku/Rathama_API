@@ -42,8 +42,6 @@ module VersionManager
     def create_major_increment
       version = latest.parse_version
 
-      puts version
-
       version[:major] += 1
       version[:minor] = 0
       version[:patch] = 0
