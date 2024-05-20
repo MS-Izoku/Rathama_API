@@ -6,11 +6,13 @@ class VersionsController < ApplicationController
         @version = ApiVersion.latest
         render json: @version
     end
+    
 
     def get_latest_client_version
         @version = ClientVersion.latest
         render json: @version
     end
+
 
     def get_api_version_with_notes
         @version = ApiVersion.find_by(version_number: get_version_with_note_params[:version_number])
@@ -20,6 +22,7 @@ class VersionsController < ApplicationController
             render json: { error: "Version not found" }
         end
     end
+
 
     def get_client_version_with_notes
         @version = ClientVersion.find_by(version_number: get_version_with_note_params[:version_number])
@@ -36,6 +39,7 @@ class VersionsController < ApplicationController
         render json: @note
     end
 
+
     def update_note
         @note = ReleaseNote.find_by(id: update_note_params[:id])
         if @note
@@ -45,6 +49,7 @@ class VersionsController < ApplicationController
             render json: {error: "Release-Note not found with Id #{update_note_params[:id]}"}
         end
     end
+
 
     def delete_note
         @note = ReleaseNote.find_by(id: delete_note_params[:id])

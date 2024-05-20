@@ -49,4 +49,44 @@ class ApiKey < ApplicationRecord
 
     
 # endregion
+
+
+    def all_permissions
+        %w[
+            api_update              # can update the API Version
+            client_update           # can update the Client Version
+            take_notes              # can create release-notes
+            update_note_params      # can update release-notes
+            destroy_notes           # can destroy release-notes
+
+            create_card             # can create cards
+            update_card             # can update cards
+            destroy_card            # can destroy cards
+
+            create_spell_school     # can create Spell Schools
+            update_spell_school     # can update Spell Schools
+            destroy_spell_school    # can destroy Spell Schools
+
+            create_tribe            # can create Tribes
+            update_tribe            # can update Tribes
+            destroy_tribe           # can destroy Tribes
+
+            create_keywords         # can create keywords
+            update_keywords         # can update keywords
+            destroy_keywords        # can destroy keywords
+
+            create_player_classes   # can create player classes
+            update_player_classes   # can update player classes
+            destroy_player_classes  # can destroy player classes
+
+            create_scales           # can create scale powers
+            update_scales           # can update scale powers
+            destroy_scales          # can destroy scale powers
+
+            create_expansion        # can create expansions
+            update_expansion        # can update expansions
+            destroy_expansion       # can delete expansions
+
+        ]
+    end
 end
