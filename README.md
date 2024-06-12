@@ -76,3 +76,7 @@ reward2 = quest.rewards.create(amount: 300, rewardable: InGameCurrency.last)
 
 * For SQLite development, the ApplicationControllers#validate_api_key_permissions method always returns true
 * validating API Permissions is not currently possible since the array of permissions cannot be stored
+
+
+### Json Serialization
+We currently use the oj_serialization package to render json wherever possible, which keeps things generally clean and fast.

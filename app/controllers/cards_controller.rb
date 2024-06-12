@@ -70,27 +70,34 @@ class CardsController < ApplicationController
 
 # region Specific Card Types
   def spells
-    @spells = Spell.all
+    if Rails.cache.exist?('spells')
+      puts "========================================== Reading from Cache =========================================="
+      @spells = Rails.cache.read('spells')
+    else
+      puts "========================================== Creating Spell Cache =========================================="
+      @spells = SpellCard.all.to_a
+      Rails.cache.write('spells', @spells, expires_in: 12.hours)
+    end
     render json: @spells
   end
 
   def traps
-    @traps = Trap.all
+    @traps = TrapCard.all
     render json: @traps
   end
 
   def weapons
-    @weapons = Weapon.all
+    @weapons = WeaponCard.all
     render json: @weapons
   end
 
   def monuments
-    @monuments = Monument.all
+    @monuments = MonumentCard.all
     render json: @monuments
   end
 
   def fiends
-    @fiends = Fiend.all
+    @fiends = FiendCard.all
     render json: @fiends
   end
 # endregion

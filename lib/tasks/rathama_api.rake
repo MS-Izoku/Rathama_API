@@ -21,6 +21,35 @@ namespace :db do
     puts ''
     puts '[== Database Reset Complete ==]'
   end
+end
 
-  desc 'List all current '
+namespace :cache do
+  CACHE_LOG_PREFIX = "(¤>>»"
+
+  # initialize caching for both production and development setups
+  desc 'Initialize Caching'
+  task :initialize do
+    return if Rails.application.config.action_controller.perform_caching
+    puts "#{CACHE_LOG_PREFIX} Initializing Cache for Environment::Dev"
+    sh 'rails dev:cache'
+
+    #puts "#{CACHE_LOG_PREFIX} Initializing Cache for Environment::Production"
+    #sh 'rails production:cache'  
+  end
+
+
+
+  desc 'Disable Cache'
+  task :disable do
+    return unless Rails.application.config.action_controller.perform_caching
+    puts "#{CACHE_LOG_PREFIX} Disabling Rathama Cache"
+  end
+
+
+  desc 'Clear Cache'
+  task clear: :environment do
+    puts "#{CACHE_LOG_PREFIX} Clearing Existing Rathama Cache"
+    Rails.cache.clear
+    puts "#{CACHE_LOG_PREFIX} Cache has been Cleared"
+  end
 end

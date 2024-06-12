@@ -65,7 +65,7 @@ class QuestsController < ApplicationController
       @quests = Quest.random("Weekly", 3)
       @player_quests = []
       @quests.each do |quest|
-        new_pq = PlayerQuest.create!(user_id: @current_user.id, quest_id: quest.id)
+        new_pq = PlayerQuest.create!(user_id: current_user.id, quest_id: quest.id)
         @player_quests << new_pq
       end
     end
@@ -77,27 +77,20 @@ class QuestsController < ApplicationController
 
 
   def show_player_quests
-    # use current_user from ApplicationController
-    @player_quests = PlayerQuest.where(user_id: current_user.id)
-    if @player_quests.nil?
+
+    @player_quests = PlayerQuest.includes(:quest).where(user_id: current_user.id).order(updated_at: :desc)    
+  
+    if @player_quests.empty?
       render json: { error: "Player Quests are Nil" }, status: :not_found
     else
-
-      daily_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Daily' }
-      weekly_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Weekly' }
-      monthly_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Monthly' }
-      seasonal_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Seasonal' }
-      special_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Special' }
-
-      render json: { 
-        #  player_quests: PlayerQuestSerializer.many(@player_quests)
-        daily: PlayerQuestSerializer.many(daily_quests),
-        weekly: PlayerQuestSerializer.many(weekly_quests),
-        monthly: PlayerQuestSerializer.many(monthly_quests),
-        seasonal: PlayerQuestSerializer.many(seasonal_quests),
-        special: PlayerQuestSerializer.many(special_quests),
-       }
-    end
+      grouped_quests = @player_quests.group_by { |player_quest| player_quest.quest.quest_type }
+      
+      grouped_serialized = grouped_quests.transform_values do |quests|
+        PlayerQuestSerializer.many(quests)
+      end
+      
+      render json: grouped_serialized
+    end    
   end
 
 

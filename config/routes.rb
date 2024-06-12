@@ -1,9 +1,15 @@
 Rails.application.routes.draw do
+
+  # region Cards
+  get 'cards/spells', to: 'cards#spells'
+  
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
     post 'search', to: 'cards#search' # using POST since it can have a request body
-    # put 'cards/add_variant_image', to: ""
   end
+  # endregion
+
+
 
 
   post 'login', to: 'authentication#login'
@@ -48,6 +54,11 @@ Rails.application.routes.draw do
 # region Quests
 
   get 'quests/show-player-quests', to: "quests#show_player_quests"
+
+# endregion
+
+
+# region Card Rendering
 
 
 # endregion

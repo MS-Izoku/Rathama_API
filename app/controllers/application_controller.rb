@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
 
     # authenticate a user using their headers and credentials
     def authenticate_user
-        api_key = request.headers[AUTHORIZATION_KEY_HEADER]
+        #api_key = request.headers[AUTHORIZATION_KEY_HEADER]
         bearer = get_bearer
     
         # Add your authentication logic based on the presence of API key and custom header
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::API
         if @current_user
           @current_user
         else
-          render json: Oj.dump({ error: 'Unauthorized' }), status: :unauthorized
+          render json: { error: 'Unauthorized' }, status: :unauthorized
         end
     end
 
