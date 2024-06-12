@@ -82,7 +82,21 @@ class QuestsController < ApplicationController
     if @player_quests.nil?
       render json: { error: "Player Quests are Nil" }, status: :not_found
     else
-      render json: @player_quests
+
+      daily_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Daily' }
+      weekly_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Weekly' }
+      monthly_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Monthly' }
+      seasonal_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Seasonal' }
+      special_quests = @player_quests.select { |pq| pq.quest.quest_type == 'Special' }
+
+      render json: { 
+        #  player_quests: PlayerQuestSerializer.many(@player_quests)
+        daily: PlayerQuestSerializer.many(daily_quests),
+        weekly: PlayerQuestSerializer.many(weekly_quests),
+        monthly: PlayerQuestSerializer.many(monthly_quests),
+        seasonal: PlayerQuestSerializer.many(seasonal_quests),
+        special: PlayerQuestSerializer.many(special_quests),
+       }
     end
   end
 

@@ -40,7 +40,7 @@ class ApplicationController < ActionController::API
         if @current_user
           @current_user
         else
-          render json: { error: 'Unauthorized' }, status: :unauthorized
+          render json: Oj.dump({ error: 'Unauthorized' }), status: :unauthorized
         end
     end
 
