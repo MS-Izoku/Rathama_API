@@ -8,6 +8,11 @@ class PlayerQuest < ApplicationRecord
   before_create :copy_target_completion_rate
   validate :validate_quest_count
 
+  def complete
+    all_rewards = quest.rewards
+    # give player rewards depending on reward type
+  end
+
   private
 
   def copy_target_completion_rate

@@ -44,6 +44,14 @@ Rails.application.routes.draw do
 
 # endregion
 
+
+# region Quests
+
+  get 'quests/show-player-quests', to: "quests#show_player_quests"
+
+
+# endregion
+
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
 end

@@ -1,7 +1,6 @@
 class QuestsController < ApplicationController
   before_action :authenticate_user, only: %i[give_player_weekly_quests give_player_quest]
 
-
   def give_player_quest
     return render json: { error: 'Quest not Found' }, status: :not_found if Quest.find_by(id: quest_params[:quest_id])
 
@@ -78,7 +77,8 @@ class QuestsController < ApplicationController
 
 
   def show_player_quests
-    @player_quests = PlayerQuest.where(user_id: params[:id])
+    # use current_user from ApplicationController
+    @player_quests = PlayerQuest.where(user_id: current_user.id)
     if @player_quests.nil?
       render json: { error: "Player Quests are Nil" }, status: :not_found
     else
