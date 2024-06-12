@@ -54,7 +54,7 @@ namespace :cache do
   end
 end
 
-namespace :backup do
+namespace :backup_cards do
   BACKUP_PREFIX = "(¤§§¤)>»»"
   
   desc "Create a backup JSON file for existing Card Data"
@@ -63,7 +63,14 @@ namespace :backup do
     puts "#{BACKUP_PREFIX} Creating Backup JSON file for all Cards in Database"
 
     begin
-      cards = Card.all
+      cards = {
+        heroes: HeroCard.all,
+        fiends: FiendCard.all,
+        monuments: MonumentCard.all,
+        spells: SpellCard.all,
+        traps: TrapCard.all,
+        weapons: WeaponCard.all
+      }
 
       # Specify the full path to the backup JSON file
       file_path = 'cards_backup.json'
