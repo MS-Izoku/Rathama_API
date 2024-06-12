@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   # region Cards
   get 'cards/spells', to: 'cards#spells'
+  get 'cards/fiends', to: 'cards#fiends'
   
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'

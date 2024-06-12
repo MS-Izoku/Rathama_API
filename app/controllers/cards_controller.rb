@@ -71,18 +71,22 @@ class CardsController < ApplicationController
 # region Specific Card Types
   def spells
     if Rails.cache.exist?('spells')
-      puts "========================================== Reading from Cache =========================================="
       @spells = Rails.cache.read('spells')
     else
-      puts "========================================== Creating Spell Cache =========================================="
       @spells = SpellCard.all.to_a
       Rails.cache.write('spells', @spells, expires_in: 12.hours)
     end
-    render json: @spells
+    render json: SpellSerializer.many(@spells)
   end
 
   def traps
-    @traps = TrapCard.all
+    if Rails.cache.exist?("traps")
+      @traps = Rails.cache.read("traps")
+    else     
+      @traps = TrapCard.all.to_a
+      Rails.cache.write("traps", @traps, expires_in: 12.hours)
+    end
+
     render json: @traps
   end
 
@@ -97,8 +101,14 @@ class CardsController < ApplicationController
   end
 
   def fiends
-    @fiends = FiendCard.all
-    render json: @fiends
+    if Rails.cache.exist?("fiends")
+      @fiends = Rails.cache.read("fiends")
+    else     
+      @fiends = FiendCard.all.to_a
+      Rails.cache.write("fiends", @fiends, expires_in: 12.hours)
+    end
+
+    render json: FiendSerializer.many(@fiends)
   end
 # endregion
 

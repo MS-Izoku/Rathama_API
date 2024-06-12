@@ -53,3 +53,31 @@ namespace :cache do
     puts "#{CACHE_LOG_PREFIX} Cache has been Cleared"
   end
 end
+
+namespace :backup do
+  BACKUP_PREFIX = "(¤§§¤)>»»"
+  
+  desc "Create a backup JSON file for existing Card Data"
+  task create: :environment do
+
+    puts "#{BACKUP_PREFIX} Creating Backup JSON file for all Cards in Database"
+
+    begin
+      cards = Card.all
+
+      # Specify the full path to the backup JSON file
+      file_path = 'cards_backup.json'
+
+      # Open the file in write mode with the 'w' option to clear it before writing
+      File.open(file_path, 'w') do |file|
+        # Pretty-print the JSON data
+        file.write(JSON.pretty_generate(cards.as_json))
+      end
+
+      puts "#{BACKUP_PREFIX} Created Backup JSON at #{file_path}"
+    rescue => e
+      puts "#{BACKUP_PREFIX} An error occurred: #{e.message}"
+    end
+  end
+
+end
