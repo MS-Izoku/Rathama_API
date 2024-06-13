@@ -32,10 +32,13 @@ class DecksController < ApplicationController
       raise ActiveRecord::Rollback
     end
 
+    
+
     # json rendering
     if @deck.errors.any?
       render json: { errors: @deck.errors }, status: :bad_request
     else
+      Rails.cache.write(deck_key(@deck), @deck, expires_in: 12.hours)
       render json: { deck: @deck, card_count: @deck.deck_cards.count, deck_classes: @deck.deck_classes }
     end
   end
@@ -63,6 +66,7 @@ class DecksController < ApplicationController
     if @deck.errors.any?
       render json: { errors: @deck.errors }, status: :bad_request
     else
+      Rails.cache.write(deck_key(@deck), @deck, expires_in: 12.hours)
       render json: { deck: @deck, card_count: @deck.deck_cards.count }
     end
   end
@@ -87,6 +91,7 @@ class DecksController < ApplicationController
     if @deck.errors.any?
       render json: { errors: @deck.errors }, status: :bad_request
     else
+      Rails.cache.delete(deck_key(@deck))
       render json: { deck: @deck, card_count: @deck.deck_cards.count }
     end
 
@@ -105,4 +110,9 @@ class DecksController < ApplicationController
   def deck_delete_params
     params.require(:deck).permit(:id)
   end
+
+  def deck_key(deck)
+    "deck_#{deck.id}_#{deck.user.id}"
+  end
+
 end

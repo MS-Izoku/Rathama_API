@@ -44,8 +44,8 @@ Rails.application.routes.draw do
   delete 'decks/:id', to: 'decks#destroy'
 
 
-  post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
-  
+
+
 
 # region CardTypeAttributes (Tribes and SpellSchools)
 
@@ -71,6 +71,7 @@ Rails.application.routes.draw do
 # region Quests
 
   get 'quests/show-player-quests', to: "quests#show_player_quests"
+  post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
 
 # endregion
 
