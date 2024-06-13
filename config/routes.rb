@@ -1,8 +1,21 @@
 Rails.application.routes.draw do
 
   # region Cards
-  get 'cards/spells', to: 'cards#spells'
   get 'cards/fiends', to: 'cards#fiends'
+  get 'cards/heroes', to: 'cards#heroes'
+  get 'cards/monuments', to: 'cards#monuments'
+  get 'cards/spells', to: 'cards#spells'
+  get 'cards/traps', to: 'cards#traps'
+  get 'cards/weapons', to: 'cards#weapons'
+
+  get 'cards/expansions/:expansion_id/cards', to: "cards#cards_from_expansion"
+  get 'cards/expansions/:expansion_id/fiends', to: "cards#fiends_from_expansion"
+  get 'cards/expansions/:expansion_id/heroes', to: "cards#heroes_from_expansion"
+  get 'cards/expansions/:expansion_id/monuments', to: "cards#monuments_from_expansion"
+  get 'cards/expansions/:expansion_id/spells', to: "cards#spells_from_expansion"
+  get 'cards/expansions/:expansion_id/traps', to: "cards#traps_from_expansion"
+  get 'cards/expansions/:expansion_id/weapons', to: "cards#weapons_from_expansion"
+
   
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
