@@ -1,6 +1,8 @@
 class PlayerQuest < ApplicationRecord
   MAX_DAILY_QUESTS = 3
   MAX_WEEKLY_QUESTS = 3
+  MAX_MONTHLY_QUESTS = 2
+  MAX_SEASONAL_QUESTS = 2
 
   belongs_to :user
   belongs_to :quest
@@ -37,6 +39,10 @@ class PlayerQuest < ApplicationRecord
         errors.add(:base, "Too Many Weekly Quests")
     elsif my_quest_type == "Daily" && other_quests_of_type.count >= MAX_DAILY_QUESTS
         errors.add(:base, "Too Many Weekly Quests")
+    elsif my_quest_type == "Monthly" && other_quests_of_type.count >= MAX_MONTHLY_QUESTS
+        errors.add(:base, "Too Many Monthly Quests")
+    elsif my_quest_type == "Seasonal" && other_quests_of_type.count >= MAX_SEASONAL_QUESTS
+        errors.add(:base, "Too Many Seasonal Quests")
     end
   end
 end
