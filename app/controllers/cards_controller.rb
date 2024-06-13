@@ -96,8 +96,14 @@ class CardsController < ApplicationController
   end
 
   def monuments
-    @monuments = MonumentCard.all
-    render json: @monuments
+    if Rails.cache.exist?("monuments")
+      @monuments = Rails.cache.read("monuments")
+    else
+      @monuments = MonumentCard.all.to_a
+      Rails.cache.write("monuments", @monuments, expires_in: 12.hours)
+    end
+
+    render json: MonumentSerializer.many(@monuments)
   end
 
   def fiends

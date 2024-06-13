@@ -74,7 +74,7 @@ namespace :backup_cards do
 
       # Specify the full path to the backup JSON file
       file_path = 'cards_backup.json'
-
+      puts "#{BACKUP_PREFIX} Creating local file at:: #{file_path}"
       # Open the file in write mode with the 'w' option to clear it before writing
       File.open(file_path, 'w') do |file|
         # Pretty-print the JSON data
