@@ -332,10 +332,21 @@ import_keywords_from_csv if generate_keywords
 
 if generate_quests
   Quest.create(name: 'Play20Cards', description: 'Play 20 Cards', target_completion_value: 20, quest_type: 'Weekly')
-  Quest.create(name: 'Destroy30Fiends', description: 'Destroy 30 Fiends', target_completion_value: 30,
-               quest_type: 'Weekly')
-  Quest.create(name: 'Play10Momuments', description: 'Play 10 Monuments', target_completion_value: 10,
-               quest_type: 'Weekly')
+  Quest.create(name: 'Destroy30Fiends', description: 'Destroy 30 Fiends', target_completion_value: 30, quest_type: 'Weekly')
+  Quest.create(name: 'Play10Momuments', description: 'Play 10 Monuments', target_completion_value: 10, quest_type: 'Weekly')
   Quest.create(name: 'Play5Games', description: 'Play 5 Games', target_completion_value: 5, quest_type: 'Weekly')
   Quest.create(name: 'GimmeTree50', description: 'Gimme 3.50', target_completion_value: 5, quest_type: 'Weekly')
+
+
+  Quest.create(name: 'Daily 30', description: 'Deal 30 Damage to Players', target_completion_value: 30, quest_type: 'Daily')
+  Quest.create(name: 'Spellcaster', description: 'Play 10 Spells', target_completion_value: 10, quest_type: 'Daily')
+  Quest.create(name: 'Trapmaster', description: 'Play 10 Traps', target_completion_value: 10, quest_type: 'Daily')
+  Quest.create(name: 'Archetect', description: 'Play 5 Monuments', target_completion_value: 5, quest_type: 'Daily')
+  Quest.create(name: 'Weapon Dealer', description: 'Play 3 Weapons', target_completion_value: 3, quest_type: 'Daily')
+  # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
+  # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
+  # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
+  # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
+  # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
+
 end
