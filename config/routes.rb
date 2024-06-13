@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  # region Cards
+# region Cards
   get 'cards/fiends', to: 'cards#fiends'
   get 'cards/heroes', to: 'cards#heroes'
   get 'cards/monuments', to: 'cards#monuments'
@@ -21,10 +21,12 @@ Rails.application.routes.draw do
     put 'cards/change_image', to: 'cards#change_image'
     post 'search', to: 'cards#search' # using POST since it can have a request body
   end
-  # endregion
+# endregion
 
-
-
+# region Expansions
+  get 'expansions', to: 'expansions#index'
+  get 'expansions/:id', to: 'expansions#show'
+# endregion
 
   post 'login', to: 'authentication#login'
 
@@ -43,6 +45,7 @@ Rails.application.routes.draw do
 
 
   post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
+  
 
 # region CardTypeAttributes (Tribes and SpellSchools)
 

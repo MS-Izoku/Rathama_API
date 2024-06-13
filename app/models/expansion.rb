@@ -1,6 +1,6 @@
 class Expansion < ApplicationRecord
     belongs_to :expansion_group
-    validates :name, unique: true
+    validates :name, uniqueness: true
 
     def slug_name
         name.downcase.gsub(" " , "_")
