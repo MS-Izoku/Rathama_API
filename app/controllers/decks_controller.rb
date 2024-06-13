@@ -1,12 +1,22 @@
 class DecksController < ApplicationController
   before_action :authenticate_user # @current_user is available
 
-  def index; end
+  def index
+    @decks = Deck.where(owner_id: current_user.id)
+    render json: @decks
+  end
+
+  def deck_codes_index
+    @decks = Deck.where(owner_id: current_user.id)
+    render json: @decks
+  end
+
 
   def show
     @deck = Deck.find_by(id: params[:id])
     render json: { deck_code: @deck.deck_code, name: @deck.name, description: @deck.description}
   end
+
 
   def create
     return render json: { error: "No Player Classes Found ([ deck_class:[] ] param not found)" } if deck_params[:deck_classes].nil? || deck_params[:deck_classes] == 0
@@ -96,6 +106,7 @@ class DecksController < ApplicationController
     end
 
   end
+
 
   private
 

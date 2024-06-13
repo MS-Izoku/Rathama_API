@@ -37,10 +37,10 @@ Rails.application.routes.draw do
   post 'users/', to: 'users#create'
   delete 'users/', to: "users#destroy"
 
-  get 'decks/index', to: 'decks#index'
+  get 'decks', to: 'decks#index'
   get 'decks/:id', to: 'decks#show'
   post 'decks/', to: 'decks#create'
-  patch 'decks/', to: 'decks#update'
+  patch 'decks/:id', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
 
 
@@ -72,6 +72,7 @@ Rails.application.routes.draw do
 
   get 'quests/show-player-quests', to: "quests#show_player_quests"
   post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
+  post "quests/generate-daily", to: 'quests#give_player_random_daily_quest'
 
 # endregion
 
