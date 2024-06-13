@@ -14,14 +14,17 @@ class QuestsController < ApplicationController
 
 
   def give_player_random_daily_quest
-    @daily_quest = Quest.where(quest_type: 'Daily').order('RANDOM()').limit(3)
-    @player_quest = PlayerQuest.new(quest_id: @daily_quest.id, user_id: @current_user.id)
+    daily_quest_count = current_user.quests.where(quest_type: "Daily").count
+    return { error: "Daily Quests are Full" } if daily_quest_count >= 3
 
-    if @player_quest.save!
-      render json: @player_quest
-    else
-      render json: { error: 'Failed to Save PlayerQuest', messages: @player_quest.errors.full_messages }
+    @daily_quests = Quest.where(quest_type: 'Daily').order('RANDOM()').limit(3 - daily_quest_count)
+
+    quests = @daily_quests.each do |new_quest|
+      puts "Giving Player Quest ##{new_quest.id}"
+      PlayerQuest.create!(quest_id: new_quest.id, user_id: current_user.id)
     end
+
+    render json: quests
   end
 
 

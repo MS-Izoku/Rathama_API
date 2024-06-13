@@ -28,12 +28,14 @@ class PlayerQuest < ApplicationRecord
     
     other_quests_of_type = user.quests.where(quest_type: my_quest_type) #user.quests.where(quest_type: current_quests.quest.quest_type)
 
+    p "=============================================================="
     p "==> My quest type is:: #{my_quest_type} and I have:: #{other_quests_of_type.count}"
+    p "=============================================================="
    
 
     if my_quest_type == "Weekly" && other_quests_of_type.count >= MAX_WEEKLY_QUESTS
         errors.add(:base, "Too Many Weekly Quests")
-    elsif my_quest_type == "Daily" && other_quests_of_type >= MAX_DAILY_QUESTS
+    elsif my_quest_type == "Daily" && other_quests_of_type.count >= MAX_DAILY_QUESTS
         errors.add(:base, "Too Many Weekly Quests")
     end
   end
