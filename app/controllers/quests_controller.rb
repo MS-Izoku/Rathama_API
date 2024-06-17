@@ -12,10 +12,9 @@ class QuestsController < ApplicationController
     end
   end
 
-
   def give_player_random_daily_quest
-    daily_quest_count = current_user.quests.where(quest_type: "Daily").count
-    return { error: "Daily Quests are Full" } if daily_quest_count >= 3
+    daily_quest_count = current_user.quests.where(quest_type: 'Daily').count
+    return { error: 'Daily Quests are Full' } if daily_quest_count >= 3
 
     @daily_quests = Quest.where(quest_type: 'Daily').order('RANDOM()').limit(3 - daily_quest_count)
 
@@ -26,7 +25,6 @@ class QuestsController < ApplicationController
 
     render json: quests
   end
-
 
   def give_all_players_random_daily_quest
     User.all.each do |user|
@@ -41,30 +39,31 @@ class QuestsController < ApplicationController
     end
   end
 
-  
   def reroll_player_quest
     @current_player_quest = PlayerQuest.find_by(id: replace_player_quest_params[:player_quest_id])
-    return render json: {error: "Cannot Reroll Another Player's Quests"}, status: :unauthorized if @current_player_quest.id != @current_user.id
+    if @current_player_quest.id != @current_user.id
+      return render json: { error: "Cannot Reroll Another Player's Quests" },
+                    status: :unauthorized
+    end
 
     ActiveRecord::Base.transaction do
       # get a random quest that the current player does not have
       new_quest = Quest.random(@current_player_quest.quest.quest_type, 1, @current_player.quests.pluck(:id))
       @new_player_quest = PlayerQuest.new(user_id: @current_user.id, quest_id: new_quest.id)
-    
+
       @current_player_quest.destroy
       @new_player_quest.save
     rescue StandardError => e
       ActiveRecord::Base.connection.rollback_db_transaction
-      return render json: {error: "Failed to Reroll Quest::#{e.message}"} 
+      return render json: { error: "Failed to Reroll Quest::#{e.message}" }
     end
 
     render json: { new_quest: @new_player_quest, replaced: @current_player_quest }
   end
 
-
   def give_player_weekly_quests
     ActiveRecord::Base.transaction do
-      @quests = Quest.random("Weekly", 3)
+      @quests = Quest.random('Weekly', 3)
       @player_quests = []
       @quests.each do |quest|
         new_pq = PlayerQuest.create!(user_id: current_user.id, quest_id: quest.id)
@@ -78,35 +77,36 @@ class QuestsController < ApplicationController
   end
 
 
-  def show_player_quests
 
-    @player_quests = PlayerQuest.includes(:quest).where(user_id: current_user.id).order(updated_at: :desc)    
-  
-    if @player_quests.empty?
-      render json: { error: "Player Quests are Nil" }, status: :not_found
+
+  def show_player_quests
+    player_quests = PlayerQuest.includes(:quest).references(:quests).where(user_id: current_user.id)
+
+    if player_quests.empty?
+      render json: { error: 'Player Quests are Nil' }, status: :not_found
     else
-      grouped_quests = @player_quests.group_by { |player_quest| player_quest.quest.quest_type }
-      
+      grouped_quests = player_quests.group_by { |player_quest| player_quest.quest.quest_type.downcase }
+
       grouped_serialized = grouped_quests.transform_values do |quests|
-        PlayerQuestSerializer.many(quests)
+        QuestsOnLoginSerializer.many(quests)
       end
-      
+
       render json: grouped_serialized
-    end    
+    end
   end
 
+  
 
 # region: Quest CRUD
 
   def show
-    @quest = Quest.find_by(id:params[:id])
+    @quest = Quest.find_by(id: params[:id])
     if @quest.nil
-      render json: { error: "Quest not Found" }, status: :not_found
+      render json: { error: 'Quest not Found' }, status: :not_found
     else
       render json: @quest
     end
   end
-
 
   def create
     @quest = Quest.new(quest_params)
@@ -117,7 +117,6 @@ class QuestsController < ApplicationController
     end
   end
 
-
   def update
     @quest = Quest.find_by(id: params[:id])
     if @quest.update(quest_params)
@@ -126,7 +125,6 @@ class QuestsController < ApplicationController
       render json: { error: @quest.errors.full_messages, status: 'Failed to Destroy' }
     end
   end
-
 
   def destroy
     @quest = Quest.find_by(id: params[:id])
