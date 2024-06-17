@@ -1,5 +1,6 @@
 class QuestsController < ApplicationController
-  before_action :authenticate_user, only: %i[give_player_weekly_quests give_player_quest]
+  before_action :authenticate_user, only: %i[give_player_weekly_quests give_player_quest reroll_player_quest]
+
 
   def give_player_quest
     return render json: { error: 'Quest not Found' }, status: :not_found if Quest.find_by(id: quest_params[:quest_id])
@@ -11,6 +12,7 @@ class QuestsController < ApplicationController
       render json: { error: 'Failed to Save PlayerQuest', messages: @player_quest.errors.full_messages }
     end
   end
+
 
   def give_player_random_daily_quest
     daily_quest_count = current_user.quests.where(quest_type: 'Daily').count
@@ -26,6 +28,7 @@ class QuestsController < ApplicationController
     render json: quests
   end
 
+
   def give_all_players_random_daily_quest
     User.all.each do |user|
       @daily_quest = Quest.where(quest_type: 'Daily').order('RANDOM()').limit(3)
@@ -39,27 +42,36 @@ class QuestsController < ApplicationController
     end
   end
 
+
   def reroll_player_quest
     @current_player_quest = PlayerQuest.find_by(id: replace_player_quest_params[:player_quest_id])
-    if @current_player_quest.id != @current_user.id
-      return render json: { error: "Cannot Reroll Another Player's Quests" },
-                    status: :unauthorized
+    return render json: {error: "Quest not Found"}, status: :not_found unless @current_player_quest
+
+
+    if @current_player_quest.user.id != @current_user.id
+      return render json: { error: "Cannot Reroll Another Player's Quests" }, status: :unauthorized
     end
 
-    ActiveRecord::Base.transaction do
+    #ActiveRecord::Base.transaction do
       # get a random quest that the current player does not have
-      new_quest = Quest.random(@current_player_quest.quest.quest_type, 1, @current_player.quests.pluck(:id))
+      new_quest = Quest.where(quest_type: @current_player_quest.quest.quest_type).not(quest_id: @current_player_quest.id).sample
+      puts "==================================================="
+      p new_quest
+      puts "==================================================="
+      
+      #new_quest = Quest.random(@current_player_quest.quest.quest_type, 1, @current_player.quests.pluck(:id))
       @new_player_quest = PlayerQuest.new(user_id: @current_user.id, quest_id: new_quest.id)
 
       @current_player_quest.destroy
       @new_player_quest.save
-    rescue StandardError => e
-      ActiveRecord::Base.connection.rollback_db_transaction
-      return render json: { error: "Failed to Reroll Quest::#{e.message}" }
-    end
+    # rescue StandardError => e
+    #   ActiveRecord::Base.connection.rollback_db_transaction
+    #   return render json: { error: "Failed to Reroll Quest::#{e.message}" }
+    # end
 
     render json: { new_quest: @new_player_quest, replaced: @current_player_quest }
   end
+
 
   def give_player_weekly_quests
     ActiveRecord::Base.transaction do
@@ -75,8 +87,6 @@ class QuestsController < ApplicationController
   rescue ActiveRecord::RecordInvalid => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
-
-
 
 
   def show_player_quests

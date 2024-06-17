@@ -73,6 +73,7 @@ Rails.application.routes.draw do
   get 'quests/show-player-quests', to: "quests#show_player_quests"
   post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
   post "quests/generate-daily", to: 'quests#give_player_random_daily_quest'
+  post "quests/reroll", to: 'quests#reroll_player_quest'
 
 # endregion
 
