@@ -12,7 +12,9 @@ class PlayerQuest < ApplicationRecord
 
   def complete
     all_rewards = quest.rewards
+    p "Quest Complete!!!"
     # give player rewards depending on reward type
+    destroy
   end
 
   private

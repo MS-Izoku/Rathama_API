@@ -54,6 +54,24 @@ class User < ApplicationRecord
     errors.empty? ? raw_password : errors
   end
 
+
+  def daily_quests
+    player_quests.where(quest_type: "Daily")
+  end
+
+  def weekly_quests
+    player_quests.where(quest_type: "Weekly")
+  end
+
+  def monthly_quests
+    player_quests.where(quest_type: "Monthly")
+  end
+
+  def seasonal_quests
+    player_quests.where(quest_type: "Seasonal")
+  end
+
+
   def validate_username
     # profanity filter
   end

@@ -52,22 +52,22 @@ class QuestsController < ApplicationController
       return render json: { error: "Cannot Reroll Another Player's Quests" }, status: :unauthorized
     end
 
-    #ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
       # get a random quest that the current player does not have
-      new_quest = Quest.where(quest_type: @current_player_quest.quest.quest_type).not(quest_id: @current_player_quest.id).sample
-      puts "==================================================="
-      p new_quest
-      puts "==================================================="
-      
-      #new_quest = Quest.random(@current_player_quest.quest.quest_type, 1, @current_player.quests.pluck(:id))
+      new_quest = Quest.where(quest_type: @current_player_quest.quest.quest_type)
+      .where.not(id: @current_player_quest.quest.id)
+      .order('RANDOM()')
+      .limit(1)
+      .first
+
       @new_player_quest = PlayerQuest.new(user_id: @current_user.id, quest_id: new_quest.id)
 
       @current_player_quest.destroy
       @new_player_quest.save
-    # rescue StandardError => e
-    #   ActiveRecord::Base.connection.rollback_db_transaction
-    #   return render json: { error: "Failed to Reroll Quest::#{e.message}" }
-    # end
+    rescue StandardError => e
+      ActiveRecord::Base.connection.rollback_db_transaction
+      return render json: { error: "Failed to Reroll Quest::#{e.message}" }
+    end
 
     render json: { new_quest: @new_player_quest, replaced: @current_player_quest }
   end
@@ -103,6 +103,25 @@ class QuestsController < ApplicationController
 
       render json: grouped_serialized
     end
+  end
+
+
+  def add_quest_progress
+    @player_quest = PlayerQuest.find_by(id: quest_progression_params[:id])
+
+    return render json: { error: "Quest not Found" } unless @player_quest
+
+    @player_quest.current_completion_value += quest_progression_params[:completion_value]
+    @player_quest.current_completion_value = @player_quest.current_completion_value.clamp(0 , @player_quest.target_completion_value)    
+    @player_quest.complete
+    @player_quest.save
+
+    compelted = @player_quest.current_completion_value == @player_quest.target_completion_value
+
+    render json: {
+      quest: PlayerQuestSerializer.one(@player_quest),
+      completed: compelted
+    }
   end
 
   
@@ -160,4 +179,9 @@ class QuestsController < ApplicationController
   def replace_player_quest_params
     params.require(:player_quest).permit(:player_quest_id)
   end
+
+  def quest_progression_params
+    params.require(:player_quest).permit(:id, :completion_value)
+  end
+
 end

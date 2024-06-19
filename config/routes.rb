@@ -74,7 +74,8 @@ Rails.application.routes.draw do
   post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
   post "quests/generate-daily", to: 'quests#give_player_random_daily_quest'
   post "quests/reroll", to: 'quests#reroll_player_quest'
-
+  patch "quests/progress", to: "quests#add_quest_progress"
+  
 # endregion
 
 
