@@ -113,14 +113,15 @@ class QuestsController < ApplicationController
 
     @player_quest.current_completion_value += quest_progression_params[:completion_value]
     @player_quest.current_completion_value = @player_quest.current_completion_value.clamp(0 , @player_quest.target_completion_value)    
-    @player_quest.complete
+    @player_quest.is_completed = @player_quest.current_completion_value >= @player_quest.target_completion_value
     @player_quest.save
 
-    compelted = @player_quest.current_completion_value == @player_quest.target_completion_value
+    @player_quest.complete if @player_quest.is_completed
+
 
     render json: {
       quest: PlayerQuestSerializer.one(@player_quest),
-      completed: compelted
+      completed: @player_quest.is_completed
     }
   end
 

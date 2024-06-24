@@ -26,18 +26,20 @@ class PlayerQuest < ApplicationRecord
 
     current_quests = PlayerQuest.where(user_id: user_id)
     return if current_quests.count == 0
-
-    my_quest_type = quest.quest_type
     
-    other_quests_of_type = user.quests.where(quest_type: my_quest_type)
+    other_quests_of_type = user.quests.where(quest_type: quest.quest_type)
+    puts "============================="
+    puts "#{other_quests_of_type.count} quests found"
+    puts "============================="
 
-    if my_quest_type == "Weekly" && other_quests_of_type.count >= MAX_WEEKLY_QUESTS
+
+    if quest.quest_type == "Weekly" && other_quests_of_type.count >= MAX_WEEKLY_QUESTS
         errors.add(:base, "Too Many Weekly Quests")
-    elsif my_quest_type == "Daily" && other_quests_of_type.count >= MAX_DAILY_QUESTS
+    elsif quest.quest_type == "Daily" && other_quests_of_type.count >= MAX_DAILY_QUESTS
         errors.add(:base, "Too Many Weekly Quests")
-    elsif my_quest_type == "Monthly" && other_quests_of_type.count >= MAX_MONTHLY_QUESTS
+    elsif quest.quest_type == "Monthly" && other_quests_of_type.count >= MAX_MONTHLY_QUESTS
         errors.add(:base, "Too Many Monthly Quests")
-    elsif my_quest_type == "Seasonal" && other_quests_of_type.count >= MAX_SEASONAL_QUESTS
+    elsif quest.quest_type == "Seasonal" && other_quests_of_type.count >= MAX_SEASONAL_QUESTS
         errors.add(:base, "Too Many Seasonal Quests")
     end
   end
