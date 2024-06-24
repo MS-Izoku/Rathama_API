@@ -75,11 +75,15 @@ class QuestsController < ApplicationController
 
 # region Quest Granting
 
+  # Daily
   def give_player_daily_quests
+
+    # grany quests based on the number they currently have
     if current_user.last_daily_quest_given_date.nil?
-      quests_to_grant_count = 3
+      quests_to_grant_count = 3 # if the datetime is nil, give them 3
     else
-      days_since_last_quest = (Date.today - current_user.last_daily_quest_given_date.to_date).to_i
+      # otherwise, give them one per day since the time that they last had a quest given
+      days_since_last_quest = ((midnight_today - current_user.last_daily_quest_given_date).to_i).abs
       quests_to_grant_count = [days_since_last_quest, 3].min
     end
 

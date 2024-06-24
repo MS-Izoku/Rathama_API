@@ -213,7 +213,7 @@ def generate_random_string(length)
 end
 
 def generate_random_cards(player_class_1_name = 'Neutral', player_class_2_name = '')
-  30.times do |card|
+  30.times do
     card_name = generate_random_string(12)
 
     card = SpellCard.new(
@@ -248,6 +248,7 @@ def generate_random_cards(player_class_1_name = 'Neutral', player_class_2_name =
 end
 
 User.create(username: 'TestUser123', email: 'testemail123@email.com', password: 'Password1!') if generate_test_user
+User.create(username: 'TestUser456', email: 'testemail456@email.com', password: 'Password1!') if generate_test_user
 
 if generate_player_classes
   PlayerClass.create(name: 'Neutral', description: 'True Neutral', id: 0)
