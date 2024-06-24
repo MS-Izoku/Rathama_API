@@ -17,10 +17,10 @@ class PlayerQuest < ApplicationRecord
   end
 
 
-  def self.grant_quests(user_id, quest_type = "Daily", quantity = 1)
+  def self.grant_quests(user_id, target_quest_type = "Daily", quantity = 1)
     @player_quests = []
     ActiveRecord::Base.transaction do
-      @quests = Quest.random('Weekly', 3)      
+      @quests = Quest.random(target_quest_type, quantity)      
       @quests.each do |quest|
         new_pq = PlayerQuest.create!(user_id: user_id, quest_id: quest.id)
         @player_quests << new_pq

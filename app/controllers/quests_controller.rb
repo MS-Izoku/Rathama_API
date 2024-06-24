@@ -74,8 +74,14 @@ class QuestsController < ApplicationController
 
 
 # region Quest Granting
-  def give_player_daily_quest
-    quests_to_grant_count = current_user.last_daily_quest_given_date.nil ? 3 : 1
+
+  def give_player_daily_quests
+    if current_user.last_daily_quest_given_date.nil?
+      quests_to_grant_count = 3
+    else
+      days_since_last_quest = (Date.today - current_user.last_daily_quest_given_date.to_date).to_i
+      quests_to_grant_count = [days_since_last_quest, 3].min
+    end
 
     @player_quests = PlayerQuest.grant_quests(current_user.id, "Daily", quests_to_grant_count)
 
@@ -101,7 +107,9 @@ class QuestsController < ApplicationController
   rescue ActiveRecord::RecordInvalid => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
+
 # endregion
+
 
   def show_player_quests
     player_quests = PlayerQuest.includes(:quest).references(:quests).where(user_id: current_user.id)
