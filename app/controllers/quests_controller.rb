@@ -73,21 +73,33 @@ class QuestsController < ApplicationController
   end
 
 
-  def give_player_weekly_quests
-    ActiveRecord::Base.transaction do
-      @quests = Quest.random('Weekly', 3)
-      @player_quests = []
-      @quests.each do |quest|
-        new_pq = PlayerQuest.create!(user_id: current_user.id, quest_id: quest.id)
-        @player_quests << new_pq
-      end
-    end
+# region Quest Granting
+  def give_player_daily_quest
+    @player_quests = PlayerQuest.grant_quests(current_user.id, "Daily", 1)
 
     render json: @player_quests
   rescue ActiveRecord::RecordInvalid => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
+
+  def give_player_weekly_quests
+    @player_quests = PlayerQuest.grant_quests(current_user.id, "Weekly", 3)
+
+    render json: @player_quests
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+
+  def give_player_weekly_quests
+    @player_quests = PlayerQuest.grant_quests(current_user.id, "Monthly", 2)
+
+    render json: @player_quests
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+# endregion
 
   def show_player_quests
     player_quests = PlayerQuest.includes(:quest).references(:quests).where(user_id: current_user.id)

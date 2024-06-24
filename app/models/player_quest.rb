@@ -16,6 +16,20 @@ class PlayerQuest < ApplicationRecord
     destroy
   end
 
+
+  def self.grant_quests(user_id, quest_type = "Daily", quantity = 1)
+    @player_quests = []
+    ActiveRecord::Base.transaction do
+      @quests = Quest.random('Weekly', 3)      
+      @quests.each do |quest|
+        new_pq = PlayerQuest.create!(user_id: user_id, quest_id: quest.id)
+        @player_quests << new_pq
+      end
+    end
+
+    @player_quests
+  end
+
   private
 
   def copy_target_completion_rate
