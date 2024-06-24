@@ -75,7 +75,9 @@ class QuestsController < ApplicationController
 
 # region Quest Granting
   def give_player_daily_quest
-    @player_quests = PlayerQuest.grant_quests(current_user.id, "Daily", 1)
+    quests_to_grant_count = current_user.last_daily_quest_given_date.nil ? 3 : 1
+
+    @player_quests = PlayerQuest.grant_quests(current_user.id, "Daily", quests_to_grant_count)
 
     render json: @player_quests
   rescue ActiveRecord::RecordInvalid => e
@@ -92,7 +94,7 @@ class QuestsController < ApplicationController
   end
 
 
-  def give_player_weekly_quests
+  def give_player_monthly_quests
     @player_quests = PlayerQuest.grant_quests(current_user.id, "Monthly", 2)
 
     render json: @player_quests
