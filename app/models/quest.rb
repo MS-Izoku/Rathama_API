@@ -34,7 +34,6 @@ class Quest < ApplicationRecord
     end
   end
 
-
   private
 
   def auto_set_expiration

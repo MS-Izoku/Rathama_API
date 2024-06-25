@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_24_153546) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_25_210855) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -106,6 +106,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_153546) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "currencies", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "deck_cards", force: :cascade do |t|
     t.integer "deck_id"
     t.integer "card_id"
@@ -184,6 +190,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_153546) do
     t.boolean "is_completed"
   end
 
+  create_table "quest_rewards", force: :cascade do |t|
+    t.integer "quest_id"
+    t.integer "rewardable_id"
+    t.string "rewardable_type"
+    t.integer "quantity", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "quests", force: :cascade do |t|
     t.string "name"
     t.string "description"
@@ -213,6 +228,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_153546) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "hero_card_id"
+  end
+
+  create_table "user_currencies", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "currency_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
