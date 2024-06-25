@@ -1,24 +1,39 @@
 class User < ApplicationRecord
+  # auth, security, and API Keys
   has_secure_password
   has_many :api_keys, as: :owner
   has_many :decks, foreign_key: 'owner_id', dependent: :destroy
 
+  # card ownership
   has_many :card_ownerships
   has_many :cards, through: :card_ownerships
 
+  # quests
   has_many :player_quests
   has_many :quests, through: :player_quests
 
+  # currency
+  has_many :user_currencies
+  has_many :currencies, through: :user_currencies
+
+# region: Validations
+
+  # email validation
   validates :email, uniqueness: true
   validate :validate_email
 
+  # username validation
   validates :username, uniqueness: true 
   validate :validate_username
 
-    # the general  "Collection" of a user is their owned cards
+# endregion
+
+
+  # the general  "Collection" of a user is their owned cards
   def collection
     cards
   end
+
 
   def deactivate_api_keys
     api_key_model = ApiKey.where(owner_id: id)
@@ -27,7 +42,8 @@ class User < ApplicationRecord
     nil
   end
 
-    # validates an input passwords format.  Used before hashing the password using BCrypt
+
+  # validates an input passwords format.  Used before hashing the password using BCrypt
   def self.validate_password_format(raw_password)
     errors = []
 
