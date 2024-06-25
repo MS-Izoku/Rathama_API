@@ -331,6 +331,9 @@ end
 
 import_keywords_from_csv if generate_keywords
 
+gold = Currency.create(name: "Gold")
+
+
 if generate_quests
   Quest.create(name: 'Play20Cards', description: 'Play 20 Cards', target_completion_value: 20, quest_type: 'Weekly')
   Quest.create(name: 'Destroy30Fiends', description: 'Destroy 30 Fiends', target_completion_value: 30, quest_type: 'Weekly')
@@ -350,4 +353,9 @@ if generate_quests
   # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
   # Quest.create(name: '', description: '', target_completion_value: 5, quest_type: 'Daily')
 
+
+  # create rewards for quests, using Currency as a base
+  Quest.all.each do |quest|
+    
+  end
 end
