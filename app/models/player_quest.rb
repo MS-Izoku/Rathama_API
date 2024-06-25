@@ -42,10 +42,6 @@ class PlayerQuest < ApplicationRecord
     return if current_quests.count == 0
     
     other_quests_of_type = user.quests.where(quest_type: quest.quest_type)
-    puts "============================="
-    puts "#{other_quests_of_type.count} quests found"
-    puts "============================="
-
 
     if quest.quest_type == "Weekly" && other_quests_of_type.count >= MAX_WEEKLY_QUESTS
         errors.add(:base, "Too Many Weekly Quests")
