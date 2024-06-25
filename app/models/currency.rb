@@ -1,5 +1,7 @@
 class Currency < ApplicationRecord
     has_many :quest_rewards, as: :rewardable
+    has_many :user_currencies
+    has_many :users, through: :user_currencies # get all players that have currencies (in case it has not been initialized)
 
     # grant currency this to a specific user
     def grant(user, amount = 0)
