@@ -19,6 +19,8 @@ class Card < ApplicationRecord
   has_many :card_types
   has_many :card_type_attributes, through: :card_types
 
+  has_many :rewards, as: :rewardable
+
 # endregion
 
   # presence checks

@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  quest_id: 1
+  rewardable_id: 1
+  rewardable_type: MyString
+  quantity: 1
+
+two:
+  quest_id: 1
+  rewardable_id: 1
+  rewardable_type: MyString
+  quantity: 1

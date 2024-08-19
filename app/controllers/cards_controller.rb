@@ -70,29 +70,200 @@ class CardsController < ApplicationController
 
 # region Specific Card Types
   def spells
-    @spells = Spell.all
-    render json: @spells
+    if Rails.cache.exist?('spells')
+      @spells = Rails.cache.read('spells')
+    else
+      @spells = SpellCard.all.to_a
+      Rails.cache.write('spells', @spells, expires_in: 12.hours)
+    end
+    render json: SpellSerializer.many(@spells)
   end
 
   def traps
-    @traps = Trap.all
+    if Rails.cache.exist?("traps")
+      @traps = Rails.cache.read("traps")
+    else     
+      @traps = TrapCard.all.to_a
+      Rails.cache.write("traps", @traps, expires_in: 12.hours)
+    end
+
     render json: @traps
   end
 
   def weapons
-    @weapons = Weapon.all
-    render json: @weapons
+    if Rails.cache.exist?("weapons")
+      @weapons = Rails.cache.read("weapons")
+    else
+      @weapons = WeaponCard.all.to_a
+      Rails.cache.write("weapons", @weapons, expires_in: 12.hours)
+    end
+
+    render json: WeaponSerializer.many(@weapons)
   end
 
   def monuments
-    @monuments = Monument.all
-    render json: @monuments
+    if Rails.cache.exist?("monuments")
+      @monuments = Rails.cache.read("monuments")
+    else
+      @monuments = MonumentCard.all.to_a
+      Rails.cache.write("monuments", @monuments, expires_in: 12.hours)
+    end
+
+    render json: MonumentSerializer.many(@monuments)
   end
 
   def fiends
-    @fiends = Fiend.all
-    render json: @fiends
+    if Rails.cache.exist?("fiends")
+      @fiends = Rails.cache.read("fiends")
+    else     
+      @fiends = FiendCard.all.to_a
+      Rails.cache.write("fiends", @fiends, expires_in: 12.hours)
+    end
+
+    render json: FiendSerializer.many(@fiends)
   end
+
+  def heroes
+    if Rails.cache.exist?("heroes")
+      @heroes = Rails.cache.read("heroes")
+    else     
+      @heroes = HeroCard.all.to_a
+      Rails.cache.write("heroes", @heroes, expires_in: 12.hours)
+    end
+
+    render json: HeroSerializer.many(@heroes)
+  end
+
+# endregion
+
+
+# region Lookup By Expansion
+
+  def cards_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_cards"
+
+    if Rails.cache.exist?(key)
+      @cards_hash = Rails.cache.read(key)
+    else
+      cards = Card.where(expansion_id: @expansion.id)
+
+      @card_hash = {
+        fiends: FiendSerializer.many(cards.select{|card| card.type == "FiendCard"}),
+        heroes: HeroSerializer.many(cards.select{|card| card.type == "HeroCard"}),
+        momuments: MonumentSerializer.many(cards.select{|card| card.type == "MonumentCard"}),
+        spells: SpellSerializer.many(cards.select{|card| card.type == "SpellCard"}),
+        traps:  TrapSerializer.many(cards.select{|card| card.type == "TrapCard"}),
+        weapons:  WeaponSerializer.many(cards.select{|card| card.type == "WeaponCard"})
+      }
+
+      Rails.cache.write(key, @card_hash, expires_in: 12.hours)
+    end
+
+    render json: @card_hash
+  end
+
+  def spells_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_spells"
+
+    if Rails.cache.exist?(key)
+      @spells = Rails.cache.read(key)
+    else
+      @spells = SpellCard.where(expansion_id: @expansion.id).to_a
+      Rails.cache.write(key, @spells, expires_in: 12.hours)
+    end
+    render json: SpellSerializer.many(@spells)
+  end
+
+
+  def traps_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_traps"
+
+    if Rails.cache.exist?(key)
+      @traps = Rails.cache.read(key)
+    else     
+      @traps = TrapCard.all.to_a
+      Rails.cache.write(key, @traps, expires_in: 12.hours)
+    end
+
+    render json: @traps
+  end
+
+
+  def weapons_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_weapons"
+    
+    if Rails.cache.exist?(key)
+      @weapons = Rails.cache.read(key)
+    else
+      @weapons = WeaponCard.all.to_a
+      Rails.cache.write(key, @weapons, expires_in: 12.hours)
+    end
+
+    render json: WeaponSerializer.many(@weapons)
+  end
+
+
+  def monuments_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_monuments"
+    
+    if Rails.cache.exist?(key)
+      @monuments = Rails.cache.read(key)
+    else
+      @monuments = MonumentCard.all.to_a
+      Rails.cache.write(key, @monuments, expires_in: 12.hours)
+    end
+
+    render json: MonumentSerializer.many(@monuments)
+  end
+
+  def fiends_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_fiends"
+    
+    if Rails.cache.exist?(key)
+      @fiends = Rails.cache.read(key)
+    else     
+      @fiends = FiendCard.all.to_a
+      Rails.cache.write(key, @fiends, expires_in: 12.hours)
+    end
+
+    render json: FiendSerializer.many(@fiends)
+  end
+
+
+  def heroes_from_expansion
+    @expansion = Expansion.find_by(id: params[:expansion_id])
+    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+
+    key = "#{@expansion.slug_name}_heroes"
+
+    if Rails.cache.exist?(key)
+      @heroes = Rails.cache.read(key)
+    else     
+      @heroes = HeroCard.all.to_a
+      Rails.cache.write(key, @heroes, expires_in: 12.hours)
+    end
+
+    render json: HeroSerializer.many(@heroes)
+  end
+
 # endregion
 
 

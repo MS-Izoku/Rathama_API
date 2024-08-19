@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
 
     # authenticate a user using their headers and credentials
     def authenticate_user
-        api_key = request.headers[AUTHORIZATION_KEY_HEADER]
+        #api_key = request.headers[AUTHORIZATION_KEY_HEADER]
         bearer = get_bearer
     
         # Add your authentication logic based on the presence of API key and custom header
