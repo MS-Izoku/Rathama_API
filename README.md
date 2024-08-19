@@ -17,6 +17,8 @@ Spells are playable single-use cards that activate upon playing them.  They are 
 
 
 ### Trap Cards
+Trap Cards are playable single-use (in all cases) Cards, which take up "Trap" spaces on the game board.  Up to 5 different Traps can be active at any time on the board.
+
 
 ### Hero Cards
 Heroes replace the current Player's default hero, and change at least one of their Scale Powers (of the Player's choice)
