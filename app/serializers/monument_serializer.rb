@@ -1,0 +1,2 @@
+class MonumentSerializer < CardSerializer
+end

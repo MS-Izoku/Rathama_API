@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_25_210855) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -106,6 +106,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "currencies", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "deck_cards", force: :cascade do |t|
     t.integer "deck_id"
     t.integer "card_id"
@@ -173,6 +179,46 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "player_quests", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "quest_id"
+    t.integer "current_completion_value", default: 0
+    t.integer "target_completion_value", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expiration_date"
+    t.boolean "is_completed"
+  end
+
+  create_table "quest_rewards", force: :cascade do |t|
+    t.integer "quest_id"
+    t.integer "rewardable_id"
+    t.string "rewardable_type"
+    t.integer "quantity", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "quests", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.integer "target_completion_value"
+    t.string "quest_type", default: "Daily"
+    t.datetime "expiration"
+    t.boolean "can_expire", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "rewards", force: :cascade do |t|
+    t.integer "quantity"
+    t.string "rewardable_type", null: false
+    t.integer "rewardable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rewardable_type", "rewardable_id"], name: "index_rewards_on_rewardable"
+  end
+
   create_table "scale_powers", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -184,6 +230,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.integer "hero_card_id"
   end
 
+  create_table "user_currencies", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "currency_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "password_digest"
@@ -191,6 +245,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_215935) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "api_key_digest"
+    t.datetime "last_daily_quest_given_date"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

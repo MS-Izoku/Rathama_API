@@ -5,7 +5,7 @@ class FiendCard < Card
 
 # region: Card Type Validation
   # validate required data presence
-  validates_presence_of :attack, :defense
+  validates_presence_of :attack, :health
 
   # validate absence of data
   validates :armor, absence: true
