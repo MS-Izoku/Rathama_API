@@ -10,9 +10,18 @@ class PlayerQuest < ApplicationRecord
   before_create :copy_target_completion_rate
   validate :validate_quest_count
 
+  # NYI <<<==============
   def complete
-    all_rewards = quest.rewards
-    # give player rewards depending on reward type
+    # Give player rewards depending on reward type
+    quest.rewards.each do |reward|
+      reward.grant_to(user)
+    end
+
+    # Additional logic for completing the quest
+    self.completed_at = DateTime.current
+    save
+
+    # Optionally destroy the PlayerQuest if needed
     destroy
   end
 

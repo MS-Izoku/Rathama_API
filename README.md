@@ -36,7 +36,19 @@ Scale Powers are abilities players can use once per turn for a set mana cost.  S
 
 
 ## Decks
+Decks are the lifeblood of the game, next to the cards themselves.  Players can create decks and send them to each other using a "Deck Code", which is a base64 encrypted string representing the ids of the cards.
+
+If players have the cards in their collection and use the deck code, they can automatically create that deck in their profile.  If they do not have those cards, the remaining cards will not be included during the deck-building.  They will have the opportunity to create those cards in the client if they have the resources, otherwise they will need to be replaced with others from their current collection before the deck is playable.
+
 ### Expansions
+Expansions are where new cards come into play.  Each new set of cards, be it a mini-set or full expansion, belong to this parent model.  While decks themselves are not directly tied to Expansions, the years that Expansions come out often change what cards can be played in a deck.
+
+In certain standard rotation scenarios, where the past x-number of years of cards is available for play, only cards within those years can be used for standard deck-building.
+
+In other formats, certain years may be included or excluded depending on the cirumstances and/or game mode being played or deck-built for.
+
+There should always be a format where all cards can be played, no card should be useless and unplayable (but they can be bad in terms of design and playability).
+
 
 ### API Keys
 
