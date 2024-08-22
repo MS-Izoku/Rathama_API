@@ -1,3 +1,5 @@
+require 'io/console'
+
 namespace :db do
   desc 'Rebuild the database (drop and recreate)'
   task :rebuild, [:args] => :environment do |_t, _args|
@@ -86,5 +88,15 @@ namespace :backup_cards do
       puts "#{BACKUP_PREFIX} An error occurred: #{e.message}"
     end
   end
+end
+
+namespace :backup do
+    BACKUP_PREFIX = "(¤§=BACKUP=§¤)>»»"
+
+    desc "Create a backup JSON file for existing Card Data"
+    task create_json: :environment do
+      puts "#{BACKUP_PREFIX} Creating Non-User data Backup JSON"
+      BackupRegenerator.create_db_json
+    end
 
 end
