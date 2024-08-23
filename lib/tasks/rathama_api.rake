@@ -1,3 +1,5 @@
+require 'io/console'
+
 namespace :db do
   desc 'Rebuild the database (drop and recreate)'
   task :rebuild, [:args] => :environment do |_t, _args|
@@ -54,37 +56,99 @@ namespace :cache do
   end
 end
 
-namespace :backup_cards do
-  BACKUP_PREFIX = "(¤§§¤)>»»"
-  
-  desc "Create a backup JSON file for existing Card Data"
-  task create: :environment do
 
-    puts "#{BACKUP_PREFIX} Creating Backup JSON file for all Cards in Database"
+namespace :backup do
+    BACKUP_PREFIX = "(¤§=BACKUP=§¤)>»»"
 
-    begin
-      cards = {
-        heroes: HeroCard.all,
-        fiends: FiendCard.all,
-        monuments: MonumentCard.all,
-        spells: SpellCard.all,
-        traps: TrapCard.all,
-        weapons: WeaponCard.all
-      }
+    desc "Create a backup JSON file for existing Card Data"
+    task create_json: :environment do
+      system('cls')
+      puts "#{BACKUP_PREFIX} Creating Non-User data Backup JSON"
+      data = BackupRegenerator.create_db_json
+      counts = BackupRegenerator.count_records(data)
 
-      # Specify the full path to the backup JSON file
-      file_path = 'cards_backup.json'
-      puts "#{BACKUP_PREFIX} Creating local file at:: #{file_path}"
-      # Open the file in write mode with the 'w' option to clear it before writing
-      File.open(file_path, 'w') do |file|
-        # Pretty-print the JSON data
-        file.write(JSON.pretty_generate(cards.as_json))
+      counts.each do |record_name, count|
+        puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created #{count} #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
       end
 
-      puts "#{BACKUP_PREFIX} Created Backup JSON at #{file_path}"
-    rescue => e
-      puts "#{BACKUP_PREFIX} An error occurred: #{e.message}"
     end
-  end
+
+
+    desc "Create a backup CSV file for existing Card Data"
+    task create_csv: :environment do
+      system('cls')
+      puts "#{BACKUP_PREFIX} Creating Non-User data Backup CSV"
+      data = BackupRegenerator.create_db_csv
+      counts = BackupRegenerator.count_records(data)
+
+      counts.each do |record_name, count|
+        puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+      end
+
+    end
+
+
+    desc "Repopulate the Database using a backup JSON file (for non-user data)"
+    task restore_from_json: :environment do
+      system('cls')
+    
+      migrate_flag = ENV['migrate'] == 'true'
+      if migrate_flag
+        puts "#{BACKUP_PREFIX} Running migrations..."
+        Rake::Task['db:migrate'].invoke
+      else
+        puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
+      end
+    
+      file_path = ENV['file_path']
+      if file_path
+        # Ensure the file exists before attempting to restore
+        if File.exist?(file_path)
+          puts "#{BACKUP_PREFIX} Recreating Database using JSON File from #{file_path}"
+          BackupRegenerator.restore_game_data_from_json(file_path)
+        else
+          puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
+          return
+        end
+      else
+        data = BackupRegenerator.restore_game_data_from_json
+        data.each do |record_name, count|
+          puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+        end
+  
+      end
+    end
+    
+
+
+    desc "Repopulate the Database using a backup CSV file (for non-user data)"
+    task restore_from_csv: :environment do
+      system('cls')
+    
+      migrate_flag = ENV['migrate'] == 'true'  
+      if migrate_flag
+        puts "#{BACKUP_PREFIX} Running migrations..."
+        Rake::Task['db:migrate'].invoke
+      else
+        puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
+      end
+    
+      file_path = ENV['file_path']
+      if file_path
+        # Ensure the file exists before attempting to restore
+        if File.exist?(file_path)
+          puts "#{BACKUP_PREFIX} Recreating Database using CSV File from #{file_path}"
+          BackupRegenerator.restore_game_data_from_csv(file_path)
+        else
+          puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
+          return
+        end
+      else
+        data = BackupRegenerator.restore_game_data_from_csv
+        data.each do |record_name, count|
+          puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+        end
+      end
+    end    
 
 end
