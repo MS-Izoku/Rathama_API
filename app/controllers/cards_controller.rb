@@ -7,15 +7,18 @@ class CardsController < ApplicationController
     render json: @cards
   end
 
+
   def cards_by_expansion
     @cards = Card.where(expansion_id: params[:id])
     render json: @cards
   end
+  
 
   def cards_by_type
     @cards = Card.where(type: params[:type])
     render json: @cards
   end
+
 
   def search
     # builds a collection of cards via search parameters using search_params
@@ -30,6 +33,7 @@ class CardsController < ApplicationController
     render json: @card
   end
 
+
   def create
     @card = Card.new(card_create_params)
     if @card.save
@@ -38,6 +42,7 @@ class CardsController < ApplicationController
       render_error(@card, @card.error)
     end
   end
+
 
   def update
     @card = Card.find_by(id: card_update_params[:id])
@@ -48,6 +53,7 @@ class CardsController < ApplicationController
       render_error(@card, @card.error)
     end
   end
+
 
   def destroy
     @card = Card.find_by(id: card_update_params[:id])
@@ -79,6 +85,7 @@ class CardsController < ApplicationController
     render json: SpellSerializer.many(@spells)
   end
 
+
   def traps
     if Rails.cache.exist?("traps")
       @traps = Rails.cache.read("traps")
@@ -89,6 +96,7 @@ class CardsController < ApplicationController
 
     render json: @traps
   end
+
 
   def weapons
     if Rails.cache.exist?("weapons")
@@ -101,6 +109,7 @@ class CardsController < ApplicationController
     render json: WeaponSerializer.many(@weapons)
   end
 
+
   def monuments
     if Rails.cache.exist?("monuments")
       @monuments = Rails.cache.read("monuments")
@@ -112,6 +121,7 @@ class CardsController < ApplicationController
     render json: MonumentSerializer.many(@monuments)
   end
 
+
   def fiends
     if Rails.cache.exist?("fiends")
       @fiends = Rails.cache.read("fiends")
@@ -122,6 +132,7 @@ class CardsController < ApplicationController
 
     render json: FiendSerializer.many(@fiends)
   end
+
 
   def heroes
     if Rails.cache.exist?("heroes")
