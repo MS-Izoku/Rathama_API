@@ -8,7 +8,7 @@ class ScalePower < ApplicationRecord
   
 
 # region: Validations
-  validates :name, unique: true
+  validates :name, uniqueness: true
   validates :description, presence: true
   validates :cost, presence: true, numericality: { greater_than_or_equal_to: 0 }
 # endregion

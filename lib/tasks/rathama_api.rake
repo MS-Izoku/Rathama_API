@@ -56,47 +56,51 @@ namespace :cache do
   end
 end
 
-namespace :backup_cards do
-  BACKUP_PREFIX = "(¤§§¤)>»»"
-  
-  desc "Create a backup JSON file for existing Card Data"
-  task create: :environment do
-
-    puts "#{BACKUP_PREFIX} Creating Backup JSON file for all Cards in Database"
-
-    begin
-      cards = {
-        heroes: HeroCard.all,
-        fiends: FiendCard.all,
-        monuments: MonumentCard.all,
-        spells: SpellCard.all,
-        traps: TrapCard.all,
-        weapons: WeaponCard.all
-      }
-
-      # Specify the full path to the backup JSON file
-      file_path = 'cards_backup.json'
-      puts "#{BACKUP_PREFIX} Creating local file at:: #{file_path}"
-      # Open the file in write mode with the 'w' option to clear it before writing
-      File.open(file_path, 'w') do |file|
-        # Pretty-print the JSON data
-        file.write(JSON.pretty_generate(cards.as_json))
-      end
-
-      puts "#{BACKUP_PREFIX} Created Backup JSON at #{file_path}"
-    rescue => e
-      puts "#{BACKUP_PREFIX} An error occurred: #{e.message}"
-    end
-  end
-end
 
 namespace :backup do
     BACKUP_PREFIX = "(¤§=BACKUP=§¤)>»»"
 
     desc "Create a backup JSON file for existing Card Data"
     task create_json: :environment do
+      system('cls')
       puts "#{BACKUP_PREFIX} Creating Non-User data Backup JSON"
-      BackupRegenerator.create_db_json
+      data = BackupRegenerator.create_db_json
+      counts = BackupRegenerator.count_records(data)
+
+      counts.each do |record_name, count|
+        puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created #{count} #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+      end
+
+    end
+
+
+    desc "Create a backup CSV file for existing Card Data"
+    task create_csv: :environment do
+      system('cls')
+      puts "#{BACKUP_PREFIX} Creating Non-User data Backup CSV"
+      data = BackupRegenerator.create_db_csv
+      counts = BackupRegenerator.count_records(data)
+
+      counts.each do |record_name, count|
+        puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+      end
+
+    end
+
+
+    desc "Repopulate the Database using a backup JSON file (for non-user data)"
+    task restore_from_json: :environment do
+      system('cls')
+      puts "#{BACKUP_PREFIX} Recreating Database using CSV File"
+      BackupRegenerator.restore_game_data_from_json
+    end
+
+
+    desc "Repopulate the Database using a backup CSV file (for non-user data)"
+    task restore_from_csv: :environment do
+      system('cls')
+      puts "{ #{BACKUP_PREFIX} Recreating Database using CSV File"
+      BackupRegenerator.restore_game_data_from_json
     end
 
 end
