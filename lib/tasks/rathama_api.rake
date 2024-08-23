@@ -91,16 +91,64 @@ namespace :backup do
     desc "Repopulate the Database using a backup JSON file (for non-user data)"
     task restore_from_json: :environment do
       system('cls')
-      puts "#{BACKUP_PREFIX} Recreating Database using CSV File"
-      BackupRegenerator.restore_game_data_from_json
+    
+      migrate_flag = ENV['migrate'] == 'true'
+      if migrate_flag
+        puts "#{BACKUP_PREFIX} Running migrations..."
+        Rake::Task['db:migrate'].invoke
+      else
+        puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
+      end
+    
+      file_path = ENV['file_path']
+      if file_path
+        # Ensure the file exists before attempting to restore
+        if File.exist?(file_path)
+          puts "#{BACKUP_PREFIX} Recreating Database using JSON File from #{file_path}"
+          BackupRegenerator.restore_game_data_from_json(file_path)
+        else
+          puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
+          return
+        end
+      else
+        data = BackupRegenerator.restore_game_data_from_json
+        data.each do |record_name, count|
+          puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+        end
+  
+      end
     end
+    
 
 
     desc "Repopulate the Database using a backup CSV file (for non-user data)"
     task restore_from_csv: :environment do
       system('cls')
-      puts "{ #{BACKUP_PREFIX} Recreating Database using CSV File"
-      BackupRegenerator.restore_game_data_from_json
-    end
+    
+      migrate_flag = ENV['migrate'] == 'true'  
+      if migrate_flag
+        puts "#{BACKUP_PREFIX} Running migrations..."
+        Rake::Task['db:migrate'].invoke
+      else
+        puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
+      end
+    
+      file_path = ENV['file_path']
+      if file_path
+        # Ensure the file exists before attempting to restore
+        if File.exist?(file_path)
+          puts "#{BACKUP_PREFIX} Recreating Database using CSV File from #{file_path}"
+          BackupRegenerator.restore_game_data_from_csv(file_path)
+        else
+          puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
+          return
+        end
+      else
+        data = BackupRegenerator.restore_game_data_from_csv
+        data.each do |record_name, count|
+          puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+        end
+      end
+    end    
 
 end
