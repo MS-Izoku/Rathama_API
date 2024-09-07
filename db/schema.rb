@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_06_25_210855) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -162,8 +165,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_25_210855) do
     t.datetime "updated_at", null: false
   end
 
-# Could not dump table "player_card_packs" because of following StandardError
-#   Unknown type 'uuid' for column 'id'
+  create_table "player_card_packs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "card_pack_id"
+    t.datetime "date_opened"
+    t.boolean "opened"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "player_class_cards", force: :cascade do |t|
     t.integer "player_class_id"
@@ -213,7 +222,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_25_210855) do
   create_table "rewards", force: :cascade do |t|
     t.integer "quantity"
     t.string "rewardable_type", null: false
-    t.integer "rewardable_id", null: false
+    t.bigint "rewardable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["rewardable_type", "rewardable_id"], name: "index_rewards_on_rewardable"
