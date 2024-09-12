@@ -24,11 +24,11 @@ class Card < ApplicationRecord
 # endregion
 
   # presence checks
-  validates :name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, presence: true
+  validates :name, :card_text, :cost, :flavor_text, :rarity, presence: true
 
   # uniqueness checks
   validates :name, uniqueness: { scope: :is_generated_card, if: :should_validate_uniqueness_if_token? } # if a card is a token, it can have a repeat name
-  validates :card_art_url, uniqueness: true
+  #validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
   validates :cost, numericality: { greater_than_or_equal_to: -1 }
 

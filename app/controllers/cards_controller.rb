@@ -82,7 +82,7 @@ class CardsController < ApplicationController
       @spells = SpellCard.all.to_a
       Rails.cache.write('spells', @spells, expires_in: 12.hours)
     end
-    render json: SpellSerializer.many(@spells)
+    render json: { spells: SpellSerializer.many(@spells) }
   end
 
 
@@ -94,7 +94,7 @@ class CardsController < ApplicationController
       Rails.cache.write("traps", @traps, expires_in: 12.hours)
     end
 
-    render json: @traps
+    render json: { traps: TrapSerializer.many(@traps) }
   end
 
 
@@ -106,7 +106,7 @@ class CardsController < ApplicationController
       Rails.cache.write("weapons", @weapons, expires_in: 12.hours)
     end
 
-    render json: WeaponSerializer.many(@weapons)
+    render json: { weapons: WeaponSerializer.many(@weapons) }
   end
 
 
@@ -118,7 +118,7 @@ class CardsController < ApplicationController
       Rails.cache.write("monuments", @monuments, expires_in: 12.hours)
     end
 
-    render json: MonumentSerializer.many(@monuments)
+    render json: { monuments: MonumentSerializer.many(@monuments) }
   end
 
 
@@ -130,7 +130,7 @@ class CardsController < ApplicationController
       Rails.cache.write("fiends", @fiends, expires_in: 12.hours)
     end
 
-    render json: FiendSerializer.many(@fiends)
+    render json: { fiends: FiendSerializer.many(@fiends)}
   end
 
 
@@ -142,7 +142,7 @@ class CardsController < ApplicationController
       Rails.cache.write("heroes", @heroes, expires_in: 12.hours)
     end
 
-    render json: HeroSerializer.many(@heroes)
+    render json: { heroes: HeroSerializer.many(@heroes) }
   end
 
 # endregion
@@ -294,7 +294,7 @@ private
   end
 
   def search_params
-    params.permit(:name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, :type, :attack, :health, :armor, :durability, :expansion_id)
+    params.permit(:name, :card_text, :cost, :flavor_text, :rarity, :type, :attack, :health, :armor, :durability, :expansion_id)
   end
 
 # endregion
