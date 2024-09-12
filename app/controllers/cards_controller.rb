@@ -7,15 +7,18 @@ class CardsController < ApplicationController
     render json: @cards
   end
 
+
   def cards_by_expansion
     @cards = Card.where(expansion_id: params[:id])
     render json: @cards
   end
+  
 
   def cards_by_type
     @cards = Card.where(type: params[:type])
     render json: @cards
   end
+
 
   def search
     # builds a collection of cards via search parameters using search_params
@@ -30,6 +33,7 @@ class CardsController < ApplicationController
     render json: @card
   end
 
+
   def create
     @card = Card.new(card_create_params)
     if @card.save
@@ -38,6 +42,7 @@ class CardsController < ApplicationController
       render_error(@card, @card.error)
     end
   end
+
 
   def update
     @card = Card.find_by(id: card_update_params[:id])
@@ -48,6 +53,7 @@ class CardsController < ApplicationController
       render_error(@card, @card.error)
     end
   end
+
 
   def destroy
     @card = Card.find_by(id: card_update_params[:id])
@@ -76,8 +82,9 @@ class CardsController < ApplicationController
       @spells = SpellCard.all.to_a
       Rails.cache.write('spells', @spells, expires_in: 12.hours)
     end
-    render json: SpellSerializer.many(@spells)
+    render json: { spells: SpellSerializer.many(@spells) }
   end
+
 
   def traps
     if Rails.cache.exist?("traps")
@@ -87,8 +94,9 @@ class CardsController < ApplicationController
       Rails.cache.write("traps", @traps, expires_in: 12.hours)
     end
 
-    render json: @traps
+    render json: { traps: TrapSerializer.many(@traps) }
   end
+
 
   def weapons
     if Rails.cache.exist?("weapons")
@@ -98,8 +106,9 @@ class CardsController < ApplicationController
       Rails.cache.write("weapons", @weapons, expires_in: 12.hours)
     end
 
-    render json: WeaponSerializer.many(@weapons)
+    render json: { weapons: WeaponSerializer.many(@weapons) }
   end
+
 
   def monuments
     if Rails.cache.exist?("monuments")
@@ -109,8 +118,9 @@ class CardsController < ApplicationController
       Rails.cache.write("monuments", @monuments, expires_in: 12.hours)
     end
 
-    render json: MonumentSerializer.many(@monuments)
+    render json: { monuments: MonumentSerializer.many(@monuments) }
   end
+
 
   def fiends
     if Rails.cache.exist?("fiends")
@@ -120,8 +130,9 @@ class CardsController < ApplicationController
       Rails.cache.write("fiends", @fiends, expires_in: 12.hours)
     end
 
-    render json: FiendSerializer.many(@fiends)
+    render json: { fiends: FiendSerializer.many(@fiends)}
   end
+
 
   def heroes
     if Rails.cache.exist?("heroes")
@@ -131,7 +142,7 @@ class CardsController < ApplicationController
       Rails.cache.write("heroes", @heroes, expires_in: 12.hours)
     end
 
-    render json: HeroSerializer.many(@heroes)
+    render json: { heroes: HeroSerializer.many(@heroes) }
   end
 
 # endregion
@@ -283,7 +294,7 @@ private
   end
 
   def search_params
-    params.permit(:name, :card_text, :cost, :flavor_text, :rarity, :card_art_url, :type, :attack, :health, :armor, :durability, :expansion_id)
+    params.permit(:name, :card_text, :cost, :flavor_text, :rarity, :type, :attack, :health, :armor, :durability, :expansion_id)
   end
 
 # endregion

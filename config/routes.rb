@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get 'cards/traps', to: 'cards#traps'
   get 'cards/weapons', to: 'cards#weapons'
 
+  post 'cards', to: "cards#create"
+
   get 'cards/expansions/:expansion_id/cards', to: "cards#cards_from_expansion"
   get 'cards/expansions/:expansion_id/fiends', to: "cards#fiends_from_expansion"
   get 'cards/expansions/:expansion_id/heroes', to: "cards#heroes_from_expansion"
