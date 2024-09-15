@@ -170,7 +170,7 @@ end
 
 # region: Seed Config
 generate_test_user = true
-generate_random_base_cards = true
+generate_random_base_cards = false
 generate_deck_size_cards = true
 generate_player_classes = true
 generate_keywords = true
@@ -220,7 +220,7 @@ def generate_random_cards(player_class_1_name = 'Neutral', player_class_2_name =
       name: card_name,
       cost: 0,
       flavor_text: "Testing Card Generation #{card_name}",
-      card_art_url: "shouldgohere#{card_name}",
+      #card_art_url: "shouldgohere#{card_name}",
       expansion_id: 0,
       rarity: 'Common',
       is_generated_card: false,
@@ -290,7 +290,7 @@ if generate_deck_size_cards
     name: 'Add 20',
     cost: 0,
     flavor_text: 'Testing Card Generation ADD',
-    card_art_url: 'shouldgohere ADD',
+    # card_art_url: 'shouldgohere ADD',
     expansion_id: 0,
     rarity: 'Common',
     is_generated_card: false,
@@ -304,7 +304,7 @@ if generate_deck_size_cards
     name: 'Subtract 15',
     cost: 0,
     flavor_text: 'Testing Card Generation SUBTRACTOR',
-    card_art_url: 'shouldgohere SUBTRACTOR',
+    # card_art_url: 'shouldgohere SUBTRACTOR',
     expansion_id: 0,
     rarity: 'Common',
     is_generated_card: false,
@@ -318,7 +318,7 @@ if generate_deck_size_cards
     name: 'Overrride Deck Size',
     cost: 0,
     flavor_text: 'Testing Card Generation OVERRIDE',
-    card_art_url: 'shouldgohere OVERRIDE',
+    # card_art_url: 'shouldgohere OVERRIDE',
     expansion_id: 0,
     rarity: 'Common',
     is_generated_card: false,
@@ -359,3 +359,110 @@ if generate_quests
     
   end
 end
+
+
+# region: Create Fiends
+# FiendCard.create!(
+#   name: "Kureko",
+#   card_text: "",
+#   cost: 8,
+#   flavor_text: "An unholy beast hailing from Koden, a mockery of Great Rekkakuu",
+#   rarity: "Legendary",
+#   attack: 8,
+#   health: 10,
+#   armor: nil,
+#   durability: nil,
+#   expansion_id: 1,
+#   is_generated_card: false,
+#   deck_size_modifier_type: "None",
+#   deck_size_modifier_value: nil
+# )
+
+
+# Kureko
+FiendCard.create!(
+  name: "Kureko",
+  card_text: "<b>Call:</b> Destroy the enemy Nexus and any Linked Fiends.",
+  cost: 8,
+  flavor_text: "An unholy beast hailing from Koden, a mockery of Great Rekkakuu",
+  rarity: "Legendary",
+  attack: 8,
+  health: 10,
+  armor: nil,
+  durability: nil,
+  expansion_id: 1,
+  is_generated_card: false,
+  deck_size_modifier_type: "None",
+  deck_size_modifier_value: nil
+)
+
+
+FiendCard.create!(
+  name: "Ganganon",
+  card_text: "TBD",
+  cost: 8,
+  flavor_text: "A bear demon who shook the forests and crushed a kingdom",
+  rarity: "Legendary",
+  attack: 8,
+  health: 10,
+  armor: nil,
+  durability: nil,
+  expansion_id: 1,
+  is_generated_card: false,
+  deck_size_modifier_type: "None",
+  deck_size_modifier_value: nil
+)
+
+# Eloquence
+FiendCard.create!(
+  name: "Eloquence",
+  card_text: "When all 3 lies of Eloquence are played, summon this (wherever this is)",
+  cost: 6,
+  flavor_text: "Tales are told of the Eloquent frog, believe not his lies of fancy",
+  rarity: "Legendary",
+  attack: 6,
+  health: 7,
+  armor: nil,
+  durability: nil,
+  expansion_id: 1,
+  is_generated_card: false,
+  deck_size_modifier_type: "None",
+  deck_size_modifier_value: nil
+)
+
+
+# The Walking Festival
+FiendCard.create!(
+  name: "The Walking Festival",
+  card_text: "<b>Giant(4)</b>\n<b>Prep:</b> If you control less than 4 <i>Festival's Legs</i>, summon one.",
+  cost: 8,
+  flavor_text: "And the Festival rose",
+  rarity: "Legendary",
+  attack: 8,
+  health: 8,
+  armor: nil,
+  durability: nil,
+  expansion_id: 1,
+  is_generated_card: false,
+  deck_size_modifier_type: "None",
+  deck_size_modifier_value: nil
+)
+
+
+FiendCard.create!(
+  name: "Krakari, the Whorl",
+  card_text: "<b>Call:</b> Deal 4 damage to all other Fiends",
+  cost: 6,
+  flavor_text: "The first demon sealed within Lak Rathamka",
+  rarity: "Legendary",
+  attack: 5,
+  health: 5,
+  armor: nil,
+  durability: nil,
+  expansion_id: 1,
+  is_generated_card: false,
+  deck_size_modifier_type: "None",
+  deck_size_modifier_value: nil
+)
+
+# endregion
