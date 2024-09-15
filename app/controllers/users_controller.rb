@@ -8,6 +8,12 @@ class UsersController < ApplicationController
 
   # Create and Validate a New User
   def create
+
+    # handle edge cases in json parsing for missing password params
+    return render json: { error: "Missing password in root object.  Error may occur if 'user' is not the object root, even if key is present"}, status: :bad_request  unless user_creation_params[:password]
+    return render json: { error: "Missing password_confirmation in root object.  Error may occur if 'user' is not the object root, even if key is present"}, status: :bad_request  unless user_creation_params[:password_confirmation]
+
+
     found_user = User.where(email: user_creation_params[:email]).or(User.where(username: user_creation_params[:username])).first
 
     # basic validation messaging
@@ -72,7 +78,7 @@ class UsersController < ApplicationController
   private
 
   def user_creation_params
-    params.permit(:username, :password, :password_confirmation, :email)
+    params.require(:user).permit(:username, :password, :password_confirmation, :email)
   end
 
   def change_password_params
