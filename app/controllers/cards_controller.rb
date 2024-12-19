@@ -278,6 +278,21 @@ class CardsController < ApplicationController
 # endregion
 
 
+# region Card Creator Portal
+  def card_creator_inputs
+    player_classes = PlayerClass.all
+
+    card_types = Card.pluck(:type).uniq
+    card_types = %[HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard] unless card_types.length > 6
+
+    render json: {
+      card_types: card_types,
+      rarities: Card.valid_rarities,
+      player_classes: player_classes
+    }
+  end
+# endregion
+
 private
 
 # region: Strong Params

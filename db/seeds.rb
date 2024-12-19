@@ -250,14 +250,14 @@ end
 User.create(username: 'TestUser123', email: 'testemail123@email.com', password: 'Password1!') if generate_test_user
 User.create(username: 'TestUser456', email: 'testemail456@email.com', password: 'Password1!') if generate_test_user
 
-if generate_player_classes
-  PlayerClass.create(name: 'Neutral', description: 'True Neutral', id: 0)
-  PlayerClass.create(name: 'Magus', description: 'Blue')
-  PlayerClass.create(name: 'Detainer', description: 'Purple / Black')
-  PlayerClass.create(name: 'Warden', description: 'Red')
-  PlayerClass.create(name: 'Sage', description: 'White (Brown / Metal)')
-  PlayerClass.create(name: 'Trapper', description: 'Green')
-end
+
+  neutral = PlayerClass.create(name: 'Neutral', description: 'True Neutral', id: 0)
+  magus = PlayerClass.create(name: 'Magus', description: 'Blue')
+  detainer = PlayerClass.create(name: 'Detainer', description: 'Purple / Black')
+  warden = PlayerClass.create(name: 'Warden', description: 'Red')
+  sage = PlayerClass.create(name: 'Sage', description: 'White (Brown / Metal)')
+  trapper = PlayerClass.create(name: 'Trapper', description: 'Green')
+
 
 if generate_random_base_cards
   generate_random_cards
@@ -380,7 +380,7 @@ end
 
 
 # Kureko
-FiendCard.create!(
+kureko = FiendCard.create!(
   name: "Kureko",
   card_text: "<b>Call:</b> Destroy the enemy Nexus and any Linked Fiends.",
   cost: 8,
@@ -396,8 +396,11 @@ FiendCard.create!(
   deck_size_modifier_value: nil
 )
 
+PlayerClassCard.create(card_id: ganganon.id, player_class_id: trapper.id)
 
-FiendCard.create!(
+
+
+ganganon = FiendCard.create!(
   name: "Ganganon",
   card_text: "TBD",
   cost: 8,
@@ -413,8 +416,11 @@ FiendCard.create!(
   deck_size_modifier_value: nil
 )
 
+PlayerClassCard.create(card_id: ganganon.id, player_class_id: trapper.id)
+
+
 # Eloquence
-FiendCard.create!(
+eloquence = FiendCard.create!(
   name: "Eloquence",
   card_text: "When all 3 lies of Eloquence are played, summon this (wherever this is)",
   cost: 6,
@@ -430,9 +436,12 @@ FiendCard.create!(
   deck_size_modifier_value: nil
 )
 
+PlayerClassCard.create(card_id: eloquence.id, player_class_id: trapper.id)
+
+
 
 # The Walking Festival
-FiendCard.create!(
+walking_festival = FiendCard.create!(
   name: "The Walking Festival",
   card_text: "<b>Giant(4)</b>\n<b>Prep:</b> If you control less than 4 <i>Festival's Legs</i>, summon one.",
   cost: 8,
@@ -448,8 +457,11 @@ FiendCard.create!(
   deck_size_modifier_value: nil
 )
 
+PlayerClassCard.create(card_id: walking_festival.id, player_class_id: warden.id)
 
-FiendCard.create!(
+
+
+krakari = FiendCard.create!(
   name: "Krakari, the Whorl",
   card_text: "<b>Call:</b> Deal 4 damage to all other Fiends",
   cost: 6,
@@ -464,5 +476,7 @@ FiendCard.create!(
   deck_size_modifier_type: "None",
   deck_size_modifier_value: nil
 )
+
+PlayerClassCard.create(card_id: krakari.id, player_class_id: magus.id)
 
 # endregion

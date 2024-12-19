@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
 
+
+# region: Card Creator
+get 'cards/creator-info', to: "cards#card_creator_inputs"
+# endregion
+
+
+
 # region Cards
   get 'cards/fiends', to: 'cards#fiends'
   get 'cards/heroes', to: 'cards#heroes'
@@ -85,6 +92,8 @@ Rails.application.routes.draw do
 
 
 # endregion
+
+
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'

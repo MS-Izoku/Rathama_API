@@ -9,6 +9,8 @@ namespace :db do
     puts ''
     sh 'rails db:drop:_unsafe'
 
+    sh 'rails db:create'
+
     # Execute `rails db:migrate` command
     puts ''
     puts '[== Performing Migrations ==]'
