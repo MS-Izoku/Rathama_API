@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateScalePowers < ActiveRecord::Migration[7.1]
   def change
     create_table :scale_powers do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateApiKeys < ActiveRecord::Migration[7.1]
   def change
     create_table :api_keys do |t|
@@ -8,7 +10,7 @@ class CreateApiKeys < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :api_keys, [:owner_id, :owner_type]
+    add_index :api_keys, %i[owner_id owner_type]
     add_index :api_keys, :api_key_digest, unique: true
   end
 end

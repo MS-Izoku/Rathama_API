@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
-
-
 # region: Card Creator
-get 'cards/creator-info', to: "cards#card_creator_inputs"
+  get 'cards/creator-info', to: 'cards#card_creator_inputs'
 # endregion
 
 
@@ -15,17 +15,21 @@ get 'cards/creator-info', to: "cards#card_creator_inputs"
   get 'cards/traps', to: 'cards#traps'
   get 'cards/weapons', to: 'cards#weapons'
 
-  post 'cards', to: "cards#create"
+  post 'cards', to: 'cards#create'
 
-  get 'cards/expansions/:expansion_id/cards', to: "cards#cards_from_expansion"
-  get 'cards/expansions/:expansion_id/fiends', to: "cards#fiends_from_expansion"
-  get 'cards/expansions/:expansion_id/heroes', to: "cards#heroes_from_expansion"
-  get 'cards/expansions/:expansion_id/monuments', to: "cards#monuments_from_expansion"
-  get 'cards/expansions/:expansion_id/spells', to: "cards#spells_from_expansion"
-  get 'cards/expansions/:expansion_id/traps', to: "cards#traps_from_expansion"
-  get 'cards/expansions/:expansion_id/weapons', to: "cards#weapons_from_expansion"
+  patch 'cards', to: 'cards#update'
 
-  
+  delete 'cards', to: 'cards#destroy'
+
+  get 'cards/expansions/:expansion_id/cards', to: 'cards#cards_from_expansion'
+  get 'cards/expansions/:expansion_id/fiends', to: 'cards#fiends_from_expansion'
+  get 'cards/expansions/:expansion_id/heroes', to: 'cards#heroes_from_expansion'
+  get 'cards/expansions/:expansion_id/monuments', to: 'cards#monuments_from_expansion'
+  get 'cards/expansions/:expansion_id/spells', to: 'cards#spells_from_expansion'
+  get 'cards/expansions/:expansion_id/traps', to: 'cards#traps_from_expansion'
+  get 'cards/expansions/:expansion_id/weapons', to: 'cards#weapons_from_expansion'
+
+
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
     post 'search', to: 'cards#search' # using POST since it can have a request body
@@ -44,7 +48,7 @@ get 'cards/creator-info', to: "cards#card_creator_inputs"
   get 'users/rotate_api_key', to: 'users#rotate_api_key'
 
   post 'users/', to: 'users#create'
-  delete 'users/', to: "users#destroy"
+  delete 'users/', to: 'users#destroy'
 
   get 'decks', to: 'decks#index'
   get 'decks/:id', to: 'decks#show'
@@ -79,12 +83,12 @@ get 'cards/creator-info', to: "cards#card_creator_inputs"
 
 # region Quests
 
-  get 'quests/show-player-quests', to: "quests#show_player_quests"
-  post "quests/generate-weekly", to: "quests#give_player_weekly_quests"
-  post "quests/generate-daily", to: 'quests#give_player_daily_quests'
-  post "quests/reroll", to: 'quests#reroll_player_quest'
-  patch "quests/progress", to: "quests#add_quest_progress"
-  
+  get 'quests/show-player-quests', to: 'quests#show_player_quests'
+  post 'quests/generate-weekly', to: 'quests#give_player_weekly_quests'
+  post 'quests/generate-daily', to: 'quests#give_player_daily_quests'
+  post 'quests/reroll', to: 'quests#reroll_player_quest'
+  patch 'quests/progress', to: 'quests#add_quest_progress'
+
 # endregion
 
 

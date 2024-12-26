@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # require 'io/console'
 # # require_relative './card_data'
 # # require_relative './keywords.csv'
@@ -356,7 +357,7 @@
 
 #   # create rewards for quests, using Currency as a base
 #   Quest.all.each do |quest|
-    
+
 #   end
 # end
 

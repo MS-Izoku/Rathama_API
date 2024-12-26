@@ -1,6 +1,7 @@
-class MonumentCard < Card
+# frozen_string_literal: true
 
-#region Card Type Validations
+class MonumentCard < Card
+# region Card Type Validations
   # validate required data presence
   validates_presence_of :durability
 

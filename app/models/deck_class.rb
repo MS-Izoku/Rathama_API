@@ -1,8 +1,10 @@
-class DeckClass < ApplicationRecord
-    belongs_to :deck
-    belongs_to :player_class
+# frozen_string_literal: true
 
-    def as_json(options = {})
-        super(only: [:id], include: { deck: { only: [:id, :name] }, player_class: {only: [:id, :name]} })
-    end
+class DeckClass < ApplicationRecord
+  belongs_to :deck
+  belongs_to :player_class
+
+  def as_json(_options = {})
+    super(only: [:id], include: { deck: { only: %i[id name] }, player_class: { only: %i[id name] } })
+  end
 end

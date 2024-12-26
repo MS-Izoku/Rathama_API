@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 # A class representing a playable Hero card in Rathama
 class HeroCard < Card
-
 # region: Card Type Validations
   # validate required types
   validates_presence_of :armor

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateExpansionGroups < ActiveRecord::Migration[7.1]
   def change
     create_table :expansion_groups do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A root class used in a simple STI relationship with Tribes and SpellSchools
 class CardTypeAttribute < ApplicationRecord
   validates :type, presence: true

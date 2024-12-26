@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateConnectedCards < ActiveRecord::Migration[7.1]
   def change
     create_table :connected_cards do |t|

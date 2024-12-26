@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 class ExpansionsController < ApplicationController
-    
   def index
     @expansions = Expansion.all.to_a
 
@@ -11,7 +12,6 @@ class ExpansionsController < ApplicationController
     end
     render json: ExpansionSerializer.many(@expansions)
   end
-
 
   def show
     @expansion = Expansion.find_by(id: params[:id])
@@ -27,6 +27,4 @@ class ExpansionsController < ApplicationController
 
     render json: ExpansionSerializer.one(@expansion)
   end
-
-
 end

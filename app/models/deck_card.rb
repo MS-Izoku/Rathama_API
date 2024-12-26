@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class DeckCard < ApplicationRecord
-    belongs_to :deck
-    belongs_to :card
+  belongs_to :deck
+  belongs_to :card
 
-    #validate :validate_deck_card_count
+    # validate :validate_deck_card_count
 
-private
+
     # def validate_deck_card_count
     #     if deck.present? && card.present?
     #         card_count = deck.deck_cards.where(card: card).count

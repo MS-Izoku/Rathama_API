@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePlayerQuests < ActiveRecord::Migration[7.1]
   def change
     create_table :player_quests do |t|

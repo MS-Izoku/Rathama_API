@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateCardTypes < ActiveRecord::Migration[7.1]
   def change
     create_table :card_types do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'base64'
 
@@ -10,10 +12,10 @@ class Deck < ApplicationRecord
   has_many :player_classes, through: :deck_classes
 
   validate :validate_deck_count # custom validation required due to possible deck-size modification via cards
-  #validate :validate_deck_player_class  # custom validation for dual-class decks (cannot include 3 non-neutral classes)
-  
+  # validate :validate_deck_player_class  # custom validation for dual-class decks (cannot include 3 non-neutral classes)
+
   before_save :modify_deck_code
-  
+
 
   # parse an existing deck code and return the Deck object
   def self.parse_deck_code(deck_code)
@@ -39,7 +41,6 @@ class Deck < ApplicationRecord
     JSON.generate(deck_json)
   end
 
-
   # Initialized => Ready to Add Cards, but not ready for gameplay
   # GameReady => Correct number of cards and initialized
   # NotReady => Incorrect number of cards or other errors, but already initialized
@@ -47,9 +48,8 @@ class Deck < ApplicationRecord
     %w[Initialized GameReady NotReady]
   end
 
-
   # generate a Base64 Deck Code out of the associated Cards in the deck
-  def generate_deck_code(debug = false)
+  def generate_deck_code(_debug = false)
     # Combine card IDs and counts into a string
     card_string = cards.map { |card| "#{card[:id]}-#{card[:count]}" }.join(',')
     card_string = "[#{card_string}]"
@@ -59,9 +59,7 @@ class Deck < ApplicationRecord
     deck_string = "#{name},#{player_class_identifier},#{card_string}"
 
     # Base64 encode the deck string
-    full_code = Base64.strict_encode64(deck_string)
-
-    full_code
+    Base64.strict_encode64(deck_string)
   end
 
   # Validate the Deck Code against all generation methods
@@ -69,13 +67,12 @@ class Deck < ApplicationRecord
     validate_checksum # Call validate_checksum internally
   end
 
-
   # a method to create a deck and cards using a single transaction
   def self.create_deck_from_params(input_params, user_id)
     deck = Deck.new(input_params.except(:card_ids, :deck_classes))
     deck.owner_id = user_id
     deck.generation_status = 'Initialized'
-    
+
     deck.save!
 
     return deck unless Deck.create_deck_cards(deck, input_params[:card_ids])
@@ -84,7 +81,6 @@ class Deck < ApplicationRecord
     deck.save
     deck
   end
-
 
   # update the card list of a given Deck
   def self.update_card_list(deck, card_ids)
@@ -96,7 +92,7 @@ class Deck < ApplicationRecord
     invalid_ids = card_ids - valid_card_ids
 
     # check if all cards exist
-    unless invalid_ids.count == 0
+    unless invalid_ids.count.zero?
       deck.errors.add(:base, "Invalid Card Id#{invalid_ids.count > 1 ? 's' : ''} Found::#{invalid_ids}")
       return false
     end
@@ -105,18 +101,17 @@ class Deck < ApplicationRecord
 
     cards_to_remove = current_card_list - valid_card_ids
     cards_to_add = valid_card_ids - current_card_list
-  
+
     # Remove cards that are no longer in the updated list
     deck.deck_cards.where(card_id: cards_to_remove).destroy_all
-  
+
     # Add new cards to the deck
     cards_to_add.each do |card_id|
-      deck.deck_cards.create(card_id: card_id)
+      deck.deck_cards.create(card_id:)
     end
 
     deck
   end
-
 
   # a method to create and destroy Deck Cards for a given deck
   # can also be used using a partial-list during Update instead of a full list during create
@@ -126,13 +121,13 @@ class Deck < ApplicationRecord
     invalid_ids = card_ids - valid_card_ids
 
     # check if all cards exist
-    unless invalid_ids.count == 0
-      puts "Invalid Deck Card Ids Found"
+    unless invalid_ids.count.zero?
+      puts 'Invalid Deck Card Ids Found'
       deck.errors.add(:base, "Invalid Card Id#{invalid_ids.count > 1 ? 's' : ''} Found::#{invalid_ids}")
       return false
     end
 
-    puts "Creating Deck Cards"
+    puts 'Creating Deck Cards'
     card_ids.each do |card_id|
       DeckCard.create(deck_id: deck.id, card_id:)
     end
@@ -154,7 +149,7 @@ class Deck < ApplicationRecord
       "#{card[:id]}:#{card[:count]}"
     end
 
-    checksum_string = checksum_string.join(',')}"
+                                                            checksum_string.join(',')}"
 
     # Calculate the CRC32 checksum
     Zlib.crc32(checksum_string)
@@ -220,38 +215,32 @@ class Deck < ApplicationRecord
     end
 
     p "Deck Limit Requirement is::#{deck_limit}"
-    errors.add(:base, "Deck size cannot be zero or negative, currently::#{deck_limit}") unless deck_limit > 0
+    errors.add(:base, "Deck size cannot be zero or negative, currently::#{deck_limit}") unless deck_limit.positive?
 
     # adjust playability here
     p "Current Deck Cards:: #{deck_cards.count} || Expecting::#{deck_limit}"
     if deck_limit > deck_cards.count
-      puts "Too Few Cards"
+      puts 'Too Few Cards'
       self.is_playable = false
       self.playability_status = 'Too Few Cards'
     elsif deck_limit < deck_cards.count
-      puts "Too Many Cards"
+      puts 'Too Many Cards'
       self.is_playable = false
       self.playability_status = 'Too Many Cards'
     else
-      puts "Correct number of Cards"
+      puts 'Correct number of Cards'
       self.is_playable = true
       self.playability_status = 'Ready'
     end
   end
 
-
   def get_card_counts
-    card_counts = cards.group(:id, :rarity).count
+    cards.group(:id, :rarity).count
   end
-
 
   def correct_number_of_cards_in_deck
     deck_size = 30
     card_counts = cards.group(:id, :deck_size_modifier_type, deck_size_modifier_count).count
-
-    additional = 0
-    subtraction = 0
-    override = 0
 
     card_counts.each do |(card_id, deck_size_modifier_type, deck_size_modifier_count), count|
     end
@@ -259,13 +248,11 @@ class Deck < ApplicationRecord
     deck.cards == deck_size
   end
 
-
   def modify_deck_code
     return if generation_status == 'Initialized' || generation_status.nil?
 
     if persisted?
       p 'Creating Deck Code'
-      self.deck_code = generate_deck_code
     else
       p 'Modifying DeckCode'
       original_deck_card_ids = Deck.find(id).deck_card_ids.sort
@@ -273,8 +260,8 @@ class Deck < ApplicationRecord
 
       return if original_deck_card_ids == current_deck_card_ids
 
-      self.deck_code = generate_deck_code
     end
+    self.deck_code = generate_deck_code
   end
 
   def validate_deck_classes

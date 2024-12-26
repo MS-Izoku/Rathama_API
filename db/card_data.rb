@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CardData
   attr_reader :cards
 
@@ -30,9 +32,9 @@ class CardData
     skipped_keywords = 0
 
     puts 'Reading Keyword File...'
-    puts keyword_data[1..-1].class
+    puts keyword_data[1..].class
     # Iterate over the remaining rows and create keywords
-    keywords = keyword_data[1..-1].map do |row|
+    keyword_data[1..].map do |row|
       keyword_attributes = Hash[headers.zip(row)]
 
       existing_keyword = Keyword.find_by(name: keyword_attributes['Name'])
@@ -84,7 +86,7 @@ class CardData
       pc = PlayerClass.find_by(name:)
       if pc.nil?
         puts "Creating PlayerClass => #{name}"
-        pc = PlayerClass.create(name:, description: data[:description])
+        PlayerClass.create(name:, description: data[:description])
       else
         pc.assign_attributes(description(data[:description]))
         if pc.changes?

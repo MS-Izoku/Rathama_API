@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PlayerClass < ApplicationRecord
 # region: images
   has_one_attached :class_seal

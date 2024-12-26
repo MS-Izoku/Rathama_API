@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'csv'
 
@@ -41,7 +43,7 @@ class BackupRegenerator
         restore_keywords(backup_data['keywords'])
         record_counts[:keywords] = backup_data['keywords'].size
       end
-      
+
       if backup_data['expansions']
         restore_expansions(backup_data['expansions'])
         record_counts[:expansions] = backup_data['expansions'].size
@@ -78,7 +80,6 @@ class BackupRegenerator
 
       puts 'Game data restored successfully from JSON!'
       record_counts
-      
     rescue StandardError => e
       puts "Error during restoration: #{e.message}"
       raise ActiveRecord::Rollback
@@ -92,7 +93,7 @@ class BackupRegenerator
 
     # Read the CSV file
     CSV.foreach(File.join(Dir.pwd, filename), headers: true) do |row|
-      if row[0] && row[0].match?(/[A-Z_]+/) && row.to_hash.compact.size == 1
+      if row[0]&.match?(/[A-Z_]+/) && row.to_hash.compact.size == 1
         section_name = row[0].downcase.to_sym
         csv_data[section_name] = []
       elsif section_name
@@ -195,7 +196,7 @@ class BackupRegenerator
 
   # prints arrows and spaces for easy-reading for console printing
   def self.printable_arrows(count = 1)
-    ('>' * count) + ' '
+    "#{'>' * count} "
   end
 
   def self.game_data

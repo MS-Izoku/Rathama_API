@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDeckClasses < ActiveRecord::Migration[7.1]
   def change
     create_table :deck_classes do |t|

@@ -1,5 +1,6 @@
-class WeaponCard < Card
+# frozen_string_literal: true
 
+class WeaponCard < Card
   # validate required data presence
   validates_presence_of :durability
   validates_presence_of :attack

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DecksController < ApplicationController
   before_action :authenticate_user # @current_user is available
 
@@ -11,27 +13,27 @@ class DecksController < ApplicationController
     render json: @decks
   end
 
-
   def show
     @deck = Deck.find_by(id: params[:id])
-    render json: { deck_code: @deck.deck_code, name: @deck.name, description: @deck.description}
+    render json: { deck_code: @deck.deck_code, name: @deck.name, description: @deck.description }
   end
 
-
   def create
-    return render json: { error: "No Player Classes Found ([ deck_class:[] ] param not found)" } if deck_params[:deck_classes].nil? || deck_params[:deck_classes] == 0
+    if deck_params[:deck_classes].nil? || deck_params[:deck_classes].zero?
+      return render json: { error: 'No Player Classes Found ([ deck_class:[] ] param not found)' }
+    end
 
     # data transaction
     ActiveRecord::Base.transaction do
       @deck = Deck.create_deck_from_params(deck_params, current_user.id)
-      
-      valid_player_classes = deck_params[:deck_classes].select { |class_name| class_name != "Neutral" }
-      valid_player_classes.each do |dc_name|  # deck_class_name
+
+      valid_player_classes = deck_params[:deck_classes].reject { |class_name| class_name == 'Neutral' }
+      valid_player_classes.each do |dc_name| # deck_class_name
         puts dc_name
         player_class = PlayerClass.find_by(name: dc_name)
         raise ActiveRecord::Rollback if player_class.nil?
 
-        DeckClass.create(player_class: player_class, deck: @deck)
+        DeckClass.create(player_class:, deck: @deck)
       end
 
       if @deck.errors.any?
@@ -42,7 +44,7 @@ class DecksController < ApplicationController
       raise ActiveRecord::Rollback
     end
 
-    
+
 
     # json rendering
     if @deck.errors.any?
@@ -52,7 +54,6 @@ class DecksController < ApplicationController
       render json: { deck: @deck, card_count: @deck.deck_cards.count, deck_classes: @deck.deck_classes }
     end
   end
-
 
   def update
     # data modification
@@ -81,18 +82,18 @@ class DecksController < ApplicationController
     end
   end
 
-
   def destroy
     @deck = Deck.find_by(id: deck_delete_params[:id])
-    return render json: { error: "Deck not Found" }, status: :not_found if deck.nil?
+    return render json: { error: 'Deck not Found' }, status: :not_found if deck.nil?
 
-    return render json: { error: "Deck does not belong to user" }, status: :unauthorized if @current_user.id != @deck.owner_id
-  
+    if @current_user.id != @deck.owner_id
+      return render json: { error: 'Deck does not belong to user' },
+                    status: :unauthorized
+    end
+
     ActiveRecord::Base.transaction do
       @deck.destroy
-      if @deck.errors.any?
-        raise ActiveRecord::Rollback
-      end
+      raise ActiveRecord::Rollback if @deck.errors.any?
     rescue StandardError
       raise ActiveRecord::Rollback
     end
@@ -104,7 +105,6 @@ class DecksController < ApplicationController
       Rails.cache.delete(deck_key(@deck))
       render json: { deck: @deck, card_count: @deck.deck_cards.count }
     end
-
   end
 
 
@@ -125,5 +125,4 @@ class DecksController < ApplicationController
   def deck_key(deck)
     "deck_#{deck.id}_#{deck.user.id}"
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'io/console'
 
 namespace :db do
@@ -28,17 +30,18 @@ namespace :db do
 end
 
 namespace :cache do
-  CACHE_LOG_PREFIX = "(¤>>»"
+  CACHE_LOG_PREFIX = '(¤>>»'
 
   # initialize caching for both production and development setups
   desc 'Initialize Caching'
   task :initialize do
     return if Rails.application.config.action_controller.perform_caching
+
     puts "#{CACHE_LOG_PREFIX} Initializing Cache for Environment::Dev"
     sh 'rails dev:cache'
 
-    #puts "#{CACHE_LOG_PREFIX} Initializing Cache for Environment::Production"
-    #sh 'rails production:cache'  
+    # puts "#{CACHE_LOG_PREFIX} Initializing Cache for Environment::Production"
+    # sh 'rails production:cache'
   end
 
 
@@ -46,6 +49,7 @@ namespace :cache do
   desc 'Disable Cache'
   task :disable do
     return unless Rails.application.config.action_controller.perform_caching
+
     puts "#{CACHE_LOG_PREFIX} Disabling Rathama Cache"
   end
 
@@ -60,97 +64,104 @@ end
 
 
 namespace :backup do
-    BACKUP_PREFIX = "(¤§=BACKUP=§¤)>»»"
+  BACKUP_PREFIX = '(¤§=BACKUP=§¤)>»»'
 
-    desc "Create a backup JSON file for existing Card Data"
-    task create_json: :environment do
-      system('cls')
-      puts "#{BACKUP_PREFIX} Creating Non-User data Backup JSON"
-      data = BackupRegenerator.create_db_json
-      counts = BackupRegenerator.count_records(data)
+  desc 'Create a backup JSON file for existing Card Data'
+  task create_json: :environment do
+    system('cls')
+    puts "#{BACKUP_PREFIX} Creating Non-User data Backup JSON"
+    data = BackupRegenerator.create_db_json
+    counts = BackupRegenerator.count_records(data)
 
-      counts.each do |record_name, count|
-        puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created #{count} #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
-      end
+    counts.each do |record_name, count|
+      puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created #{count} #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+    end
+  end
 
+
+  desc 'Create a backup CSV file for existing Card Data'
+  task create_csv: :environment do
+    system('cls')
+    puts "#{BACKUP_PREFIX} Creating Non-User data Backup CSV"
+    data = BackupRegenerator.create_db_csv
+    counts = BackupRegenerator.count_records(data)
+
+    counts.each do |record_name, count|
+      puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
+    end
+  end
+
+
+  desc 'Repopulate the Database using a backup JSON file (for non-user data)'
+  task restore_from_json: :environment do
+    system('cls')
+
+    migrate_flag = ENV['migrate'] == 'true'
+    if migrate_flag
+      puts "#{BACKUP_PREFIX} Running migrations..."
+      Rake::Task['db:migrate'].invoke
+    else
+      puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
     end
 
-
-    desc "Create a backup CSV file for existing Card Data"
-    task create_csv: :environment do
-      system('cls')
-      puts "#{BACKUP_PREFIX} Creating Non-User data Backup CSV"
-      data = BackupRegenerator.create_db_csv
-      counts = BackupRegenerator.count_records(data)
-
-      counts.each do |record_name, count|
+    file_path = ENV['file_path']
+    if file_path
+      # Ensure the file exists before attempting to restore
+      if File.exist?(file_path)
+        puts "#{BACKUP_PREFIX} Recreating Database using JSON File from #{file_path}"
+        BackupRegenerator.restore_game_data_from_json(file_path)
+      else
+        puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
+        return
+      end
+    else
+      data = BackupRegenerator.restore_game_data_from_json
+      data.each do |record_name, count|
         puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
       end
 
     end
+  end
 
 
-    desc "Repopulate the Database using a backup JSON file (for non-user data)"
-    task restore_from_json: :environment do
-      system('cls')
-    
-      migrate_flag = ENV['migrate'] == 'true'
-      if migrate_flag
-        puts "#{BACKUP_PREFIX} Running migrations..."
-        Rake::Task['db:migrate'].invoke
+
+  desc 'Repopulate the Database using a backup CSV file (for non-user data)'
+  task restore_from_csv: :environment do
+    system('cls')
+
+    migrate_flag = ENV['migrate'] == 'true'
+    if migrate_flag
+      puts "#{BACKUP_PREFIX} Running migrations..."
+      Rake::Task['db:migrate'].invoke
+    else
+      puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
+    end
+
+    file_path = ENV['file_path']
+    if file_path
+      # Ensure the file exists before attempting to restore
+      if File.exist?(file_path)
+        puts "#{BACKUP_PREFIX} Recreating Database using CSV File from #{file_path}"
+        BackupRegenerator.restore_game_data_from_csv(file_path)
       else
-        puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
+        puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
+        return
       end
-    
-      file_path = ENV['file_path']
-      if file_path
-        # Ensure the file exists before attempting to restore
-        if File.exist?(file_path)
-          puts "#{BACKUP_PREFIX} Recreating Database using JSON File from #{file_path}"
-          BackupRegenerator.restore_game_data_from_json(file_path)
-        else
-          puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
-          return
-        end
-      else
-        data = BackupRegenerator.restore_game_data_from_json
-        data.each do |record_name, count|
-          puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
-        end
-  
+    else
+      data = BackupRegenerator.restore_game_data_from_csv
+      data.each do |record_name, count|
+        puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
       end
     end
-    
+  end
+end
 
 
-    desc "Repopulate the Database using a backup CSV file (for non-user data)"
-    task restore_from_csv: :environment do
-      system('cls')
-    
-      migrate_flag = ENV['migrate'] == 'true'  
-      if migrate_flag
-        puts "#{BACKUP_PREFIX} Running migrations..."
-        Rake::Task['db:migrate'].invoke
-      else
-        puts "#{BACKUP_PREFIX} WARNING:: Unapplied migrations may cause errors when attempting to restore the backup after a drop. Add the 'migrate=true' flag to automatically migrate changes"
-      end
-    
-      file_path = ENV['file_path']
-      if file_path
-        # Ensure the file exists before attempting to restore
-        if File.exist?(file_path)
-          puts "#{BACKUP_PREFIX} Recreating Database using CSV File from #{file_path}"
-          BackupRegenerator.restore_game_data_from_csv(file_path)
-        else
-          puts "#{BACKUP_PREFIX} Error: File does not exist at #{file_path}"
-          return
-        end
-      else
-        data = BackupRegenerator.restore_game_data_from_csv
-        data.each do |record_name, count|
-          puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
-        end
-      end
-    end    
-
+# Make a nicer version of this later
+ADMIN_ROOT_USERNAME = 'radmin_01'
+namespace :admin do
+  task create_local_admin: :environment do
+    User.create(ADMIN_ROOT_USERNAME)
+    ApiKey.create
+  end
 end

@@ -1,24 +1,21 @@
-class CardsController < ApplicationController
-  
+# frozen_string_literal: true
 
+class CardsController < ApplicationController
 # region: Index Routes
   def index
     @cards = Card.all
     render json: @cards
   end
 
-
   def cards_by_expansion
     @cards = Card.where(expansion_id: params[:id])
     render json: @cards
   end
-  
 
   def cards_by_type
     @cards = Card.where(type: params[:type])
     render json: @cards
   end
-
 
   def search
     # builds a collection of cards via search parameters using search_params
@@ -33,16 +30,22 @@ class CardsController < ApplicationController
     render json: @card
   end
 
-
   def create
     @card = Card.new(card_create_params)
+    p card_create_params
+    p @card
+
     if @card.save
       render json: @card
     else
-      render_error(@card, @card.error)
+      render_error(@card, @card.errors)
+      @card.errors.each do |err|
+        p err
+        print ' :  '
+        print err.message
+      end
     end
   end
-
 
   def update
     @card = Card.find_by(id: card_update_params[:id])
@@ -53,7 +56,6 @@ class CardsController < ApplicationController
       render_error(@card, @card.error)
     end
   end
-
 
   def destroy
     @card = Card.find_by(id: card_update_params[:id])
@@ -67,12 +69,9 @@ class CardsController < ApplicationController
 # endregion
 
 
-  def change_image
-  end
+  def change_image; end
 
-
-  def add_variant_image
-  end
+  def add_variant_image; end
 
 # region Specific Card Types
   def spells
@@ -85,61 +84,56 @@ class CardsController < ApplicationController
     render json: { spells: SpellSerializer.many(@spells) }
   end
 
-
   def traps
-    if Rails.cache.exist?("traps")
-      @traps = Rails.cache.read("traps")
-    else     
+    if Rails.cache.exist?('traps')
+      @traps = Rails.cache.read('traps')
+    else
       @traps = TrapCard.all.to_a
-      Rails.cache.write("traps", @traps, expires_in: 12.hours)
+      Rails.cache.write('traps', @traps, expires_in: 12.hours)
     end
 
     render json: { traps: TrapSerializer.many(@traps) }
   end
 
-
   def weapons
-    if Rails.cache.exist?("weapons")
-      @weapons = Rails.cache.read("weapons")
+    if Rails.cache.exist?('weapons')
+      @weapons = Rails.cache.read('weapons')
     else
       @weapons = WeaponCard.all.to_a
-      Rails.cache.write("weapons", @weapons, expires_in: 12.hours)
+      Rails.cache.write('weapons', @weapons, expires_in: 12.hours)
     end
 
     render json: { weapons: WeaponSerializer.many(@weapons) }
   end
 
-
   def monuments
-    if Rails.cache.exist?("monuments")
-      @monuments = Rails.cache.read("monuments")
+    if Rails.cache.exist?('monuments')
+      @monuments = Rails.cache.read('monuments')
     else
       @monuments = MonumentCard.all.to_a
-      Rails.cache.write("monuments", @monuments, expires_in: 12.hours)
+      Rails.cache.write('monuments', @monuments, expires_in: 12.hours)
     end
 
     render json: { monuments: MonumentSerializer.many(@monuments) }
   end
 
-
   def fiends
-    if Rails.cache.exist?("fiends")
-      @fiends = Rails.cache.read("fiends")
-    else     
+    if Rails.cache.exist?('fiends')
+      @fiends = Rails.cache.read('fiends')
+    else
       @fiends = FiendCard.all.to_a
-      Rails.cache.write("fiends", @fiends, expires_in: 12.hours)
+      Rails.cache.write('fiends', @fiends, expires_in: 12.hours)
     end
 
-    render json: { fiends: FiendSerializer.many(@fiends)}
+    render json: { fiends: FiendSerializer.many(@fiends) }
   end
 
-
   def heroes
-    if Rails.cache.exist?("heroes")
-      @heroes = Rails.cache.read("heroes")
-    else     
+    if Rails.cache.exist?('heroes')
+      @heroes = Rails.cache.read('heroes')
+    else
       @heroes = HeroCard.all.to_a
-      Rails.cache.write("heroes", @heroes, expires_in: 12.hours)
+      Rails.cache.write('heroes', @heroes, expires_in: 12.hours)
     end
 
     render json: { heroes: HeroSerializer.many(@heroes) }
@@ -152,7 +146,7 @@ class CardsController < ApplicationController
 
   def cards_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_cards"
 
@@ -162,12 +156,12 @@ class CardsController < ApplicationController
       cards = Card.where(expansion_id: @expansion.id)
 
       @card_hash = {
-        fiends: FiendSerializer.many(cards.select{|card| card.type == "FiendCard"}),
-        heroes: HeroSerializer.many(cards.select{|card| card.type == "HeroCard"}),
-        momuments: MonumentSerializer.many(cards.select{|card| card.type == "MonumentCard"}),
-        spells: SpellSerializer.many(cards.select{|card| card.type == "SpellCard"}),
-        traps:  TrapSerializer.many(cards.select{|card| card.type == "TrapCard"}),
-        weapons:  WeaponSerializer.many(cards.select{|card| card.type == "WeaponCard"})
+        fiends: FiendSerializer.many(cards.select { |card| card.type == 'FiendCard' }),
+        heroes: HeroSerializer.many(cards.select { |card| card.type == 'HeroCard' }),
+        momuments: MonumentSerializer.many(cards.select { |card| card.type == 'MonumentCard' }),
+        spells: SpellSerializer.many(cards.select { |card| card.type == 'SpellCard' }),
+        traps: TrapSerializer.many(cards.select { |card| card.type == 'TrapCard' }),
+        weapons: WeaponSerializer.many(cards.select { |card| card.type == 'WeaponCard' })
       }
 
       Rails.cache.write(key, @card_hash, expires_in: 12.hours)
@@ -178,7 +172,7 @@ class CardsController < ApplicationController
 
   def spells_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_spells"
 
@@ -191,16 +185,15 @@ class CardsController < ApplicationController
     render json: SpellSerializer.many(@spells)
   end
 
-
   def traps_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_traps"
 
     if Rails.cache.exist?(key)
       @traps = Rails.cache.read(key)
-    else     
+    else
       @traps = TrapCard.all.to_a
       Rails.cache.write(key, @traps, expires_in: 12.hours)
     end
@@ -208,13 +201,12 @@ class CardsController < ApplicationController
     render json: @traps
   end
 
-
   def weapons_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_weapons"
-    
+
     if Rails.cache.exist?(key)
       @weapons = Rails.cache.read(key)
     else
@@ -225,13 +217,12 @@ class CardsController < ApplicationController
     render json: WeaponSerializer.many(@weapons)
   end
 
-
   def monuments_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_monuments"
-    
+
     if Rails.cache.exist?(key)
       @monuments = Rails.cache.read(key)
     else
@@ -244,13 +235,13 @@ class CardsController < ApplicationController
 
   def fiends_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_fiends"
-    
+
     if Rails.cache.exist?(key)
       @fiends = Rails.cache.read(key)
-    else     
+    else
       @fiends = FiendCard.all.to_a
       Rails.cache.write(key, @fiends, expires_in: 12.hours)
     end
@@ -258,16 +249,15 @@ class CardsController < ApplicationController
     render json: FiendSerializer.many(@fiends)
   end
 
-
   def heroes_from_expansion
     @expansion = Expansion.find_by(id: params[:expansion_id])
-    return render json: {error: "Expansion not found with Id: #{params[:expansion_id]}"} unless @expansion
+    return render json: { error: "Expansion not found with Id: #{params[:expansion_id]}" } unless @expansion
 
     key = "#{@expansion.slug_name}_heroes"
 
     if Rails.cache.exist?(key)
       @heroes = Rails.cache.read(key)
-    else     
+    else
       @heroes = HeroCard.all.to_a
       Rails.cache.write(key, @heroes, expires_in: 12.hours)
     end
@@ -283,21 +273,35 @@ class CardsController < ApplicationController
     player_classes = PlayerClass.all
 
     card_types = Card.pluck(:type).uniq
-    card_types = %[HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard] unless card_types.length > 6
+    card_types = %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard) unless card_types.length > 6
 
     render json: {
-      card_types: card_types,
+      card_types:,
       rarities: Card.valid_rarities,
-      player_classes: player_classes
+      player_classes:
     }
   end
 # endregion
 
-private
+  private
 
 # region: Strong Params
   def card_create_params
-    params.require(:card).permit(:id, :type, :attack, :health, :armor, :durability, :expansion_id)
+    params.require(:card).permit(:id,
+                                 :type,
+                                 :name,
+                                 :cost,
+                                 :rarity,
+                                 :card_text,
+                                 :flavor_text,
+                                 :is_generated_card,
+                                 :deck_size_modifier_type,
+                                 :deck_size_modifier_value,
+                                 :attack,
+                                 :health,
+                                 :armor,
+                                 :durability,
+                                 :expansion_id)
   end
 
   def card_update_params
@@ -309,7 +313,8 @@ private
   end
 
   def search_params
-    params.permit(:name, :card_text, :cost, :flavor_text, :rarity, :type, :attack, :health, :armor, :durability, :expansion_id)
+    params.permit(:name, :card_text, :cost, :flavor_text, :rarity, :type, :attack, :health, :armor, :durability,
+                  :expansion_id)
   end
 
 # endregion
@@ -324,7 +329,9 @@ private
         conditions[:type] = value
       else
         # generic lookup method
-        conditions[key] = value.present? ? key.to_s.ends_with?('_id') ? value.to_i : "%#{value}%" : nil
+        conditions[key] = if value.present?
+                            key.to_s.ends_with?('_id') ? value.to_i : "%#{value}%"
+                          end
       end
     end
 

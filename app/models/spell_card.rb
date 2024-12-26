@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # a class representing a playable Spell Card in Rathama
 # Shares most behaviour programatically with TrapCards
 class SpellCard < Card

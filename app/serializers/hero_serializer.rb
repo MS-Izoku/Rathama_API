@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HeroSerializer < CardSerializer
-    attributes :armor
+  attributes :armor
 end

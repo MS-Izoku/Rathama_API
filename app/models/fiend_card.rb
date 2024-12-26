@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A Class representing a playable Fiend Card in Rathama
 # Fiend Cards can be played to the board-space for a cost
 class FiendCard < Card

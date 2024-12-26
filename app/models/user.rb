@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   # auth, security, and API Keys
   has_secure_password
@@ -23,7 +25,7 @@ class User < ApplicationRecord
   validate :validate_email
 
   # username validation
-  validates :username, uniqueness: true 
+  validates :username, uniqueness: true
   validate :validate_username
 
 # endregion
@@ -34,14 +36,12 @@ class User < ApplicationRecord
     cards
   end
 
-
   def deactivate_api_keys
     api_key_model = ApiKey.where(owner_id: id)
 
     save unless api_key_model.nil?
     nil
   end
-
 
   # validates an input passwords format.  Used before hashing the password using BCrypt
   def self.validate_password_format(raw_password)
@@ -70,23 +70,21 @@ class User < ApplicationRecord
     errors.empty? ? raw_password : errors
   end
 
-
   def daily_quests
-    player_quests.where(quest_type: "Daily")
+    player_quests.where(quest_type: 'Daily')
   end
 
   def weekly_quests
-    player_quests.where(quest_type: "Weekly")
+    player_quests.where(quest_type: 'Weekly')
   end
 
   def monthly_quests
-    player_quests.where(quest_type: "Monthly")
+    player_quests.where(quest_type: 'Monthly')
   end
 
   def seasonal_quests
-    player_quests.where(quest_type: "Seasonal")
+    player_quests.where(quest_type: 'Seasonal')
   end
-
 
   def validate_username
     # profanity filter
@@ -95,7 +93,6 @@ class User < ApplicationRecord
   def validate_email
     # formatting check, may be replaced with a gem in the future
     email_matching_pattern = /^[A-Za-z0-9+_.-]+@([A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/
-    errors.add(:base, "Invalid Email Format") unless email =~ email_matching_pattern
+    errors.add(:base, 'Invalid Email Format') unless email =~ email_matching_pattern
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Card < ApplicationRecord
 # region: ActiveStorage
   has_one_attached :card_img          # the entire card rendered
@@ -28,9 +30,14 @@ class Card < ApplicationRecord
 
   # uniqueness checks
   validates :name, uniqueness: { scope: :is_generated_card, if: :should_validate_uniqueness_if_token? } # if a card is a token, it can have a repeat name
-  #validates :card_art_url, uniqueness: true
+  # validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
   validates :cost, numericality: { greater_than_or_equal_to: -1 }
+
+
+# region: lifecycle
+  before_save :format_card_data_by_type
+# endregion
 
 # region: Card Type Checks
   def fiend_card?
@@ -65,17 +72,17 @@ class Card < ApplicationRecord
 
   def self.deck_limits_per_card_rarity
     {
-      "Common" => 2,
-      "Uncommon" => 2,
-      "Rare" => 2,
-      "Epic" => 2,
-      "Legendary" => 1,
-      "Artifact" => 1
+      'Common' => 2,
+      'Uncommon' => 2,
+      'Rare' => 2,
+      'Epic' => 2,
+      'Legendary' => 1,
+      'Artifact' => 1
     }
   end
 
   def self.deck_size_modifier_types
-    ["None", "Add", "Subtract", "Override"]
+    %w[None Add Subtract Override]
   end
 
 # endregion
@@ -90,6 +97,31 @@ class Card < ApplicationRecord
   end
 # endregion
 
+  def format_card_data_by_type
+    case type
+    when 'FiendCard'
+      self.attack = 0
+      self.health = 0
+    when 'HeroCard'
+      self.armor = 0
+    when 'MonumentCard'
+      self.durability = 0
+    when 'SpellCard'
+      self.attack = 0
+      self.armor = 0
+      self.durability = 0
+      self.health = 0
+    when 'TrapCard'
+      self.attack = 0
+      self.armor = 0
+      self.durability = 0
+      self.health = 0
+    when 'WeaponCard'
+      self.attack = 0
+      self.durability = 0
+    end
+  end
+
   private
 
   def validate_player_class_requirements
@@ -99,7 +131,7 @@ class Card < ApplicationRecord
       neutral_association_count = player_class_cards.joins(:player_class).where(player_classes: { name: 'Neutral' }).count
 
       # "Neutral" (PlayerClass) cannot be an option for Dual-Class Cards (Neutral is universal between all classes)
-      if neutral_association_count > 0
+      if neutral_association_count.positive?
         errors.add(:base,
                    'Cards cannot be Dual Class if they are Neutral (Neutral PlayerClass found in relationship PlayerClassCard)')
       else
@@ -118,8 +150,10 @@ class Card < ApplicationRecord
   end
 
   def validate_deck_size_modifier
-    #errors.add(:base, "Deck-Size Modifier is invalid") unless deck_size_modifier_type.includes?(Card.deck_size_modifier_types)
-    errors.add(:base, "Deck-Size Modifier has invalid type::[#{deck_size_modifier_type}]") if deck_size_modifier_types.includes?(deck_size_modifier_type)
+    # errors.add(:base, "Deck-Size Modifier is invalid") unless deck_size_modifier_type.includes?(Card.deck_size_modifier_types)
+    return unless deck_size_modifier_types.includes?(deck_size_modifier_type)
 
+    errors.add(:base,
+               "Deck-Size Modifier has invalid type::[#{deck_size_modifier_type}]")
   end
 end

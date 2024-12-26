@@ -1,17 +1,24 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   before_action :authenticate_user
   skip_before_action :authenticate_user, only: [:create]
 
-  #skip_before_action :authorize_api_key, only: [:create]
+  # skip_before_action :authorize_api_key, only: [:create]
 
   def profile; end
 
   # Create and Validate a New User
   def create
-
     # handle edge cases in json parsing for missing password params
-    return render json: { error: "Missing password in root object.  Error may occur if 'user' is not the object root, even if key is present"}, status: :bad_request  unless user_creation_params[:password]
-    return render json: { error: "Missing password_confirmation in root object.  Error may occur if 'user' is not the object root, even if key is present"}, status: :bad_request  unless user_creation_params[:password_confirmation]
+    unless user_creation_params[:password]
+      return render json: { error: "Missing password in root object.  Error may occur if 'user' is not the object root, even if key is present" },
+                    status: :bad_request
+    end
+    unless user_creation_params[:password_confirmation]
+      return render json: { error: "Missing password_confirmation in root object.  Error may occur if 'user' is not the object root, even if key is present" },
+                    status: :bad_request
+    end
 
 
     found_user = User.where(email: user_creation_params[:email]).or(User.where(username: user_creation_params[:username])).first
@@ -26,7 +33,7 @@ class UsersController < ApplicationController
         return render json: { errors: ['Username already in use'] }, status: :bad_request
       end
     end
-    
+
     if user_creation_params[:password] != user_creation_params[:password_confirmation]
       return render json: { errors: ['Passwords must match'] }, status: :bad_request
     end
@@ -42,31 +49,26 @@ class UsersController < ApplicationController
 
     payload = { USER_ID => user.id, API_KEY_DIGEST => user.api_key_digest }
     token = encode_jwt(payload)
-    render json: { user: user, token: token }, status: :created
+    render json: { user:, token: }, status: :created
   end
 
-  def update_username
-  end
+  def update_username; end
 
   # sends an email to a users email address to confirm the change
-  def change_email
-  end
+  def change_email; end
 
   # reached via link to confirm that a users email is correct and belongs to them
-  def confirm_change_email
-  end
+  def confirm_change_email; end
 
-  def change_password
-  end
+  def change_password; end
 
   def show
     render json: @current_user
   end
 
-
   def destroy
     @current_user.destroy
-    render json: { user_data: @current_user, message: "User has been deleted" }, status: :ok
+    render json: { user_data: @current_user, message: 'User has been deleted' }, status: :ok
   end
 
 # region: API Keys
