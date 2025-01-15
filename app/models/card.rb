@@ -26,17 +26,17 @@ class Card < ApplicationRecord
 # endregion
 
   # presence checks
-  validates :name, :card_text, :cost, :flavor_text, :rarity, presence: true
+  validates :name, :cost, :flavor_text, :rarity, presence: true
 
   # uniqueness checks
   validates :name, uniqueness: { scope: :is_generated_card, if: :should_validate_uniqueness_if_token? } # if a card is a token, it can have a repeat name
   # validates :card_art_url, uniqueness: true
   validates :flavor_text, uniqueness: true
-  validates :cost, numericality: { greater_than_or_equal_to: -1 }
-
+  validates :cost, numericality: { greater_than_or_equal_to: 0 }
 
 # region: lifecycle
-  before_save :format_card_data_by_type
+  before_validation :format_card_data_by_type
+  before_save :convert_card_text
 # endregion
 
 # region: Card Type Checks
@@ -97,28 +97,37 @@ class Card < ApplicationRecord
   end
 # endregion
 
+  def convert_card_text
+    self.unity_text = RichTextConverter.to_unity_text(card_text)
+    self.unity_flavor_text = RichTextConverter.to_unity_text(card_text)
+  end
+
   def format_card_data_by_type
     case type
     when 'FiendCard'
-      self.attack = 0
-      self.health = 0
+      self.armor = nil
+      self.durability = nil
     when 'HeroCard'
-      self.armor = 0
+      self.attack = nil
+      self.health = nil
+      self.durability = nil
     when 'MonumentCard'
-      self.durability = 0
+      self.attack = nil
+      self.health = nil
+      self.armor = nil
     when 'SpellCard'
-      self.attack = 0
-      self.armor = 0
-      self.durability = 0
-      self.health = 0
+      self.attack = nil
+      self.armor = nil
+      self.durability = nil
+      self.health = nil
     when 'TrapCard'
-      self.attack = 0
-      self.armor = 0
-      self.durability = 0
-      self.health = 0
+      self.attack = nil
+      self.armor = nil
+      self.durability = nil
+      self.health = nil
     when 'WeaponCard'
-      self.attack = 0
-      self.durability = 0
+      self.armor = nil
+      self.health = nil
     end
   end
 

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_823_182_816) do
+ActiveRecord::Schema[7.1].define(version: 20_250_108_222_334) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -102,6 +102,8 @@ ActiveRecord::Schema[7.1].define(version: 20_240_823_182_816) do
     t.boolean 'is_generated_card'
     t.string 'deck_size_modifier_type', default: 'None'
     t.integer 'deck_size_modifier_value'
+    t.text 'unity_text'
+    t.text 'unity_flavor_text'
   end
 
   create_table 'connected_cards', force: :cascade do |t|

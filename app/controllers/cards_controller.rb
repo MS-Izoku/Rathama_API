@@ -23,7 +23,6 @@ class CardsController < ApplicationController
   end
 # endregion
 
-
 # region General CRUD
   def show
     @card = Card.find_by(id: params[:id])
@@ -32,28 +31,33 @@ class CardsController < ApplicationController
 
   def create
     @card = Card.new(card_create_params)
-    p card_create_params
-    p @card
+    @card.save
 
-    if @card.save
-      render json: @card
-    else
+    if @card.errors
       render_error(@card, @card.errors)
       @card.errors.each do |err|
         p err
-        print ' :  '
         print err.message
       end
+    else
+      player_classes_data = params[:player_classes]
+      player_class_ids = player_classes_data.map { |pc| pc[:id] }
+      @player_classes = PlayerClass.where(id: player_class_ids)
+      @player_classes.each { |pc_id| PlayerClassCard.create!(player_class_id: pc_id, card: @card) }
+
+      render json: @card
     end
   end
 
   def update
     @card = Card.find_by(id: card_update_params[:id])
     @card.assign_attributes(card_update_params)
-    if @card.save
-      render json: @card
-    else
+    @card.save
+
+    if @card.errors
       render_error(@card, @card.error)
+    else
+      render json: @card
     end
   end
 
@@ -67,7 +71,6 @@ class CardsController < ApplicationController
     end
   end
 # endregion
-
 
   def change_image; end
 
@@ -140,7 +143,6 @@ class CardsController < ApplicationController
   end
 
 # endregion
-
 
 # region Lookup By Expansion
 
@@ -267,7 +269,6 @@ class CardsController < ApplicationController
 
 # endregion
 
-
 # region Card Creator Portal
   def card_creator_inputs
     player_classes = PlayerClass.all
@@ -318,7 +319,6 @@ class CardsController < ApplicationController
   end
 
 # endregion
-
 
   def build_search_conditions
     conditions = {}
