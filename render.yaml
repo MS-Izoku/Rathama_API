@@ -1,6 +1,6 @@
 databases:
-  - name: mysite
-    databaseName: mysite
+  - name: rathama_api
+    databaseName: rathama_db_development
     user: mysite
     plan: free
 
