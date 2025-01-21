@@ -39,6 +39,9 @@ class CardsController < ApplicationController
         p err
         print err.message
       end
+
+      render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
+
     else
       player_classes_data = params[:player_classes]
       player_class_ids = player_classes_data.map { |pc| pc[:id] }
