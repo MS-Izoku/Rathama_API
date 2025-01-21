@@ -1,4 +1,4 @@
-#username: RathamaMaster
+# username: RathamaMaster
 # password: Un13@3H*Th38*&al!
 
 default: &default
@@ -17,14 +17,6 @@ development:
   host: <%= ENV["DB_HOST"] %>
   port: <%= ENV["DB_PORT"] || 5432 %>
 
-test:
-  <<: *default
-  database: your_test_db_name
-
 production:
   <<: *default
-  database: <%= ENV["DB_NAME"] %>
-  username: <%= ENV["DB_USER"] %>
-  password: <%= ENV["DB_PASSWORD"] %>
-  host: <%= ENV["DB_HOST"] %>
-  port: <%= ENV["DB_PORT"] || 5432 %>
+  url: <%= ENV["DATABASE_URL"] %>
