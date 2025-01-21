@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DebugPrint
+class DebugPrinter
   def self.print(obj, header = '')
     p "==============================#{header}=============================="
     puts ''
