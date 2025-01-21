@@ -26,7 +26,7 @@ class CardType < ApplicationRecord
     when 'WeaponCard'
       errors.add(:base, 'Cannot connect attribute to Weapon Card') if card_type_attribute
     else
-      break
+      errors.add(:base, "Unknown card type: #{card.type}")
     end
   end
 end
