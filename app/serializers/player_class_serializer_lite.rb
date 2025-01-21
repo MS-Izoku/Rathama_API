@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class PlayerClassSerializer < Oj::Serializer
+class PlayerClassSerializerLite < Oj::Serializer
   attributes :name, :id
 end
