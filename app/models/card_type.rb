@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class CardType < ApplicationRecord
-  belongs_to :card, dependency: :destroy
-  belongs_to :card_type_attribute, dependency: :destroy
+  belongs_to :card, dependent: :destroy
+  belongs_to :card_type_attribute, dependent: :destroy
   validate :validate_card_attribute
 
   private
