@@ -1,13 +1,7 @@
-# username: RathamaMaster
-# password: Un13@3H*Th38*&al!
-
 default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  # username: rathamamaster
-  # password: Un13@3H*Th38*&al!
-  # host: localhost
   database: <%= ENV["DB_NAME"] %>
   username: <%= ENV["DB_USER"] %>
   password: <%= ENV["DB_PASSWORD"] %>
