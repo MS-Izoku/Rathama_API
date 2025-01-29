@@ -85,6 +85,24 @@ class Card < ApplicationRecord
     %w[None Add Subtract Override]
   end
 
+  def as_json(options = {})
+    attributes = super(options.merge({ except: [], methods: [:type] }))
+
+    grouped_attributes = card_type_attributes.group_by(&:type).transform_keys do |key|
+      if key == 'Tribe'
+        :tribe
+      else
+        key == 'SpellSchool' ? :spell_school : key.underscore.to_sym
+      end
+    end
+
+    grouped_attributes.each do |key, values|
+      attributes[key] = values.map(&:name)
+    end
+
+    attributes
+  end
+
 # endregion
 
 # region Does the Card have Art / Images attached via ActiveStorage?

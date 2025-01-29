@@ -4,7 +4,7 @@ class CardsController < ApplicationController
 # region: Index Routes
   def index
     @cards = Card.all
-    render json: @cards
+    render json: @cards.as_json
   end
 
   def cards_by_expansion
