@@ -17,7 +17,10 @@ magic = SpellSchool.create!(name: 'Magic',
 chakra = SpellSchool.create!(name: 'Chakra',
                              description: 'The magic of the body, internal workings made manifest.  Often exhausting, but with uniquely regenerative and body-enhancing capabilities.')
 illusion = SpellSchool.create!(name: 'Illusion',
-  description: "Forcing the enemy to see what you want them to see, or perhaps yourself if you're clever.")
+                               description: "Forcing the enemy to see what you want them to see, or perhaps yourself if you're clever.")
+
+divine = illusion = SpellSchool.create!(name: 'Divine',
+                                        description: 'Spells that invoke the power of the gods themselves, rare and powerful')
 
 # Elements
 fire = SpellSchool.create!(name: 'Fire', description: 'Spells that control the element of fire')
