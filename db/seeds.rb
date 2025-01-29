@@ -19,8 +19,10 @@ chakra = SpellSchool.create!(name: 'Chakra',
 illusion = SpellSchool.create!(name: 'Illusion',
                                description: "Forcing the enemy to see what you want them to see, or perhaps yourself if you're clever.")
 
-divine = illusion = SpellSchool.create!(name: 'Divine',
-                                        description: 'Spells that invoke the power of the gods themselves, rare and powerful')
+divine = SpellSchool.create!(name: 'Divine',
+                             description: 'Spells that invoke the power of the gods themselves, rare and powerful')
+talismanic = SpellSchool.create!(name: 'Talismanic',
+                                 description: 'Spells invoked from powerful artifacts, which do not make great or useful weapons.  Possibly expendable or cheap.')
 
 # Elements
 fire = SpellSchool.create!(name: 'Fire', description: 'Spells that control the element of fire')
