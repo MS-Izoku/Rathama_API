@@ -1,0 +1,2 @@
+class CardEffect < ApplicationRecord
+end

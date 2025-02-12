@@ -1,0 +1,2 @@
+class CardEffectAssignment < ApplicationRecord
+end
