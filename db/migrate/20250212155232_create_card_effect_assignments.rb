@@ -3,7 +3,7 @@ class CreateCardEffectAssignments < ActiveRecord::Migration[7.1]
     create_table :card_effect_assignments do |t|
       t.integer :card_effect_id
       t.integer :card_id
-
+      t.jsonb :params, default: {}
       t.timestamps
     end
   end

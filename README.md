@@ -94,3 +94,13 @@ reward2 = quest.rewards.create(amount: 300, rewardable: InGameCurrency.last)
 
 ### Json Serialization
 We currently use the oj_serialization package to render json wherever possible, which keeps things generally clean and fast.
+
+## Logging into Github
+### If you have your SSH already set up
+Enter this in your terminal:
+```
+ssh -T git@github.com
+```
+
+### If you don't have your SSH set up
+Set it up and use the above step to log in.
