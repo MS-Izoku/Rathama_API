@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Card < ApplicationRecord
+  # region: for FLAVOR
+  has_one :cocktail, class_name: 'Cocktail::Cocktail'
+  # endregion
+
 # region: ActiveStorage
   has_one_attached :card_img          # the entire card rendered
   has_one_attached :card_art_img      # the main card-art image

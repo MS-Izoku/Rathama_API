@@ -5,7 +5,8 @@ class CardTypeAttributesController < ApplicationController
 
   # return a list of all Tribes
   def tribes
-    render json: Tribe.all
+    @tribes = Tribe.all
+    render json: CardTypeAttributeSerializer.many(@tribes)
   end
 
   # return a list of all Tribe Names
@@ -14,11 +15,13 @@ class CardTypeAttributesController < ApplicationController
   end
 
   def tribes_alphebetically
-    render json: Tribe.all.order(name: :asc).select(:name, :id)
+    @tribes = Tribe.all.order(name: :asc)
+    render json: CardTypeAttributeSerializer.many(@tribes)
   end
 
   def tribes_reverse_alphabetically
-    render json: Tribe.all.order(name: :desc).select(:name, :id)
+    @tribes = Tribe.all.order(name: :desc)
+    render json: CardTypeAttributeSerializer.many(@tribes)
   end
 
   def create_tribe
@@ -26,25 +29,28 @@ class CardTypeAttributesController < ApplicationController
   end
 # endregion
 
-
 # region: Spell Schools
 
   # return a list of all Spell Schools
   def spell_schools
-    render json: SpellSchool.all
+    @spell_schools = SpellSchool.all
+    render json: CardTypeAttributeSerializer.many(@spell_schools)
   end
 
   # return a list of all Spell School Names
   def spell_school_names
-    render json: SpellSchool.all.select(:name, :id)
+    @spell_schools = SpellSchool.all
+    render json: CardTypeAttributeSerializer.many(@tribes)
   end
 
   def spell_schools_alphebetically
-    render json: SpellSchool.all.order(name: :asc).select(:name, :id)
+    @spell_schools = SpellSchool.all.order(name: :asc)
+    render json: CardTypeAttributeSerializer.many(@spell_schools)
   end
 
   def spell_schools_reverse_alphabetically
-    render json: SpellSchool.all.order(name: :desc).select(:name, :id)
+    @spell_schools = SpellSchool.all.order(name: :desc)
+    render json: CardTypeAttributeSerializer.many(@spell_schools)
   end
 
   def create_spell_school
@@ -83,9 +89,7 @@ class CardTypeAttributesController < ApplicationController
   end
 # endregion
 
-
 # endregion
-
 
 # region: Attribute Management
 
@@ -99,7 +103,6 @@ class CardTypeAttributesController < ApplicationController
   def create_tribe; end
 # endregion
 
-
 # region: removal
   def remove_tribe_from_fiend; end
 
@@ -110,7 +113,6 @@ class CardTypeAttributesController < ApplicationController
 # endregion
 
 # endregion
-
 
   def create_card_type_attribute
     if attribute_type == 'Tribe'
@@ -130,8 +132,6 @@ class CardTypeAttributesController < ApplicationController
       end
     end
   end
-
-
 
   private
 

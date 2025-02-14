@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_10_032112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -103,11 +103,44 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
     t.text "unity_flavor_text"
   end
 
+  create_table "cocktail_containers", force: :cascade do |t|
+    t.integer "container_id"
+    t.integer "cocktail_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cocktail_ingredients", force: :cascade do |t|
+    t.integer "cocktail_id"
+    t.integer "ingredient_id"
+    t.float "quantity"
+    t.string "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cocktails", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.text "richtext"
+    t.integer "card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "connected_cards", force: :cascade do |t|
     t.integer "master_card_id"
     t.integer "child_card_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "containers", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "category"
   end
 
   create_table "currencies", force: :cascade do |t|
@@ -155,6 +188,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
     t.text "description"
     t.string "tagline"
     t.integer "expansion_group_id", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

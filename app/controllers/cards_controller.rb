@@ -30,6 +30,7 @@ class CardsController < ApplicationController
   end
 
   def create
+    # p params
     @card = Card.new(card_create_params)
     @card.save
 
@@ -43,6 +44,7 @@ class CardsController < ApplicationController
       render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
 
     else
+      puts params[:player_classes]
       player_classes_data = params[:player_classes]
       player_class_ids = player_classes_data.map { |pc| pc[:id] }
       @player_classes = PlayerClass.where(id: player_class_ids)
