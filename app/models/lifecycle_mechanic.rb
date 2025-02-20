@@ -1,3 +1,0 @@
-class LifecycleMechanic < CardMechanic
-  
-end

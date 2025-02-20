@@ -36,26 +36,26 @@ shadow = SpellSchool.create!(name: 'Shadow', description: 'Spells that control t
 
 # region: CardMechanics
 
-def create_lifecycle_mechanics
-    CardMechanic.create!(name: 'Root', description: 'Effect occurs at the start of the game', args: '')
-    CardMechanic.create!(name: 'Dawn', description: 'An effect that occurs at the start of the turn', args: '')
+# def create_lifecycle_mechanics
+#     CardMechanic.create!(name: 'Root', description: 'Effect occurs at the start of the game', args: '')
+#     CardMechanic.create!(name: 'Dawn', description: 'An effect that occurs at the start of the turn', args: '')
 
-    # does not exist on SpellCards and TrapCards
-    CardMechanic.create!(name: 'Call', description: 'An effect that occurs when the card is played from hand', args: '')
+#     # does not exist on SpellCards and TrapCards
+#     CardMechanic.create!(name: 'Call', description: 'An effect that occurs when the card is played from hand', args: '')
     
-    CardMechanic.create!(name: 'AttackDeclared', description: 'An effect that occurs at the end of the turn', args: '')
-    CardMechanic.create!(name: 'TargetedForAttack', description: 'An effect that occurs at the end of the turn', args: '')
-    CardMechanic.create!(name: 'DamageStep', description: 'An effect that occurs at the end of the turn', args: '')
-    CardMechanic.create!(name: 'PostAttackStep', description: 'An effect that occurs at the end of the turn', args: '')
-    CardMechanic.create!(name: 'OnDamaged', description: 'An effect that occurs at the end of the turn', args: '')
+#     CardMechanic.create!(name: 'AttackDeclared', description: 'An effect that occurs at the end of the turn', args: '')
+#     CardMechanic.create!(name: 'TargetedForAttack', description: 'An effect that occurs at the end of the turn', args: '')
+#     CardMechanic.create!(name: 'DamageStep', description: 'An effect that occurs at the end of the turn', args: '')
+#     CardMechanic.create!(name: 'PostAttackStep', description: 'An effect that occurs at the end of the turn', args: '')
+#     CardMechanic.create!(name: 'OnDamaged', description: 'An effect that occurs at the end of the turn', args: '')
 
-    CardMechanic.create!(name: 'Rale', description: 'Effect occurs when this card is destroyed', args: '')
+#     CardMechanic.create!(name: 'Rale', description: 'Effect occurs when this card is destroyed', args: '')
 
-    # card-type specific mechanics
-    CardMechanic.create!(name: 'OnSpellActivate', description: 'Effect occurs when this card is destroyed', args: '')
-    CardMechanic.create!(name: 'OnTrapActivate', description: 'Effect occurs when this card is destroyed', args: '')
-    CardMechanic.create!(name: 'OnMonumentActivate', description: 'Effect occurs when this card is destroyed', args: '')
-end
+#     # card-type specific mechanics
+#     CardMechanic.create!(name: 'OnSpellActivate', description: 'Effect occurs when this card is destroyed', args: '')
+#     CardMechanic.create!(name: 'OnTrapActivate', description: 'Effect occurs when this card is destroyed', args: '')
+#     CardMechanic.create!(name: 'OnMonumentActivate', description: 'Effect occurs when this card is destroyed', args: '')
+# end
 
 def create_mechanics
     CardMechanic.create!(name: 'Act', description: 'Requires the player to perform specific actions for a reward', args: 'actionCount:integer')

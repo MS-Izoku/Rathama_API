@@ -7,17 +7,63 @@ class CardMechanic < ApplicationRecord
 
   # Define available enums globally (can be expanded later)
   ENUMS = {
-    'targetType' => %w[SingleTarget SingleNonPlayerTarget SingleEnemy SingleAlly AllEnemy AllAllies All Opponent Player Self Any]
+    'target_type' => %w[
+                      SingleTarget      SingleNonPlayerTarget   SingleEnemy             SingleAlly
+                      AllEnemy          AllAllies               All                     Opponent
+                      Player            Self                    Any
+                    ].freeze,
+    'lifecycle' => %w[
+                      Root              Dawn              Call                    AttackDeclared
+                      Cusp              OnResolve         Rale                    OnDamaged
+                      TargetedForAttack DamageStep        PostAttackStep          OnMonumentActivate 
+                      OnSpellActivate   OnTrapActivate    
+                    ].freeze
   }.freeze
 
+  # region: Enum Exposure
+  def self.target_types
+    ENUMS['target_type']
+  end
+
+  def self.all_lifecycle_stages
+    ENUMS['lifecycle']
+  end
+
+  def self.hero_lifecycle_stages
+    # Root Dawn Call AttackDeclared TargetedForAttack PostAttackStep Rale Cusp
+  end
+
+  def self.fiend_lifecycle_stages
+    # Root Dawn Call AttackDeclared TargetedForAttack DamageStep PostAttackStep Rale Cusp
+  end
+
+  def self.monument_lifecycle_stages
+    # Root Dawn Call OnMonumentActivate Rale OnResolve
+  end
+
+  def self.spell_lifecycle_stages
+    # Root OnSpellActivate OnResolve
+  end
+
+  def self.trap_lifecycle_stages
+    # Root OnTrapActivate OnResolve
+  end
+
+  def self.weapon_lifecycle_stages
+    # Root Dawn Call AttackDeclared DamageStep PostAttackStep Rale Cusp
+  end
+
+  # endregion
+
+
+
+  private
   # Parses the args string into a hash: "damage:integer, targetType:someEnum" → { damage: "integer", targetType: "someEnum" }
   def parsed_args
     return {} if args.blank?
 
     args.split(',').map(&:strip).map { |pair| pair.split(':') }.to_h.symbolize_keys
   end
-
-  private
 
   # Ensures args follow the correct format (e.g., "damage:integer, targetType:someEnum")
   def validate_args_format
