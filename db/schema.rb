@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_20_212235) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
     t.boolean "is_active"
     t.index ["api_key_digest"], name: "index_api_keys_on_api_key_digest", unique: true
     t.index ["owner_id", "owner_type"], name: "index_api_keys_on_owner_id_and_owner_type"
+  end
+
+  create_table "card_mechanic_assignments", force: :cascade do |t|
+    t.integer "card_id"
+    t.string "as_string"
+    t.string "lifecycle_stage"
+    t.string "mechanic_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "card_mechanics", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "args"
+    t.string "as_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "card_ownerships", force: :cascade do |t|
@@ -103,11 +121,44 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
     t.text "unity_flavor_text"
   end
 
+  create_table "cocktail_containers", force: :cascade do |t|
+    t.integer "container_id"
+    t.integer "cocktail_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cocktail_ingredients", force: :cascade do |t|
+    t.integer "cocktail_id"
+    t.integer "ingredient_id"
+    t.float "quantity"
+    t.string "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cocktails", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.text "richtext"
+    t.integer "card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "connected_cards", force: :cascade do |t|
     t.integer "master_card_id"
     t.integer "child_card_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "containers", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "category"
   end
 
   create_table "currencies", force: :cascade do |t|
@@ -155,6 +206,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_08_222334) do
     t.text "description"
     t.string "tagline"
     t.integer "expansion_group_id", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

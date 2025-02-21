@@ -25,6 +25,7 @@ gem 'jwt'
 
 gem 'oj' # Optomized Json
 gem 'oj_serializers' # OJ Serializers
+gem 'activesupport'
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '~> 3.1.7'
