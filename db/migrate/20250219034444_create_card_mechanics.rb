@@ -3,7 +3,6 @@ class CreateCardMechanics < ActiveRecord::Migration[7.1]
     create_table :card_mechanics do |t|
       t.string :name
       t.text :description
-      t.string :type
       t.string :args
       t.string :as_string
 

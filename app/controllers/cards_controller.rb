@@ -278,11 +278,21 @@ class CardsController < ApplicationController
 
     card_types = Card.pluck(:type).uniq
     card_types = %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard) unless card_types.length > 6
+    player_classes = PlayerClass.all
 
     render json: {
       card_types:,
       rarities: Card.valid_rarities,
-      player_classes:
+      mechanics: @mechanics,
+      lifecycle_stages:{
+        all: CardMechanic.lifecycle_stages,
+        hero: CardMechanic.hero_lifecycle,
+        fiend: CardMechanic.fiend_lifecycle,
+        monument: CardMechanic.monument_lifecycle,
+        spell: CardMechanic.spell_lifecycle,
+        trap: CardMechanic.trap_lifecycle,
+        weapon: CardMechanic.weapon_lifecycle
+      }
     }
   end
 # endregion
