@@ -284,14 +284,17 @@ class CardsController < ApplicationController
       card_types:,
       rarities: Card.valid_rarities,
       mechanics: @mechanics,
-      lifecycle_stages:{
-        all: CardMechanic.lifecycle_stages,
-        hero: CardMechanic.hero_lifecycle,
-        fiend: CardMechanic.fiend_lifecycle,
-        monument: CardMechanic.monument_lifecycle,
-        spell: CardMechanic.spell_lifecycle,
-        trap: CardMechanic.trap_lifecycle,
-        weapon: CardMechanic.weapon_lifecycle
+      enums:{
+        targetTypes: CardMechanic.target_types,
+        lifecycle_stages:{
+          all: CardMechanic.all_lifecycle_stages,
+          hero: CardMechanic.hero_lifecycle_stages,
+          fiend: CardMechanic.fiend_lifecycle_stages,
+          monument: CardMechanic.monument_lifecycle_stages,
+          spell: CardMechanic.spell_lifecycle_stages,
+          trap: CardMechanic.trap_lifecycle_stages,
+          weapon: CardMechanic.weapon_lifecycle_stages
+        }
       }
     }
   end

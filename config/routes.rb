@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
 # region: Card Creator
   get 'cards/creator-info', to: 'cards#card_creator_inputs'
+  get 'cards/creator-portal', to: 'cards#card_creator_inputs'
 # endregion
 
 

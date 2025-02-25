@@ -14,16 +14,9 @@ class CardMechanic < ApplicationRecord
       AllEnemy AllAllies All Opponent
       Player Self Any
     ].freeze,
-    'lifecycle' => %w[
-      Root Dawn Call AttackDeclared
-      Cusp OnResolve Rale OnDamaged
-      TargetedForAttack DamageStep PostAttackStep OnMonumentActivate
-      OnSpellActivate OnTrapActivate
-    ].freeze,
     'findSelectionType' => %w[
       FromDeck FromOpponentsDeck FromClass FromClassAndNeutral
       FromNeutral FromDetainer FromMagus FromSage FromTrapper FromWarden
-
     ].freeze,
     'heroLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack PostAttackStep Rale Cusp].freeze,
     'fiendLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack DamageStep PostAttackStep Rale Cusp].freeze,
@@ -35,41 +28,48 @@ class CardMechanic < ApplicationRecord
 
   # region: Enum Exposure
   def self.target_types
-    ENUMS['target_type']
+    ENUMS['targetType']
   end
 
   def self.all_lifecycle_stages
-    ENUMS['lifecycle']
+    [
+      hero_lifecycle_stages,
+      fiend_lifecycle_stages,
+      monument_lifecycle_stages,
+      spell_lifecycle_stages,
+      trap_lifecycle_stages,
+      weapon_lifecycle_stages
+    ].flatten.uniq
   end
 
   def self.hero_lifecycle_stages
     # Root Dawn Call AttackDeclared TargetedForAttack PostAttackStep Rale Cusp
-    ENUMS['hero_lifecycle']
+    ENUMS['heroLifecycle']
   end
 
   def self.fiend_lifecycle_stages
     # Root Dawn Call AttackDeclared TargetedForAttack DamageStep PostAttackStep Rale Cusp
-    ENUMS['fiend_lifecycle']
+    ENUMS['fiendLifecycle']
   end
 
   def self.monument_lifecycle_stages
     # Root Dawn Call OnMonumentActivate Rale OnResolve
-    ENUMS['monument_lifecycle']
+    ENUMS['monumentLifecycle']
   end
 
   def self.spell_lifecycle_stages
     # Root OnSpellActivate OnResolve
-    ENUMS['spell_lifecycle']
+    ENUMS['spellLifecycle']
   end
 
   def self.trap_lifecycle_stages
     # Root OnTrapActivate OnResolve
-    ENUMS['trap_lifecycle']
+    ENUMS['trapLifecycle']
   end
 
   def self.weapon_lifecycle_stages
     # Root Dawn Call AttackDeclared DamageStep PostAttackStep Rale Cusp
-    ENUMS['weapon_lifecycle']
+    ENUMS['weaponLifecycle']
   end
 
   # endregion
