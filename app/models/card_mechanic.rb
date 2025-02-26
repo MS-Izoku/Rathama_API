@@ -3,7 +3,7 @@
 class CardMechanic < ApplicationRecord
   validates :name, uniqueness: true, presence: true
   validates :description, presence: true
-  validate :validate_args_format
+  # validate :validate_args_format
 
   before_save :format_args, :create_mechanic_string
 
@@ -18,8 +18,10 @@ class CardMechanic < ApplicationRecord
       FromDeck FromOpponentsDeck FromClass FromClassAndNeutral
       FromNeutral FromDetainer FromMagus FromSage FromTrapper FromWarden
     ].freeze,
-    'heroLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack PostAttackStep Rale Cusp].freeze,
-    'fiendLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack DamageStep PostAttackStep Rale Cusp].freeze,
+    'heroLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack TargetedBySpell PostAttackStep Rale
+                          Cusp].freeze,
+    'fiendLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack TargetedBySpell DamageStep PostAttackStep
+                           Rale Cusp].freeze,
     'monumentLifecycle' => %w[Root Dawn Call OnMonumentActivate Rale OnResolve].freeze,
     'spellLifecycle' => %w[Root OnSpellActivate OnResolve].freeze,
     'trapLifecycle' => %w[Root OnTrapActivate OnResolve].freeze,

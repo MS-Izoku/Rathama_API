@@ -274,18 +274,14 @@ class CardsController < ApplicationController
 
 # region Card Creator Portal
   def card_creator_inputs
-    card_types = %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard)
-    player_classes = PlayerClassSerializer.many(PlayerClass.all)
-    mechanics = CardMechanicSerializer.many(CardMechanic.all)
-
     render json: {
-      card_types: card_types,
+      card_types: %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard),
       rarities: Card.valid_rarities,
-      mechanics: mechanics,
-      player_classes: player_classes,
-      enums:{
+      mechanics: CardMechanicSerializer.many(CardMechanic.all),
+      playerClasses: PlayerClassSerializer.many(PlayerClass.all),
+      enums: {
         targetTypes: CardMechanic.target_types,
-        lifecycle_stages:{
+        lifecycleStages: {
           all: CardMechanic.all_lifecycle_stages,
           hero: CardMechanic.hero_lifecycle_stages,
           fiend: CardMechanic.fiend_lifecycle_stages,
