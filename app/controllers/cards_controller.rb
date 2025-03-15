@@ -26,30 +26,52 @@ class CardsController < ApplicationController
 # region General CRUD
   def show
     @card = Card.find_by(id: params[:id])
-    render json: @card
+    return render json: 'Card not Found', status: :not_found unless @card
+
+    render json: CompleteCardSerializer.one(@card)
   end
 
   def create
-    @card = Card.new(card_create_params)
-    @card.save
+    ActiveRecord::Base.transaction do
+      # Create the card without player_classes
+      card_params = card_create_params.except(:player_classes, :card_mechanics)
+      @card = Card.create!(card_params)
 
-    if @card.errors
-      render_error(@card, @card.errors)
-      @card.errors.each do |err|
-        p err
-        print err.message
-      end
+      puts "\n\n=== Initial Save Successful ===\n\n"
 
-      render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
-
-    else
-      player_classes_data = params[:player_classes]
+      # Assign PlayerClasses manually
+      player_classes_data = params[:card][:player_classes] || []
       player_class_ids = player_classes_data.map { |pc| pc[:id] }
       @player_classes = PlayerClass.where(id: player_class_ids)
-      @player_classes.each { |pc_id| PlayerClassCard.create!(player_class_id: pc_id, card: @card) }
 
-      render json: @card
+      @player_classes.each do |player_class|
+        PlayerClassCard.create!(player_class:, card: @card)
+      end
+
+      puts "\n\n=== PlayerClassCards Created Successfully ===\n\n"
+
+      # Assign Mechanics
+      mechanics_data = params[:card][:card_mechanics] || {}
+
+      mechanics_data.each do |lifecycle_stage, mechanics|
+        mechanic_string = CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
+        puts 'Mechanic String => ' + mechanic_string
+        CardMechanicAssignment.create!(
+          card: @card,
+          as_string: mechanics.join('|'), # Store raw mechanics list
+          lifecycle_stage:,
+          mechanic_string: # Store formatted mechanics string
+        )
+      end
+
+      puts "\n\n=== CardMechanicAssignments Created Successfully ===\n\n"
+
+      render json: @card, status: :created
     end
+  rescue ActiveRecord::RecordInvalid => e
+    puts "Transaction failed: #{e.message}"
+    @card&.destroy # Ensures cleanup if the card was partially created
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def update
@@ -277,11 +299,12 @@ class CardsController < ApplicationController
     render json: {
       card_types: %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard),
       rarities: Card.valid_rarities,
-      mechanics: CardMechanicSerializer.many(CardMechanic.all),
+      mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
       playerClasses: PlayerClassSerializer.many(PlayerClass.all),
-      enums: {
-        targetTypes: CardMechanic.target_types,
-        lifecycleStages: {
+      expansions: ExpansionSerializer.many(Expansion.all),
+      enums: CardMechanic::ENUMS.merge(
+        targetType: CardMechanic.target_types,
+        lifecycleStage: {
           all: CardMechanic.all_lifecycle_stages,
           hero: CardMechanic.hero_lifecycle_stages,
           fiend: CardMechanic.fiend_lifecycle_stages,
@@ -290,7 +313,8 @@ class CardsController < ApplicationController
           trap: CardMechanic.trap_lifecycle_stages,
           weapon: CardMechanic.weapon_lifecycle_stages
         }
-      }
+      )
+
     }
   end
 # endregion
@@ -299,21 +323,14 @@ class CardsController < ApplicationController
 
 # region: Strong Params
   def card_create_params
-    params.require(:card).permit(:id,
-                                 :type,
-                                 :name,
-                                 :cost,
-                                 :rarity,
-                                 :card_text,
-                                 :flavor_text,
-                                 :is_generated_card,
-                                 :deck_size_modifier_type,
-                                 :deck_size_modifier_value,
-                                 :attack,
-                                 :health,
-                                 :armor,
-                                 :durability,
-                                 :expansion_id)
+    params.require(:card).permit(
+      :id, :type, :name, :cost, :rarity, :card_text, :flavor_text,
+      :is_generated_card, :deck_size_modifier_type, :deck_size_modifier_value,
+      :attack, :health, :armor, :durability, :expansion_id,
+      # :image_file,
+      player_classes: %i[id name], # Allow player_classes as an array of objects with specific keys
+      card_mechanics: {} # Allow card_mechanics as a hash
+    )
   end
 
   def card_update_params

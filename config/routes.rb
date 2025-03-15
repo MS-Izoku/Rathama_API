@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   get 'cards/expansions/:expansion_id/traps', to: 'cards#traps_from_expansion'
   get 'cards/expansions/:expansion_id/weapons', to: 'cards#weapons_from_expansion'
 
+  get 'cards/:id', to: 'cards#show'
 
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'

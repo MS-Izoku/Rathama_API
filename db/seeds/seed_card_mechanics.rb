@@ -23,7 +23,7 @@ class SeedCardMechanics
 
     # generative / searching mechanics
     CardMechanic.find_or_create_by(name: 'Copy', description: 'Generates a copy of a target',
-                                   args: 'targetType:SingleTarget')
+                                   args: 'targetType:targetType')
     # CardMechanic.find_or_create_by(name: 'Hail', description: '<strong>Find</strong> 3 cards from your deck, pick one to put on top', args: '', is_trait: true)
 
     # Gaining effects
@@ -47,7 +47,6 @@ class SeedCardMechanics
                                    args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Chain',
                                    description: 'An effect that occurs when this card is played after another', args: '', is_trait: true)
-
     CardMechanic.find_or_create_by(name: 'Fury', description: 'An effect that occurs when this minion takes damage',
                                    args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Inspire', description: 'Activates when the Scales are used', args: '',
@@ -56,14 +55,8 @@ class SeedCardMechanics
                                    description: 'A state shared between cards when placed between certain pieces', args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Mime', description: 'Can be played multiple times for the base mana cost',
                                    args: '', is_trait: true)
-    CardMechanic.find_or_create_by(name: 'Nexus', description: 'Effect occurs when this card enters the Nexus space',
-                                   args: '', is_trait: true)
-    CardMechanic.find_or_create_by(name: 'Overkill', description: 'Effect occurs when damage exceeds target health',
-                                   args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Rite', description: 'Complete a set of steps for a reward', args: '',
                                    is_trait: true)
-    CardMechanic.find_or_create_by(name: 'Rook', description: 'Effect occurs when a Rook enters a Rook space',
-                                   args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Rush', description: 'Can attack enemy minions immediately', args: '',
                                    is_trait: true)
     CardMechanic.find_or_create_by(name: 'Sap', description: 'Restores health based on damage dealt', args: '',
@@ -83,25 +76,19 @@ class SeedCardMechanics
       # those few Traits with args
     CardMechanic.find_or_create_by(name: 'Charge',
                                    description: 'Can be played multiple times from hand for the same cost', args: 'quantity:integer', is_trait: true)
-
     CardMechanic.find_or_create_by(name: 'Spell Damage', description: 'Increases damage done by Spells and Traps',
                                    args: 'spellDamageBonus:integer')
-
-    CardMechanic.find_or_create_by(name: 'Pact',
-                                   description: 'Effect becomes active after (x) friendly Fiends die while in hand', args: 'sacrificesRequired:integer', is_trait: true)
   end
 
   def self.create_keywords_with_args
-    # CardMechanic.find_or_create_by(name: 'Act',
-    #                                description: 'Requires the player to perform specific actions for a reward', args: 'actionCount:integer')
     CardMechanic.find_or_create_by(name: 'Evoke', description: 'Summon a minion from your deck',
-                                   args: 'targetType:SingleTarget')
+                                   args: 'targetType:targetType')
     CardMechanic.find_or_create_by(name: 'Find',
                                    description: 'Finds an existing card from a selection and adds it to hand', args: 'selectionSize:integer, selectionType:findSelectionType')
     CardMechanic.find_or_create_by(name: 'Form',
                                    description: 'Generates a new card from a selection and adds it to hand', args: 'selectionSize:integer, findSelectionType:findSelectionType')
     CardMechanic.find_or_create_by(name: 'Gag', description: 'Removes any/all effects from the target',
-                                   args: 'targetType:SingleTarget')
+                                   args: 'targetType:targetType')
     CardMechanic.find_or_create_by(name: 'Giant', description: 'Summons powerful tokens in additional spaces',
                                    args: 'summonCount:integer')
     CardMechanic.find_or_create_by(name: 'Invoke', description: 'Activates the hero power of another card',
