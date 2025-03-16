@@ -56,10 +56,6 @@ Rails.application.routes.draw do
   patch 'decks/:id', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
 
-
-
-
-
 # region CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
@@ -93,12 +89,13 @@ Rails.application.routes.draw do
 
 
 # region Card Rendering
-
-
 # endregion
-
 
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
+
+  namespace :cocktails do
+    get ''
+  end
 end
