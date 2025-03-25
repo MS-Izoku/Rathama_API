@@ -1,3 +1,5 @@
+Dir[Rails.root.join('db', 'seeds', '*.rb')].each { |file| require file }
+
 class SeedsController < ApplicationController
     def seed_all
       @completed = []
