@@ -24,4 +24,5 @@ class CompleteCardSerializer < Oj::Serializer
 
   # Include effects as an array of hashes
   has_many :card_mechanic_assignments, serializer: CardMechanicAssignmentSerializer
+  has_many :player_classes, serializer: PlayerClassMicroSerializer
 end

@@ -18,9 +18,9 @@ Rails.application.routes.draw do
 
   post 'cards', to: 'cards#create'
 
-  patch 'cards', to: 'cards#update'
+  patch 'cards/:id', to: 'cards#update'
 
-  delete 'cards', to: 'cards#destroy'
+  delete 'cards/:id', to: 'cards#destroy'
 
   get 'cards/expansions/:expansion_id/cards', to: 'cards#cards_from_expansion'
   get 'cards/expansions/:expansion_id/fiends', to: 'cards#fiends_from_expansion'
