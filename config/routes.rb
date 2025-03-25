@@ -95,11 +95,16 @@ Rails.application.routes.draw do
 
 
 # region Card Rendering
-
-
 # endregion
 
-
+# region Seeding
+  post 'seeds/all', to: 'seeds#seed_all'
+  post 'seeds/tribes-and-spell-schools', to: 'seeds#seed_tribes_and_spell_schools'
+  post 'seeds/tribes', to: 'seeds#seed_tribes'
+  post 'seeds/spell-schools', to: 'seeds#seed_spell_schools'
+  post 'seeds/basic-cards', to: 'seeds#seed_basic_cards'
+  post 'seeds/card-mechanics', to: 'seeds#seed_card_mechanics'
+# endregion
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
