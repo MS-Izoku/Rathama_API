@@ -9,23 +9,24 @@ class CardMechanic < ApplicationRecord
 
   # Define available enums globally (can be expanded later)
   ENUMS = {
-    'targetType' => %w[
+    'targetTypes' => %w[
       SingleTarget SingleNonPlayerTarget SingleEnemy SingleAlly
       AllEnemy AllAllies All Opponent
       Player Self Any
     ].freeze,
-    'findSelectionType' => %w[
+    'findSelectionTypes' => %w[
       FromDeck FromOpponentsDeck FromClass FromClassAndNeutral
       FromNeutral FromDetainer FromMagus FromSage FromTrapper FromWarden
     ].freeze,
-    'heroLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack TargetedBySpell PostAttackStep Rale
+    'subEffect': 'TBD',
+    'heroLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack TargetedBySpell PostAttackStep Overkill Rale
                           Cusp].freeze,
-    'fiendLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack TargetedBySpell DamageStep PostAttackStep
+    'fiendLifecycle' => %w[Root Dawn Call Nexus Rook Link AttackDeclared TargetedForAttack TargetedBySpell DamageStep PostAttackStep Overkill
                            Rale Cusp].freeze,
-    'monumentLifecycle' => %w[Root Dawn Call OnMonumentActivate Rale OnResolve].freeze,
-    'spellLifecycle' => %w[Root OnSpellActivate OnResolve].freeze,
-    'trapLifecycle' => %w[Root OnTrapActivate OnResolve].freeze,
-    'weaponLifecycle' => %w[Root Dawn Call AttackDeclared DamageStep PostAttackStep Rale Cusp].freeze
+    'monumentLifecycle' => %w[Root Dawn Call Nexus Rook Link OnMonumentActivate Overkill Rale OnResolve].freeze,
+    'spellLifecycle' => %w[Root OnSpellActivate Overkill OnResolve].freeze,
+    'trapLifecycle' => %w[Root OnTrapActivate Overkill OnResolve].freeze,
+    'weaponLifecycle' => %w[Root Dawn Call AttackDeclared DamageStep PostAttackStep Overkill Rale Cusp].freeze
   }.freeze
 
   # region: Enum Exposure

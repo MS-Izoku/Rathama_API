@@ -29,6 +29,40 @@ namespace :db do
   end
 end
 
+namespace :server do
+  desc 'Kill Server by PID'
+  task :kill_pid do
+    pid = ARGV[1]&.to_i
+
+    if pid.nil? || pid <= 0
+      puts 'Usage: rake server:kill_pid <PID>'
+      exit 1
+    end
+
+    puts "Attempting to kill process with PID: #{pid}..."
+    system("taskkill /F /PID #{pid}")
+
+    # Ensure Rake doesn't process PID as a task name
+    begin
+      Rake::Task[:server].invoke
+    rescue StandardError
+      nil
+    end
+  end
+
+  # for when rails is telling you the server is running, even after you kill the PID
+  desc 'Delete Rails server PID file'
+  task :clear_pid do
+    pid_file = 'tmp/pids/server.pid'
+    if File.exist?(pid_file)
+      File.delete(pid_file)
+      puts "Deleted PID file: #{pid_file}"
+    else
+      puts "No PID file found at #{pid_file}"
+    end
+  end
+end
+
 namespace :cache do
   CACHE_LOG_PREFIX = '(¤>>»'
 
@@ -44,15 +78,12 @@ namespace :cache do
     # sh 'rails production:cache'
   end
 
-
-
   desc 'Disable Cache'
   task :disable do
     return unless Rails.application.config.action_controller.perform_caching
 
     puts "#{CACHE_LOG_PREFIX} Disabling Rathama Cache"
   end
-
 
   desc 'Clear Cache'
   task clear: :environment do
@@ -61,7 +92,6 @@ namespace :cache do
     puts "#{CACHE_LOG_PREFIX} Cache has been Cleared"
   end
 end
-
 
 namespace :backup do
   BACKUP_PREFIX = '(¤§=BACKUP=§¤)>»»'
@@ -78,7 +108,6 @@ namespace :backup do
     end
   end
 
-
   desc 'Create a backup CSV file for existing Card Data'
   task create_csv: :environment do
     system('cls')
@@ -90,7 +119,6 @@ namespace :backup do
       puts "#{BackupRegenerator.printable_arrows(2)}#{BACKUP_PREFIX} Created [#{count}] #{BackupRegenerator.snake_to_camel(record_name.to_s)}"
     end
   end
-
 
   desc 'Repopulate the Database using a backup JSON file (for non-user data)'
   task restore_from_json: :environment do
@@ -123,8 +151,6 @@ namespace :backup do
     end
   end
 
-
-
   desc 'Repopulate the Database using a backup CSV file (for non-user data)'
   task restore_from_csv: :environment do
     system('cls')
@@ -155,7 +181,6 @@ namespace :backup do
     end
   end
 end
-
 
 # Make a nicer version of this later
 ADMIN_ROOT_USERNAME = 'radmin_01'

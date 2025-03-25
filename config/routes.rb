@@ -18,9 +18,9 @@ Rails.application.routes.draw do
 
   post 'cards', to: 'cards#create'
 
-  patch 'cards', to: 'cards#update'
+  patch 'cards/:id', to: 'cards#update'
 
-  delete 'cards', to: 'cards#destroy'
+  delete 'cards/:id', to: 'cards#destroy'
 
   get 'cards/expansions/:expansion_id/cards', to: 'cards#cards_from_expansion'
   get 'cards/expansions/:expansion_id/fiends', to: 'cards#fiends_from_expansion'
@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   get 'cards/expansions/:expansion_id/traps', to: 'cards#traps_from_expansion'
   get 'cards/expansions/:expansion_id/weapons', to: 'cards#weapons_from_expansion'
 
+  get 'cards/:id', to: 'cards#show'
 
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
