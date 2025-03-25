@@ -279,6 +279,10 @@ class CardsController < ApplicationController
       rarities: Card.valid_rarities,
       mechanics: CardMechanicSerializer.many(CardMechanic.all),
       playerClasses: PlayerClassSerializer.many(PlayerClass.all),
+      cardTypeAttributes: {
+        spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
+        tribes: CardTypeAttributeSerializer.many(Tribe.all)
+      }
       enums: {
         targetTypes: CardMechanic.target_types,
         lifecycleStages: {
