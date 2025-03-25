@@ -1,6 +1,8 @@
 Dir[Rails.root.join('db', 'seeds', '*.rb')].each { |file| require file }
 
 class SeedsController < ApplicationController
+    before_action :check_permissions
+
     def seed_all
       @completed = []
       @failed = nil
@@ -69,4 +71,9 @@ class SeedsController < ApplicationController
       render json: { message: "Failed to seed Card Mechanics", error: e.message, full_error: e }, status: :internal_server_error
     end
     # endregion
+
+    private
+    def check_permissions
+        # require permissions to re-seed data, just in case (NYI)
+    end
   end
