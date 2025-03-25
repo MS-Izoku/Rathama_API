@@ -341,6 +341,10 @@ class CardsController < ApplicationController
       mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
       playerClasses: PlayerClassSerializer.many(PlayerClass.all),
       expansions: ExpansionSerializer.many(Expansion.all),
+      cardTypeAttributes: {
+        spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
+        tribes: CardTypeAttributeSerializer.many(Tribe.all)
+      },
       enums: CardMechanic::ENUMS.merge(
         targetType: CardMechanic.target_types,
         lifecycleStage: {

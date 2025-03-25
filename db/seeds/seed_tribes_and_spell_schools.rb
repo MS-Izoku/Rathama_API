@@ -5,8 +5,6 @@ class SeedTribesAndSpellSchools
     seed_spell_schools
     seed_tribes
   end
-
-  private
   
   def self.seed_spell_schools
     # region: spell schools
