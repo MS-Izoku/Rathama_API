@@ -1,14 +1,13 @@
 class CardMechanicAssignment < ApplicationRecord
-    belongs_to :card
+  belongs_to :card # Yes, this is required to establish the association
 
-    # create a 
-    def create_whole_mechanic_string
-        "#{lifecycle_stage}::#{mechanic_string}"
-    end
-
-    # since mechanic strings have specific args, we need to parse
-    # each of the args and create that string here
-    # ie: DealDamage(damage:integer, target:target_type) should look like DealDamage(5, SingleTarget)
-    def create_adjusted_mechanic_string
-    end
+  # Generates a formatted mechanic string based on the lifecycle and provided mechanics
+  # Example input:
+  # lifecycle_stage = "Call"
+  # mechanics = ["Evoke(SingleAlly)", "Copy(SingleAlly)"]
+  # Expected output: "Call:Evoke(SingleAlly)|Copy(SingleAlly)"
+  def self.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
+    formatted_mechanics = mechanics.map(&:strip).join('|')
+    "#{lifecycle_stage}::#{formatted_mechanics}".delete(' ')
+  end
 end

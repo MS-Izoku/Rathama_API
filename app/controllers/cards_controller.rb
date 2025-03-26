@@ -26,42 +26,103 @@ class CardsController < ApplicationController
 # region General CRUD
   def show
     @card = Card.find_by(id: params[:id])
-    render json: @card
+    return render json: 'Card not Found', status: :not_found unless @card
+
+    render json: CompleteCardSerializer.one(@card)
   end
 
   def create
-    @card = Card.new(card_create_params)
-    @card.save
+    ActiveRecord::Base.transaction do
+      # Create the card without player_classes
+      card_params = card_create_params.except(:player_classes, :card_mechanics)
+      @card = Card.create!(card_params)
 
-    if @card.errors
-      render_error(@card, @card.errors)
-      @card.errors.each do |err|
-        p err
-        print err.message
-      end
-
-      render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
-
-    else
-      player_classes_data = params[:player_classes]
+      # Assign PlayerClasses manually
+      player_classes_data = params[:card][:player_classes] || []
       player_class_ids = player_classes_data.map { |pc| pc[:id] }
       @player_classes = PlayerClass.where(id: player_class_ids)
-      @player_classes.each { |pc_id| PlayerClassCard.create!(player_class_id: pc_id, card: @card) }
 
-      render json: @card
+      @player_classes.each do |player_class|
+        PlayerClassCard.create!(player_class:, card: @card)
+      end
+
+      # Assign Mechanics
+      mechanics_data = params[:card][:card_mechanics] || {}
+
+      mechanics_data.each do |lifecycle_stage, mechanics|
+        mechanic_string = CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
+        CardMechanicAssignment.create!(
+          card: @card,
+          as_string: mechanics.join('|'), # Store raw mechanics list
+          lifecycle_stage:,
+          mechanic_string: # Store formatted mechanics string
+        )
+      end
+      render json: @card, status: :created
     end
+  rescue ActiveRecord::RecordInvalid => e
+    puts "Transaction failed: #{e.message}"
+    @card&.destroy # Ensures cleanup if the card was partially created
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def update
-    @card = Card.find_by(id: card_update_params[:id])
-    @card.assign_attributes(card_update_params)
-    @card.save
+    ActiveRecord::Base.transaction do
+      @card = Card.find_by(id: card_create_params[:id])
+      return render json: { error: 'Card not found' }, status: :not_found unless @card
 
-    if @card.errors
-      render_error(@card, @card.error)
-    else
-      render json: @card
+      # Update basic card fields
+      card_params = card_create_params.except(:player_classes, :card_mechanics)
+      @card.update!(card_params)
+
+      # Manage PlayerClasses
+      incoming_player_class_ids = (params[:card][:player_classes] || []).pluck(:id)
+      existing_player_class_ids = @card.player_classes.pluck(:id)
+
+      # Remove old relationships
+      removed_ids = existing_player_class_ids - incoming_player_class_ids
+      PlayerClassCard.where(card: @card, player_class_id: removed_ids).destroy_all
+
+      # Add new relationships
+      new_ids = incoming_player_class_ids - existing_player_class_ids
+      new_ids.each { |pc_id| PlayerClassCard.create!(player_class_id: pc_id, card: @card) }
+
+      # Manage Mechanics
+      incoming_mechanics = params[:card][:card_mechanics] || {}
+      existing_mechanics = @card.card_mechanic_assignments.index_by(&:lifecycle_stage)
+
+      # Update or remove existing mechanics
+      existing_mechanics.each do |lifecycle_stage, assignment|
+        # binding.break
+        if incoming_mechanics.key?(lifecycle_stage)
+          # Update mechanic
+          assignment.update!(
+            as_string: incoming_mechanics[lifecycle_stage].join('|'),
+            mechanic_string: CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage,
+                                                                                    incoming_mechanics[lifecycle_stage])
+          )
+        else
+          # Remove mechanic if it's not in the request
+          assignment.destroy!
+        end
+      end
+
+      # Add new mechanics
+      (incoming_mechanics.keys - existing_mechanics.keys).each do |lifecycle_stage|
+        CardMechanicAssignment.create!(
+          card: @card,
+          lifecycle_stage:,
+          as_string: incoming_mechanics[lifecycle_stage].join('|'),
+          mechanic_string: CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage,
+                                                                                  incoming_mechanics[lifecycle_stage])
+        )
+      end
+
+      render json: @card, status: :ok
     end
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Update failed: #{e.message}"
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def destroy
@@ -274,25 +335,29 @@ class CardsController < ApplicationController
 
 # region Card Creator Portal
   def card_creator_inputs
-    player_classes = PlayerClass.all
-
-    card_types = Card.pluck(:type).uniq
-    card_types = %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard) unless card_types.length > 6
-    player_classes = PlayerClass.all
-
     render json: {
-      card_types:,
+      card_types: %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard),
       rarities: Card.valid_rarities,
-      mechanics: @mechanics,
-      lifecycle_stages:{
-        all: CardMechanic.lifecycle_stages,
-        hero: CardMechanic.hero_lifecycle,
-        fiend: CardMechanic.fiend_lifecycle,
-        monument: CardMechanic.monument_lifecycle,
-        spell: CardMechanic.spell_lifecycle,
-        trap: CardMechanic.trap_lifecycle,
-        weapon: CardMechanic.weapon_lifecycle
-      }
+      mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
+      playerClasses: PlayerClassSerializer.many(PlayerClass.all),
+      expansions: ExpansionSerializer.many(Expansion.all),
+      cardTypeAttributes: {
+        spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
+        tribes: CardTypeAttributeSerializer.many(Tribe.all)
+      },
+      enums: CardMechanic::ENUMS.merge(
+        targetType: CardMechanic.target_types,
+        lifecycleStage: {
+          all: CardMechanic.all_lifecycle_stages,
+          hero: CardMechanic.hero_lifecycle_stages,
+          fiend: CardMechanic.fiend_lifecycle_stages,
+          monument: CardMechanic.monument_lifecycle_stages,
+          spell: CardMechanic.spell_lifecycle_stages,
+          trap: CardMechanic.trap_lifecycle_stages,
+          weapon: CardMechanic.weapon_lifecycle_stages
+        }
+      )
+
     }
   end
 # endregion
@@ -301,21 +366,19 @@ class CardsController < ApplicationController
 
 # region: Strong Params
   def card_create_params
-    params.require(:card).permit(:id,
-                                 :type,
-                                 :name,
-                                 :cost,
-                                 :rarity,
-                                 :card_text,
-                                 :flavor_text,
-                                 :is_generated_card,
-                                 :deck_size_modifier_type,
-                                 :deck_size_modifier_value,
-                                 :attack,
-                                 :health,
-                                 :armor,
-                                 :durability,
-                                 :expansion_id)
+    # this allows for blank-array bodies of mechanics (for non-mechanic/true-vanilla cards)
+    if params[:card][:card_mechanics].is_a?(Array) && params[:card][:card_mechanics].empty?
+      params[:card][:card_mechanics] = {}
+    end
+
+    params.require(:card).permit(
+      :id, :type, :name, :cost, :rarity, :card_text, :flavor_text,
+      :is_generated_card, :deck_size_modifier_type, :deck_size_modifier_value,
+      :attack, :health, :armor, :durability, :expansion_id,
+      # :image_file,
+      player_classes: %i[id name], # Allow player_classes as an array of objects with specific keys
+      card_mechanics: {} # Allow card_mechanics as a hash
+    )
   end
 
   def card_update_params

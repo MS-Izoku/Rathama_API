@@ -14,8 +14,11 @@ class Card < ApplicationRecord
   has_many :users, through: :card_ownerships
 
   # Player Class/es of the Card (In Case of Dual+ Class Cards)
-  has_many :player_class_cards
+  has_many :player_class_cards, dependent: :destroy
   has_many :player_classes, through: :player_class_cards
+
+  has_many :card_mechanic_assignments
+  belongs_to :expansion
 
   # Cards have many CardTypeAttributes, being either Tribes or SpellSchools (validated on other models)
   has_many :card_types

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_20_212235) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_26_034609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_20_212235) do
     t.string "as_string"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_trait", default: false
   end
 
   create_table "card_ownerships", force: :cascade do |t|
