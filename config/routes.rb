@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
 # region: Card Creator
   get 'cards/creator-info', to: 'cards#card_creator_inputs'
+  get 'cards/creator-portal', to: 'cards#card_creator_inputs'
 # endregion
 
 
@@ -17,9 +18,9 @@ Rails.application.routes.draw do
 
   post 'cards', to: 'cards#create'
 
-  patch 'cards', to: 'cards#update'
+  patch 'cards/:id', to: 'cards#update'
 
-  delete 'cards', to: 'cards#destroy'
+  delete 'cards/:id', to: 'cards#destroy'
 
   get 'cards/expansions/:expansion_id/cards', to: 'cards#cards_from_expansion'
   get 'cards/expansions/:expansion_id/fiends', to: 'cards#fiends_from_expansion'
@@ -29,6 +30,7 @@ Rails.application.routes.draw do
   get 'cards/expansions/:expansion_id/traps', to: 'cards#traps_from_expansion'
   get 'cards/expansions/:expansion_id/weapons', to: 'cards#weapons_from_expansion'
 
+  get 'cards/:id', to: 'cards#show'
 
   resources :cards, only: %i[index show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
@@ -93,11 +95,16 @@ Rails.application.routes.draw do
 
 
 # region Card Rendering
-
-
 # endregion
 
-
+# region Seeding
+  post 'seeds/all', to: 'seeds#seed_all'
+  post 'seeds/tribes-and-spell-schools', to: 'seeds#seed_tribes_and_spell_schools'
+  post 'seeds/tribes', to: 'seeds#seed_tribes'
+  post 'seeds/spell-schools', to: 'seeds#seed_spell_schools'
+  post 'seeds/basic-cards', to: 'seeds#seed_basic_cards'
+  post 'seeds/card-mechanics', to: 'seeds#seed_card_mechanics'
+# endregion
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
