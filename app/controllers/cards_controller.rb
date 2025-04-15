@@ -34,7 +34,7 @@ class CardsController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       # Create the card without player_classes
-      card_params = card_create_params.except(:player_classes, :card_mechanics)
+      card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
       @card = Card.create!(card_params)
 
       # Assign PlayerClasses manually
@@ -58,6 +58,22 @@ class CardsController < ApplicationController
           mechanic_string: # Store formatted mechanics string
         )
       end
+
+      # asscociate CardTypeAttributes
+
+      attributes_data = params[:card][:card_type_attributes] || []
+      attr_type = if @card.type == 'FiendCard'
+                    'Tribe'
+                  elsif @card.type == 'SpellCard' || @card.type == 'TrapCard'
+                    'SpellSchool'
+                  end
+
+      attributes_data.each do |attr|
+      # binding.break
+        puts "--- Doing Attribute Stuff --- #{attr}"
+        CardType.create!(card: @card, card_type_attribute_id: attr['id'])
+      end
+
       render json: @card, status: :created
     end
   rescue ActiveRecord::RecordInvalid => e
@@ -376,8 +392,9 @@ class CardsController < ApplicationController
       :is_generated_card, :deck_size_modifier_type, :deck_size_modifier_value,
       :attack, :health, :armor, :durability, :expansion_id,
       # :image_file,
-      player_classes: %i[id name], # Allow player_classes as an array of objects with specific keys
-      card_mechanics: {} # Allow card_mechanics as a hash
+      player_classes: %i[id name],  # Allow player_classes as an array of objects with specific keys
+      card_mechanics: {},           # Allow card_mechanics as a hash,
+      card_type_attributes: %i[id name description]
     )
   end
 

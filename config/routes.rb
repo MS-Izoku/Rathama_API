@@ -39,8 +39,13 @@ Rails.application.routes.draw do
 # endregion
 
 # region Expansions
+  get 'expansions/creator-data', to: 'expansions#expansion_creator_data'
+
   get 'expansions', to: 'expansions#index'
   get 'expansions/:id', to: 'expansions#show'
+  post 'expansions', to: 'expansions#create'
+  patch 'expansions/:id', to: 'expansions#update'
+  delete 'expansions/:id', to: 'expansions#destroy'
 # endregion
 
   post 'login', to: 'authentication#login'

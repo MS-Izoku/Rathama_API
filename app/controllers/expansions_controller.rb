@@ -27,4 +27,46 @@ class ExpansionsController < ApplicationController
 
     render json: ExpansionSerializer.one(@expansion)
   end
+
+  def create
+    @expansion = Expansion.new(expansion_params)
+    @expansion.expected_release_date = expansion_params.release_date
+    if @expansion.save!
+      render json: @expansion
+    else
+      render json: { message: 'Failed to save Expansion', errors: @expansion.errors.full_messages }
+    end
+  end
+
+  def update; end
+
+  def destroy; end
+
+  def expansion_creator_data
+    groups = ExpansionGroup.all.each_with_object({}) do |group, hash|
+      hash[group.year] = {
+        id: group.id,
+        name: group.year,
+        iconUrl: group.icon_url,
+        expansions: ExpansionSerializer.many(group.expansions),
+        expansionCount: group.expansions.count
+      }
+    end
+
+    render json: {
+      expansionGroups: groups
+    }
+  end
+
+  private
+
+  def expansion_params
+    params.require(:expansion).permit(
+      :name,
+      :description,
+      :tagline,
+      :expansion_group_id,
+      :release_date
+    )
+  end
 end
