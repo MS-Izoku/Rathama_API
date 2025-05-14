@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'uploads/create'
 # region: Card Creator
   get 'cards/creator-info', to: 'cards#card_creator_inputs'
   get 'cards/creator-portal', to: 'cards#card_creator_inputs'
 # endregion
-
-
 
 # region Cards
   get 'cards/fiends', to: 'cards#fiends'
@@ -63,10 +62,6 @@ Rails.application.routes.draw do
   patch 'decks/:id', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
 
-
-
-
-
 # region CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
@@ -87,7 +82,6 @@ Rails.application.routes.draw do
 
 # endregion
 
-
 # region Quests
 
   get 'quests/show-player-quests', to: 'quests#show_player_quests'
@@ -97,7 +91,6 @@ Rails.application.routes.draw do
   patch 'quests/progress', to: 'quests#add_quest_progress'
 
 # endregion
-
 
 # region Card Rendering
 # endregion
