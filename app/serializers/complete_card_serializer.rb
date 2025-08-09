@@ -17,12 +17,11 @@ class CompleteCardSerializer < Oj::Serializer
              :updated_at,
              :is_generated_card,
              :deck_size_modifier_type,
-             :deck_size_modifier_value
+             :deck_size_modifier_value,
+             :art_url,
+             :full_card_url  # ← New attributes
 
-  # Include expansion details
-  belongs_to :expansion, serializer: ExpansionSerializer
-
-  # Include effects as an array of hashes
+  belongs_to :expansion, serializer: ExpansionMicroSerializer
   has_many :card_mechanic_assignments, serializer: CardMechanicAssignmentSerializer
   has_many :player_classes, serializer: PlayerClassMicroSerializer
   has_many :card_type_attributes, serializer: CardTypeAttributeMicroSerializer

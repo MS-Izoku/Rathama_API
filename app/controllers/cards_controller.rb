@@ -94,8 +94,9 @@ class CardsController < ApplicationController
 
       # Assign PlayerClasses manually
       puts '================ Handling PlayerClasses ================='
+      # binding.break
       player_classes_data = params[:card][:player_classes] || []
-      player_class_ids = player_classes_data.map { |pc| pc[:id] }
+      player_class_ids = player_classes_data.map { |pc| pc[:id].to_i } # force integer
       @player_classes = PlayerClass.where(id: player_class_ids)
       @player_classes.each do |player_class|
         PlayerClassCard.create!(player_class:, card: @card)
