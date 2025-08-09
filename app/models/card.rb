@@ -42,6 +42,18 @@ class Card < ApplicationRecord
   before_save :convert_card_text
 # endregion
 
+
+# region: image urls
+  def art_url
+    get_art_url(card_art_img)
+  end
+
+  def full_card_url
+    get_art_url(card_img)
+  end
+# endregion
+
+
 # region: Card Type Checks
   def fiend_card?
     type == 'FiendCard'
@@ -110,11 +122,11 @@ class Card < ApplicationRecord
 
 # region Does the Card have Art / Images attached via ActiveStorage?
   def card_img?
-    card.card_img.attached?
+    card_img.attached?
   end
 
   def card_art?
-    card.card_art_img.attached?
+    card_art_img.attached?
   end
 # endregion
 
@@ -153,6 +165,10 @@ class Card < ApplicationRecord
   end
 
   private
+
+  def get_art_url(target)
+    target.attached ? target.blob.url : ''
+  end
 
   def validate_player_class_requirements
     # a Card cannot belong to more than 2 classes

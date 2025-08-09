@@ -31,39 +31,153 @@ class CardsController < ApplicationController
     render json: CompleteCardSerializer.one(@card)
   end
 
+  # def create
+  #   ActiveRecord::Base.transaction do
+  #     # Create the card without player_classes
+  #     card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
+  #     @card = Card.create!(card_params)
+
+  #     # Assign PlayerClasses manually
+  #     player_classes_data = params[:card][:player_classes] || []
+  #     player_class_ids = player_classes_data.map { |pc| pc[:id] }
+  #     @player_classes = PlayerClass.where(id: player_class_ids)
+
+  #     @player_classes.each do |player_class|
+  #       PlayerClassCard.create!(player_class:, card: @card)
+  #     end
+
+  #     # Assign Mechanics
+  #     mechanics_data = params[:card][:card_mechanics] || {}
+
+  #     mechanics_data.each do |lifecycle_stage, mechanics|
+  #       mechanic_string = CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
+  #       CardMechanicAssignment.create!(
+  #         card: @card,
+  #         as_string: mechanics.join('|'), # Store raw mechanics list
+  #         lifecycle_stage:,
+  #         mechanic_string: # Store formatted mechanics string
+  #       )
+  #     end
+
+  #     # asscociate CardTypeAttributes
+
+  #     attributes_data = params[:card][:card_type_attributes] || []
+  #     attr_type = if @card.type == 'FiendCard'
+  #                   'Tribe'
+  #                 elsif @card.type == 'SpellCard' || @card.type == 'TrapCard'
+  #                   'SpellSchool'
+  #                 end
+
+  #     attributes_data.each do |attr|
+  #     # binding.break
+  #       puts "--- Doing Attribute Stuff --- #{attr}"
+  #       CardType.create!(card: @card, card_type_attribute_id: attr['id'])
+  #     end
+
+  #     render json: @card, status: :created
+  #   end
+  # rescue ActiveRecord::RecordInvalid => e
+  #   puts "Transaction failed: #{e.message}"
+  #   @card&.destroy # Ensures cleanup if the card was partially created
+  #   render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+  # end
+
   def create
+    @attachments_succeeded = false
+    @upload_token = SecureRandom.uuid # Generate a unique upload token to tag blobs in a future image upload request
+    card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
+    @created_blobs = []
+
     ActiveRecord::Base.transaction do
       # Create the card without player_classes
-      card_params = card_create_params.except(:player_classes, :card_mechanics)
-      @card = Card.create!(card_params)
+      @card = Card.create!(card_params.merge(upload_token: @upload_token))
 
       # Assign PlayerClasses manually
+      puts '================ Handling PlayerClasses ================='
       player_classes_data = params[:card][:player_classes] || []
       player_class_ids = player_classes_data.map { |pc| pc[:id] }
       @player_classes = PlayerClass.where(id: player_class_ids)
-
       @player_classes.each do |player_class|
         PlayerClassCard.create!(player_class:, card: @card)
       end
 
       # Assign Mechanics
+      puts '================ Handling Mechanics ================='
       mechanics_data = params[:card][:card_mechanics] || {}
-
       mechanics_data.each do |lifecycle_stage, mechanics|
         mechanic_string = CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
         CardMechanicAssignment.create!(
           card: @card,
-          as_string: mechanics.join('|'), # Store raw mechanics list
+          as_string: mechanics.join('|'),
           lifecycle_stage:,
-          mechanic_string: # Store formatted mechanics string
+          mechanic_string:
         )
       end
-      render json: @card, status: :created
+
+      # Associate CardTypeAttributes
+      puts '================ Handling CardTypeAttributes ================='
+      attributes_data = params[:card][:card_type_attributes] || []
+      attributes_data.each do |_index, attribute|
+        # binding.break
+        CardType.create!(card: @card, card_type_attribute_id: attribute['id'].to_i)
+      end
+      puts '================ Completed CardTypeAttributes ================='
+
+      puts '================ Handling Card Image (whole) ================='
+      if params[:card][:card_img].present?
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: params[:card][:card_img],
+          filename: params[:card][:card_img].original_filename,
+          content_type: params[:card][:card_img].content_type,
+          metadata: { upload_token: @upload_token, image_type: 'card_img' }
+        )
+        img_key = blob.key
+        # binding.break
+        puts '============================'
+        puts blob.key
+        puts '============================'
+        @created_blobs << blob
+        @card.card_img.attach(blob)
+      end
+
+      puts '================ Handling Card Image (Art Only) ================='
+      if params[:card][:card_art_img].present?
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: params[:card][:card_art_img],
+          filename: params[:card][:card_art_img].original_filename,
+          content_type: params[:card][:card_art_img].content_type,
+          metadata: { upload_token: @upload_token, image_type: 'card_art_img' }
+        )
+
+        # binding.break
+        card_img_key = blob.key
+        puts '============================'
+        puts blob.key
+        puts '============================'
+        @created_blobs << blob
+        @card.card_art_img.attach(blob)
+      end
+
+      puts "Keys:\n#{img_key}\n#{card_img_key}"
+
+      @attachments_succeeded = true
+
+      # Respond with both the created card and the upload token
+      render json: { card: @card, upload_token: @upload_token }, status: :created
     end
-  rescue ActiveRecord::RecordInvalid => e
+  rescue StandardError => e
     puts "Transaction failed: #{e.message}"
-    @card&.destroy # Ensures cleanup if the card was partially created
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+    # binding.break
+    @card&.destroy unless @attachments_succeeded
+
+    # Clean up orphaned blobs if attachments were attempted but creation failed
+    unless @attachments_succeeded
+      orphaned_blobs = ActiveStorage::Blob.where("metadata::jsonb ->> 'upload_token' = ?", @upload_token)
+
+      orphaned_blobs.each(&:purge_later)
+    end
+
+    render json: { errors: e }, status: :unprocessable_entity
   end
 
   def update
@@ -375,9 +489,10 @@ class CardsController < ApplicationController
       :id, :type, :name, :cost, :rarity, :card_text, :flavor_text,
       :is_generated_card, :deck_size_modifier_type, :deck_size_modifier_value,
       :attack, :health, :armor, :durability, :expansion_id,
-      # :image_file,
-      player_classes: %i[id name], # Allow player_classes as an array of objects with specific keys
-      card_mechanics: {} # Allow card_mechanics as a hash
+      :card_img, # the card art used for this card
+      player_classes: %i[id name],  # Allow player_classes as an array of objects with specific keys
+      card_mechanics: {},           # Allow card_mechanics as a hash,
+      card_type_attributes: %i[id name description]
     )
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_26_034609) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_25_170100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -120,31 +120,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_26_034609) do
     t.integer "deck_size_modifier_value"
     t.text "unity_text"
     t.text "unity_flavor_text"
-  end
-
-  create_table "cocktail_containers", force: :cascade do |t|
-    t.integer "container_id"
-    t.integer "cocktail_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "cocktail_ingredients", force: :cascade do |t|
-    t.integer "cocktail_id"
-    t.integer "ingredient_id"
-    t.float "quantity"
-    t.string "unit"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "cocktails", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.text "richtext"
-    t.integer "card_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "upload_token"
   end
 
   create_table "connected_cards", force: :cascade do |t|
@@ -152,14 +128,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_26_034609) do
     t.integer "child_card_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "containers", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "category"
   end
 
   create_table "currencies", force: :cascade do |t|
@@ -209,13 +177,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_26_034609) do
     t.integer "expansion_group_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "ingredients", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.date "release_date"
+    t.boolean "on_time", default: false
+    t.date "expected_release_date"
+    t.boolean "released"
   end
 
   create_table "keywords", force: :cascade do |t|

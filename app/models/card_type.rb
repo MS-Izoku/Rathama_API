@@ -20,9 +20,15 @@ class CardType < ApplicationRecord
     when 'MonumentCard'
       errors.add(:base, 'Cannot connect attribute to Monument Card') if card_type_attribute
     when 'SpellCard'
-      errors.add(:base, 'Cannot connect attribute to Hero Card') if card_type_attribute.type != 'SpellSchool'
+      if card_type_attribute.type != 'SpellSchool'
+        errors.add(:base,
+                   "Cannot connect '#{card_type_attribute.type}' attribute to Spell Card")
+      end
     when 'TrapCard'
-      errors.add(:base, 'Cannot connect attribute to Hero Card') if card_type_attribute.type != 'SpellSchool'
+      if card_type_attribute.type != 'SpellSchool'
+        errors.add(:base,
+                   "Cannot connect '#{card_type_attribute.type}' attribute to Trap Card")
+      end
     when 'WeaponCard'
       errors.add(:base, 'Cannot connect attribute to Weapon Card') if card_type_attribute
     else

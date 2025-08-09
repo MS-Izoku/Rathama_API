@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'uploads/create'
 # region: Card Creator
   get 'cards/creator-info', to: 'cards#card_creator_inputs'
   get 'cards/creator-portal', to: 'cards#card_creator_inputs'
 # endregion
-
-
 
 # region Cards
   get 'cards/fiends', to: 'cards#fiends'
@@ -39,8 +38,13 @@ Rails.application.routes.draw do
 # endregion
 
 # region Expansions
+  get 'expansions/creator-data', to: 'expansions#expansion_creator_data'
+
   get 'expansions', to: 'expansions#index'
   get 'expansions/:id', to: 'expansions#show'
+  post 'expansions', to: 'expansions#create'
+  patch 'expansions/:id', to: 'expansions#update'
+  delete 'expansions/:id', to: 'expansions#destroy'
 # endregion
 
   post 'login', to: 'authentication#login'
@@ -57,10 +61,6 @@ Rails.application.routes.draw do
   post 'decks/', to: 'decks#create'
   patch 'decks/:id', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
-
-
-
-
 
 # region CardTypeAttributes (Tribes and SpellSchools)
 
@@ -82,7 +82,6 @@ Rails.application.routes.draw do
 
 # endregion
 
-
 # region Quests
 
   get 'quests/show-player-quests', to: 'quests#show_player_quests'
@@ -92,7 +91,6 @@ Rails.application.routes.draw do
   patch 'quests/progress', to: 'quests#add_quest_progress'
 
 # endregion
-
 
 # region Card Rendering
 # endregion
@@ -108,4 +106,9 @@ Rails.application.routes.draw do
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
+
+  # Add Active Storage routes
+  direct :rails_blob do |blob, options|
+    route_for(:rails_service_blob, blob, options)
+  end
 end

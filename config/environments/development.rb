@@ -33,7 +33,12 @@ Rails.application.configure do
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local # change this based on where-ever we're storing images
+  config.active_storage.service = ENV['RENDER'] ? :development : :local
+  Rails.application.routes.default_url_options = {
+    host: ENV['RENDER'] ? ENV['HOST'] : 'localhost',
+    port: ENV['RENDER'] ? nil : 3000,
+    protocol: ENV['RENDER'] ? 'https' : 'http'
+  }
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
@@ -58,7 +63,6 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
-
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
@@ -71,3 +75,5 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 end
+
+# current issue: get windows saving images locally (windows only issues are happening)
