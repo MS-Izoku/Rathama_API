@@ -13,7 +13,7 @@ Rails.application.config.after_initialize do
     if Rails.env.production?
       # Prevent accidental production use
       # raise ProductionUnsetException, 'Production environment not configured yet'
-      ENV_CONFIG [:production] # this will be changed once an actual production server is made
+      ENV_CONFIG[:production] # this will be changed once an actual production server is made
     elsif Rails.env.development? && ENV['RENDER']
       ENV_CONFIG[:development]
     else
