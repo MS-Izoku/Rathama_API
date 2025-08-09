@@ -85,10 +85,11 @@ class CardsController < ApplicationController
   def create
     @attachments_succeeded = false
     @upload_token = SecureRandom.uuid # Generate a unique upload token to tag blobs in a future image upload request
+    card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
+    @created_blobs = []
 
     ActiveRecord::Base.transaction do
       # Create the card without player_classes
-      card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
       @card = Card.create!(card_params.merge(upload_token: @upload_token))
 
       # Assign PlayerClasses manually
@@ -122,8 +123,6 @@ class CardsController < ApplicationController
       end
       puts '================ Completed CardTypeAttributes ================='
 
-
-      # Handle direct file uploads via form-data
       puts '================ Handling Card Image (whole) ================='
       if params[:card][:card_img].present?
         blob = ActiveStorage::Blob.create_and_upload!(
@@ -132,6 +131,12 @@ class CardsController < ApplicationController
           content_type: params[:card][:card_img].content_type,
           metadata: { upload_token: @upload_token, image_type: 'card_img' }
         )
+        img_key = blob.key
+        # binding.break
+        puts '============================'
+        puts blob.key
+        puts '============================'
+        @created_blobs << blob
         @card.card_img.attach(blob)
       end
 
@@ -143,8 +148,17 @@ class CardsController < ApplicationController
           content_type: params[:card][:card_art_img].content_type,
           metadata: { upload_token: @upload_token, image_type: 'card_art_img' }
         )
+
+        # binding.break
+        card_img_key = blob.key
+        puts '============================'
+        puts blob.key
+        puts '============================'
+        @created_blobs << blob
         @card.card_art_img.attach(blob)
       end
+
+      puts "Keys:\n#{img_key}\n#{card_img_key}"
 
       @attachments_succeeded = true
 

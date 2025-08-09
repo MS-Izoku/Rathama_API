@@ -106,4 +106,9 @@ Rails.application.routes.draw do
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
+
+  # Add Active Storage routes
+  direct :rails_blob do |blob, options|
+    route_for(:rails_service_blob, blob, options)
+  end
 end

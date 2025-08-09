@@ -6,7 +6,13 @@ test:
   service: Disk
   root: <%= Rails.root.join("tmp/storage") %>
 
+development:
+  service: Disk
+  root: /data # Render's persistent disk mount point for development/staging
 
+production:
+  service: Disk
+  root: /data # Adjust if production uses a different path or service (e.g., AWS S3)
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
