@@ -4,13 +4,17 @@ class SeedsController < ApplicationController
     # before_action :check_permissions # NYI in ApplicationController
 
   def seed_all
+    return render json: "You're seeding everything!"
     @completed = []
     @failed = nil
     {
       'Tribes and Spell Schools' => -> { SeedTribesAndSpellSchools.seed },
       'Basic Cards' => -> { SeedBasicCards.seed },
-      'Card Mechanics' => -> { SeedCardMechanics.seed }
+      'Card Mechanics' => -> { SeedCardMechanics.seed },
+      'Player Classes' => -> { SeedPlayerClasses.seed },
+      'Scale Powers' => -> { SeedScalePowers.seed }
     }.each do |name, method|
+      puts "================\nSeeding::#{name}\n================"
       method.call
       @completed << name
     rescue StandardError => e

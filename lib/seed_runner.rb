@@ -11,7 +11,8 @@ module SeedRunner
     SeedQuests => true,
     SeedPlayerClasses => true,
     SeedCardMechanics => true,
-    SeedBasicCards => true
+    SeedBasicCards => true,
+    SeedScalePowers => true
   }.freeze
 
   def self.run

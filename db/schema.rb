@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_25_170100) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_12_172729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -262,6 +262,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_170100) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "hero_card_id"
+  end
+
+  create_table "seed_update_infos", force: :cascade do |t|
+    t.datetime "card_type_attributes"
+    t.datetime "basic_cards"
+    t.string "mechanics_datetime"
+    t.datetime "decks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_currencies", force: :cascade do |t|

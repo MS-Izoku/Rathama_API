@@ -19,36 +19,92 @@ class SeedPlayerClasses
       neutral.save!
     end
 
-    PlayerClass.find_or_create_by(
+    detainer_class = PlayerClass.find_or_create_by(
       id: 1,
       name: 'Detainer',
       description: ''
     )
 
-    PlayerClass.find_or_create_by(
+    magus_class = PlayerClass.find_or_create_by(
       id: 2,
       name: 'Magus',
       description: ''
     )
 
-    PlayerClass.find_or_create_by(
+    sage_class = PlayerClass.find_or_create_by(
       id: 3,
       name: 'Sage',
       description: ''
     )
 
-    PlayerClass.find_or_create_by(
+    trapper_class = PlayerClass.find_or_create_by(
       id: 4,
       name: 'Trapper',
       description: ''
     )
 
-    PlayerClass.find_or_create_by(
+    warden_class = PlayerClass.find_or_create_by(
       id: 5,
       name: 'Warden',
       description: ''
     )
-  end
 
-  def self.create_new_classes; end
+    # Player Classes will require their own "Card" which is unobtainable by the player,
+    # but is used by the game as the default Hero
+    # the exception to this is the Neutral class, which is not usable by players 
+    default_detainer_hero_card = HeroCard.find_or_create_by(
+      name: 'Xedrai',
+      card_text: '',
+      armor: 0,
+      cost: 0,
+      rarity: 'Legendary',
+      expansion_id: 1,
+      flavor_text: '<p>The default <b>Detainer</b> Hero</p>'
+    )
+    PlayerClassCard.create(player_class: detainer_class, card: default_detainer_hero_card)
+
+    default_magus_hero_card = HeroCard.find_or_create_by(
+      name: 'Magai',
+      card_text: '',
+      armor: 0,
+      cost: 0,
+      rarity: 'Legendary',
+      expansion_id: 1,
+      flavor_text: '<p>The default <b>Magus</b> Hero</p>'
+    )
+    PlayerClassCard.create(player_class: magus_class, card: default_magus_hero_card)
+
+    default_sage_hero_card = HeroCard.find_or_create_by(
+      name: 'Dianaria',
+      card_text: '',
+      armor: 0,
+      cost: 0,
+      rarity: 'Legendary',
+      expansion_id: 1,
+      flavor_text: '<p>The default <b>Sage</b> Hero</p>'
+    )
+    PlayerClassCard.create(player_class: sage_class, card: default_sage_hero_card)
+
+    default_trapper_hero_card = HeroCard.find_or_create_by(
+      name: 'Xedrai',
+      card_text: '',
+      armor: 0,
+      cost: 0,
+      rarity: 'Legendary',
+      expansion_id: 1,
+      flavor_text: '<p>The default <b>Detainer</b> Hero</p>'
+    )
+    PlayerClassCard.create(player_class: trapper_class, card: default_trapper_hero_card)
+
+    default_warden_hero_card = HeroCard.find_or_create_by(
+      name: 'Xedrai',
+      card_text: '',
+      armor: 0,
+      cost: 0,
+      rarity: 'Legendary',
+      expansion_id: 1,
+      flavor_text: '<p>The default <b>Detainer</b> Hero</p>'
+    )
+    PlayerClassCard.create(player_class: warden_class, card: default_warden_hero_card)
+  end
 end

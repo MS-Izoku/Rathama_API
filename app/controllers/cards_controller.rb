@@ -449,9 +449,10 @@ class CardsController < ApplicationController
 # endregion
 
 # region Card Creator Portal
-  def card_creator_inputs
-    render json: {
-      card_types: %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard),
+def card_creator_inputs
+  @cached_data = Rails.cache.fetch('card_creator_inputs', expires_in: 1.hour) do
+    {
+      card_types: %w(HeroCard FiendCard MonumentCard SpellCard TrapCard WeaponCard),
       rarities: Card.valid_rarities,
       mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
       playerClasses: PlayerClassSerializer.many(PlayerClass.all),
@@ -472,9 +473,11 @@ class CardsController < ApplicationController
           weapon: CardMechanic.weapon_lifecycle_stages
         }
       )
-
     }
   end
+
+  render json: @cached_data
+end
 # endregion
 
   private
