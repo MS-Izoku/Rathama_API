@@ -1,25 +1,31 @@
 # config/initializers/active_storage.rb
-Rails.application.config.after_initialize do
-  class ProductionUnsetException < StandardError
-  end
+ENV_CONFIG = {
+  production: { host: ENV.fetch('HOST', 'rathama-api.onrender.com'), protocol: 'https' },
+  staging: { host: ENV.fetch('HOST', 'rathama-api.onrender.com'), protocol: 'https' },
+  development: { host: 'localhost', port: 3000, protocol: 'http' }
+}.freeze
 
-  ENV_CONFIG = {
-    production: { host: ENV.fetch('HOST', 'rathama-api.onrender.com'), protocol: 'https' },
-    development: { host: ENV.fetch('HOST', 'rathama-api.onrender.com'), protocol: 'https' },
-    local: { host: 'localhost', port: 3000, protocol: 'http' }
-  }.freeze
+BLOCKOUT = '[=======================================================]'.freeze
 
-  determine_env = lambda do
+# config/initializers/active_storage.rb
+class ActiveStorageConfiguration
+  def self.env_config
     if Rails.env.production?
-      # Prevent accidental production use
-      # raise ProductionUnsetException, 'Production environment not configured yet'
-      ENV_CONFIG[:production] # this will be changed once an actual production server is made
+      ENV_CONFIG[:production]
     elsif Rails.env.development? && ENV['RENDER']
-      ENV_CONFIG[:development]
+      ENV_CONFIG[:staging]
     else
-      ENV_CONFIG[:local]
+      ENV_CONFIG[:development]
     end
   end
 
-  ActiveStorage::Current.url_options = determine_env.call
+  def self.configure!
+    config = env_config
+    Rails.application.routes.default_url_options = config
+    ActiveStorage::Current.url_options = config
+  end
+end
+
+Rails.application.config.after_initialize do
+  ActiveStorageConfiguration.configure!
 end

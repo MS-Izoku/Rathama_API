@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
 class CardsController < ApplicationController
+  before_action :configure_upload_url_options, only: %i[index create update]
+
 # region: Index Routes
   def index
-    @cards = Card.all
-    render json: @cards.as_json
+    @cards = Card.paginate(page: params[:page], per_page: params[:per_page] || 10)
+    render json: {
+      cards:  CompleteCardSerializer.many(@cards).as_json, #@cards.map { |card| CompleteCardSerializer.many(card).as_json },
+      meta: {
+        current_page: @cards.current_page,
+        total_pages: @cards.total_pages,
+        total_count: @cards.total_entries
+      }
+    }, adapter: :json
   end
 
   def cards_by_expansion
@@ -30,57 +39,6 @@ class CardsController < ApplicationController
 
     render json: CompleteCardSerializer.one(@card)
   end
-
-  # def create
-  #   ActiveRecord::Base.transaction do
-  #     # Create the card without player_classes
-  #     card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
-  #     @card = Card.create!(card_params)
-
-  #     # Assign PlayerClasses manually
-  #     player_classes_data = params[:card][:player_classes] || []
-  #     player_class_ids = player_classes_data.map { |pc| pc[:id] }
-  #     @player_classes = PlayerClass.where(id: player_class_ids)
-
-  #     @player_classes.each do |player_class|
-  #       PlayerClassCard.create!(player_class:, card: @card)
-  #     end
-
-  #     # Assign Mechanics
-  #     mechanics_data = params[:card][:card_mechanics] || {}
-
-  #     mechanics_data.each do |lifecycle_stage, mechanics|
-  #       mechanic_string = CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
-  #       CardMechanicAssignment.create!(
-  #         card: @card,
-  #         as_string: mechanics.join('|'), # Store raw mechanics list
-  #         lifecycle_stage:,
-  #         mechanic_string: # Store formatted mechanics string
-  #       )
-  #     end
-
-  #     # asscociate CardTypeAttributes
-
-  #     attributes_data = params[:card][:card_type_attributes] || []
-  #     attr_type = if @card.type == 'FiendCard'
-  #                   'Tribe'
-  #                 elsif @card.type == 'SpellCard' || @card.type == 'TrapCard'
-  #                   'SpellSchool'
-  #                 end
-
-  #     attributes_data.each do |attr|
-  #     # binding.break
-  #       puts "--- Doing Attribute Stuff --- #{attr}"
-  #       CardType.create!(card: @card, card_type_attribute_id: attr['id'])
-  #     end
-
-  #     render json: @card, status: :created
-  #   end
-  # rescue ActiveRecord::RecordInvalid => e
-  #   puts "Transaction failed: #{e.message}"
-  #   @card&.destroy # Ensures cleanup if the card was partially created
-  #   render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  # end
 
   def create
     @attachments_succeeded = false
@@ -164,20 +122,21 @@ class CardsController < ApplicationController
       @attachments_succeeded = true
 
       # Respond with both the created card and the upload token
-      render json: { card: @card, upload_token: @upload_token }, status: :created
+      # render json: { card: @card, upload_token: @upload_token }, status: :created
+      render json: CompleteCardSerializer.one(@card), status: :created
     end
   rescue StandardError => e
     puts "Transaction failed: #{e.message}"
-    # binding.break
+            # binding.break
     @card&.destroy unless @attachments_succeeded
 
-    # Clean up orphaned blobs if attachments were attempted but creation failed
+            # Clean up orphaned blobs if attachments were attempted but creation failed
     unless @attachments_succeeded
       orphaned_blobs = ActiveStorage::Blob.where("metadata::jsonb ->> 'upload_token' = ?", @upload_token)
 
       orphaned_blobs.each(&:purge_later)
     end
-
+    puts '>> Destroyed due to transaction faliure'
     render json: { errors: e }, status: :unprocessable_entity
   end
 
@@ -449,35 +408,35 @@ class CardsController < ApplicationController
 # endregion
 
 # region Card Creator Portal
-def card_creator_inputs
-  @cached_data = Rails.cache.fetch('card_creator_inputs', expires_in: 1.hour) do
-    {
-      card_types: %w(HeroCard FiendCard MonumentCard SpellCard TrapCard WeaponCard),
-      rarities: Card.valid_rarities,
-      mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
-      playerClasses: PlayerClassSerializer.many(PlayerClass.all),
-      expansions: ExpansionSerializer.many(Expansion.all),
-      cardTypeAttributes: {
-        spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
-        tribes: CardTypeAttributeSerializer.many(Tribe.all)
-      },
-      enums: CardMechanic::ENUMS.merge(
-        targetType: CardMechanic.target_types,
-        lifecycleStage: {
-          all: CardMechanic.all_lifecycle_stages,
-          hero: CardMechanic.hero_lifecycle_stages,
-          fiend: CardMechanic.fiend_lifecycle_stages,
-          monument: CardMechanic.monument_lifecycle_stages,
-          spell: CardMechanic.spell_lifecycle_stages,
-          trap: CardMechanic.trap_lifecycle_stages,
-          weapon: CardMechanic.weapon_lifecycle_stages
-        }
-      )
-    }
-  end
+  def card_creator_inputs
+    @cached_data = Rails.cache.fetch('card_creator_inputs', expires_in: 1.hour) do
+      {
+        card_types: %w[HeroCard FiendCard MonumentCard SpellCard TrapCard WeaponCard],
+        rarities: Card.valid_rarities,
+        mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
+        playerClasses: PlayerClassSerializer.many(PlayerClass.all),
+        expansions: ExpansionSerializer.many(Expansion.all),
+        cardTypeAttributes: {
+          spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
+          tribes: CardTypeAttributeSerializer.many(Tribe.all)
+        },
+        enums: CardMechanic::ENUMS.merge(
+          targetType: CardMechanic.target_types,
+          lifecycleStage: {
+            all: CardMechanic.all_lifecycle_stages,
+            hero: CardMechanic.hero_lifecycle_stages,
+            fiend: CardMechanic.fiend_lifecycle_stages,
+            monument: CardMechanic.monument_lifecycle_stages,
+            spell: CardMechanic.spell_lifecycle_stages,
+            trap: CardMechanic.trap_lifecycle_stages,
+            weapon: CardMechanic.weapon_lifecycle_stages
+          }
+        )
+      }
+    end
 
-  render json: @cached_data
-end
+    render json: @cached_data
+  end
 # endregion
 
   private

@@ -31,7 +31,8 @@ Rails.application.routes.draw do
 
   get 'cards/:id', to: 'cards#show'
 
-  resources :cards, only: %i[index show create update destroy] do
+  get 'cards/index/:page/:per_page', to: 'cards#index'
+  resources :cards, only: %i[show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
     post 'search', to: 'cards#search' # using POST since it can have a request body
   end

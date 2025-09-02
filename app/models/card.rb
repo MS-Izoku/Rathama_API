@@ -167,7 +167,7 @@ class Card < ApplicationRecord
   private
 
   def get_art_url(target)
-    target.attached ? target.blob.url : ''
+    target.attached? ? target.blob.url : ''
   end
 
   def validate_player_class_requirements
