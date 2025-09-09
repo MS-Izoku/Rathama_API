@@ -64,7 +64,7 @@ class SeedPlayerClasses
     PlayerClassCard.create(player_class: detainer_class, card: default_detainer_hero_card)
 
     default_magus_hero_card = HeroCard.find_or_create_by(
-      name: 'Magai',
+      name: 'Santo',
       card_text: '',
       armor: 0,
       cost: 0,
@@ -86,25 +86,28 @@ class SeedPlayerClasses
     PlayerClassCard.create(player_class: sage_class, card: default_sage_hero_card)
 
     default_trapper_hero_card = HeroCard.find_or_create_by(
-      name: 'Xedrai',
+      name: 'Crianh',
       card_text: '',
       armor: 0,
       cost: 0,
       rarity: 'Legendary',
       expansion_id: 1,
-      flavor_text: '<p>The default <b>Detainer</b> Hero</p>'
+      flavor_text: '<p>The default <b>Trapper</b> Hero</p>'
     )
     PlayerClassCard.create(player_class: trapper_class, card: default_trapper_hero_card)
 
     default_warden_hero_card = HeroCard.find_or_create_by(
-      name: 'Xedrai',
+      name: 'Gorioh',
       card_text: '',
       armor: 0,
       cost: 0,
       rarity: 'Legendary',
       expansion_id: 1,
-      flavor_text: '<p>The default <b>Detainer</b> Hero</p>'
+      flavor_text: '<p>The default <b>Warden</b> Hero</p>'
     )
     PlayerClassCard.create(player_class: warden_class, card: default_warden_hero_card)
+  end
+
+  def self.create_new_classes
   end
 end

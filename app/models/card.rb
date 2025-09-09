@@ -100,6 +100,11 @@ class Card < ApplicationRecord
     %w[None Add Subtract Override]
   end
 
+  def scale_powers
+    return nil unless self.class == "HeroCard"
+    ScalePower.where(hero_card_id: id)
+  end
+
   def as_json(options = {})
     attributes = super(options.merge({ except: [], methods: [:type] }))
 

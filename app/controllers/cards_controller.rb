@@ -7,7 +7,7 @@ class CardsController < ApplicationController
   def index
     @cards = Card.paginate(page: params[:page], per_page: params[:per_page] || 10)
     render json: {
-      cards:  CompleteCardSerializer.many(@cards).as_json, #@cards.map { |card| CompleteCardSerializer.many(card).as_json },
+      cards: CompleteCardSerializer.many(@cards).as_json,
       meta: {
         current_page: @cards.current_page,
         total_pages: @cards.total_pages,
@@ -76,7 +76,7 @@ class CardsController < ApplicationController
       # Associate CardTypeAttributes
       puts '================ Handling CardTypeAttributes ================='
       attributes_data = params[:card][:card_type_attributes] || []
-      attributes_data.each do |_index, attribute|
+      attributes_data.each_value do |attribute|
         # binding.break
         CardType.create!(card: @card, card_type_attribute_id: attribute['id'].to_i)
       end
@@ -270,14 +270,35 @@ class CardsController < ApplicationController
   end
 
   def heroes
-    if Rails.cache.exist?('heroes')
-      @heroes = Rails.cache.read('heroes')
-    else
-      @heroes = HeroCard.all.to_a
-      Rails.cache.write('heroes', @heroes, expires_in: 12.hours)
+    # Generate a unique cache key based on pagination parameters
+    cache_key = "heroes/page/#{params[:page] || 1}/per_page/#{params[:per_page] || 10}"
+
+    # Check if cached data exists for this specific page
+    @heroes = Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      HeroCard.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10).to_a
     end
 
-    render json: { heroes: HeroSerializer.many(@heroes) }
+    # Render JSON response with pagination metadata
+    render json: {
+      heroes: HeroIndexSerializer.many(@heroes).as_json,
+      meta: {
+        current_page: @heroes.current_page,
+        total_pages: @heroes.total_pages,
+        total_count: @heroes.total_entries
+      }
+    }, adapter: :json
+  end
+
+  def index
+    @cards = Card.paginate(page: params[:page], per_page: params[:per_page] || 10)
+    render json: {
+      cards: CompleteCardSerializer.many(@cards).as_json, # @cards.map { |card| CompleteCardSerializer.many(card).as_json },
+      meta: {
+        current_page: @cards.current_page,
+        total_pages: @cards.total_pages,
+        total_count: @cards.total_entries
+      }
+    }, adapter: :json
   end
 
 # endregion
