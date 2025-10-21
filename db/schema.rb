@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_12_172729) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_22_012613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -121,6 +121,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_12_172729) do
     t.text "unity_text"
     t.text "unity_flavor_text"
     t.string "upload_token"
+    t.boolean "excluded_from_deckbuilding", default: false
   end
 
   create_table "connected_cards", force: :cascade do |t|

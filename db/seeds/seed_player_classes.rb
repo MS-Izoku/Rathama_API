@@ -59,7 +59,8 @@ class SeedPlayerClasses
       cost: 0,
       rarity: 'Legendary',
       expansion_id: 1,
-      flavor_text: '<p>The default <b>Detainer</b> Hero</p>'
+      flavor_text: '<p>The default <b>Detainer</b> Hero</p>',
+      excluded_from_deckbuilding: true
     )
     PlayerClassCard.create(player_class: detainer_class, card: default_detainer_hero_card)
 
@@ -70,7 +71,8 @@ class SeedPlayerClasses
       cost: 0,
       rarity: 'Legendary',
       expansion_id: 1,
-      flavor_text: '<p>The default <b>Magus</b> Hero</p>'
+      flavor_text: '<p>The default <b>Magus</b> Hero</p>',
+      excluded_from_deckbuilding: true
     )
     PlayerClassCard.create(player_class: magus_class, card: default_magus_hero_card)
 
@@ -81,7 +83,8 @@ class SeedPlayerClasses
       cost: 0,
       rarity: 'Legendary',
       expansion_id: 1,
-      flavor_text: '<p>The default <b>Sage</b> Hero</p>'
+      flavor_text: '<p>The default <b>Sage</b> Hero</p>',
+      excluded_from_deckbuilding: true
     )
     PlayerClassCard.create(player_class: sage_class, card: default_sage_hero_card)
 
@@ -92,7 +95,8 @@ class SeedPlayerClasses
       cost: 0,
       rarity: 'Legendary',
       expansion_id: 1,
-      flavor_text: '<p>The default <b>Trapper</b> Hero</p>'
+      flavor_text: '<p>The default <b>Trapper</b> Hero</p>',
+      excluded_from_deckbuilding: true
     )
     PlayerClassCard.create(player_class: trapper_class, card: default_trapper_hero_card)
 

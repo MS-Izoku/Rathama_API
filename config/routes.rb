@@ -83,6 +83,11 @@ Rails.application.routes.draw do
 
 # endregion
 
+  # region Scale Powers
+  get 'scale-powers/creator-portal', to: 'scale_powers#scale_power_creator_portal'
+  # endregion
+
+
 # region Quests
 
   get 'quests/show-player-quests', to: 'quests#show_player_quests'

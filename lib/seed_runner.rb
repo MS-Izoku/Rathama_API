@@ -15,11 +15,33 @@ module SeedRunner
     SeedScalePowers => true
   }.freeze
 
-  def self.run
+  def self.interactive_config
+    # start from a mutable copy
+    config = SEED_CLASSES.dup
+
+    config.each do |config_class, config_value|
+      puts "| > Should I Seed::[#{config_class}]?  Currently::#{config_value}  (Y/N)"
+      input = $stdin.gets.strip.downcase
+      should_seed = case input
+                    when 'y', 'yes' then true
+                    when 'n', 'no'  then false
+                    else config_value # fallback to original if invalid input
+                    end
+
+      puts should_seed ? "| Seeding::[#{config_class}]" : "| SKIPPING::[#{config_class}]"
+      config[config_class] = should_seed
+    end
+
+    config
+  end
+
+  def self.run(interactive = false)
     puts 'Initializing SeedRunner'
     puts create_sandwich_symbols('=')
 
-    SEED_CLASSES.each do |klass, should_run|
+    config = interactive ? interactive_config : SeedRunner::SEED_CLASSES
+
+    config.each do |klass, should_run|
       unless should_run # Skip if set to false
         print_seed_message("Skipping::#{klass.name}")
         next

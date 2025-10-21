@@ -222,7 +222,7 @@ class CardsController < ApplicationController
       @spells = SpellCard.all.to_a
       Rails.cache.write('spells', @spells, expires_in: 12.hours)
     end
-    render json: { spells: SpellSerializer.many(@spells) }
+    render json: { spells: CompleteCardSerializer.many(@spells) }
   end
 
   def traps
@@ -233,7 +233,7 @@ class CardsController < ApplicationController
       Rails.cache.write('traps', @traps, expires_in: 12.hours)
     end
 
-    render json: { traps: TrapSerializer.many(@traps) }
+    render json: { traps: CompleteCardSerializer.many(@traps) }
   end
 
   def weapons
@@ -244,7 +244,7 @@ class CardsController < ApplicationController
       Rails.cache.write('weapons', @weapons, expires_in: 12.hours)
     end
 
-    render json: { weapons: WeaponSerializer.many(@weapons) }
+    render json: { weapons: CompleteCardSerializer.many(@weapons) }
   end
 
   def monuments
@@ -255,7 +255,7 @@ class CardsController < ApplicationController
       Rails.cache.write('monuments', @monuments, expires_in: 12.hours)
     end
 
-    render json: { monuments: MonumentSerializer.many(@monuments) }
+    render json: { monuments: CompleteCardSerializer.many(@monuments) }
   end
 
   def fiends
@@ -266,7 +266,7 @@ class CardsController < ApplicationController
       Rails.cache.write('fiends', @fiends, expires_in: 12.hours)
     end
 
-    render json: { fiends: FiendSerializer.many(@fiends) }
+    render json: { fiends: CompleteCardSerializer.many(@fiends) }
   end
 
   def heroes
@@ -280,7 +280,7 @@ class CardsController < ApplicationController
 
     # Render JSON response with pagination metadata
     render json: {
-      heroes: HeroIndexSerializer.many(@heroes).as_json,
+      heroes: CompleteCardSerializer.many(@heroes).as_json,
       meta: {
         current_page: @heroes.current_page,
         total_pages: @heroes.total_pages,
@@ -291,13 +291,22 @@ class CardsController < ApplicationController
 
   def index
     @cards = Card.paginate(page: params[:page], per_page: params[:per_page] || 10)
+    meta = {
+      current_page: @cards.current_page,
+      total_pages: @cards.total_pages,
+      total_count: @cards.total_entries
+    }
+
+    if !params[:resource].nil? && params[:resource] == 'unity'
+      return render json: {
+        cards: CompleteUnityCardSerializer.many(@cards).as_json,
+        meta:
+      }, adapter: :json
+    end
+
     render json: {
-      cards: CompleteCardSerializer.many(@cards).as_json, # @cards.map { |card| CompleteCardSerializer.many(card).as_json },
-      meta: {
-        current_page: @cards.current_page,
-        total_pages: @cards.total_pages,
-        total_count: @cards.total_entries
-      }
+      cards: CompleteCardSerializer.many(@cards).as_json,
+      meta:
     }, adapter: :json
   end
 

@@ -42,7 +42,6 @@ class Card < ApplicationRecord
   before_save :convert_card_text
 # endregion
 
-
 # region: image urls
   def art_url
     get_art_url(card_art_img)
@@ -53,6 +52,28 @@ class Card < ApplicationRecord
   end
 # endregion
 
+# region: Cards by Class
+  def self.detainer
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 1 })
+  end
+
+  def self.magus
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 2 })
+  end
+
+  def self.sage
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 3 })
+  end
+
+  def self.trapper
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 4 })
+  end
+
+  def self.warden
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 5 })
+  end
+
+# endregion
 
 # region: Card Type Checks
   def fiend_card?
@@ -80,7 +101,7 @@ class Card < ApplicationRecord
   end
 # endregion
 
-  # region Card Rarity and Deck Limits
+# region Card Rarity and Deck Limits
   def self.valid_rarities
     deck_limits_per_card_rarity.keys
   end
@@ -101,7 +122,8 @@ class Card < ApplicationRecord
   end
 
   def scale_powers
-    return nil unless self.class == "HeroCard"
+    return nil unless self.class == 'HeroCard'
+
     ScalePower.where(hero_card_id: id)
   end
 

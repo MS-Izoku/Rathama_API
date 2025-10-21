@@ -2,6 +2,24 @@
 
 require 'io/console'
 
+namespace :list do
+  desc 'List all rails-based commands (like custom ENV commands)'
+  task :rails do
+    puts "\n[===========:: Rails ENV Extensions ::==========]"
+    puts '[Custom Seeding] -> rails db:seed INTERACTIVE=true'
+    puts "|----------------->  Allows for an interactive Seeding experience, based in SeedRunner"
+
+    puts "" # keep a space at the final line
+  end
+
+  task :all do
+    sh 'rake list:rails'
+    
+    puts "\n[==============:: Rake Commands ::==============]"
+    sh "rake -T"
+  end
+end
+
 namespace :db do
   desc 'Rebuild the database (drop and recreate)'
   task :rebuild, [:args] => :environment do |_t, _args|
@@ -26,6 +44,48 @@ namespace :db do
 
     puts ''
     puts '[== Database Reset Complete ==]'
+  end
+
+  desc 'Force disconnect all connections to the development database'
+  task disconnect_all: :environment do
+    db_config = ActiveRecord::Base.connection_db_config
+
+    dbname = db_config.database
+    user   = db_config.configuration_hash[:username]
+
+    # Connect to 'postgres' (or template1) since we can't disconnect from inside the target DB
+    conn = PG.connect(
+      dbname: 'postgres',
+      user: db_config.configuration_hash[:username],
+      password: db_config.configuration_hash[:password],
+      host: db_config.configuration_hash[:host],
+      port: db_config.configuration_hash[:port]
+    )
+
+    sql = <<~SQL
+      SELECT pg_terminate_backend(pid)
+      FROM pg_stat_activity
+      WHERE datname = '#{dbname}'
+        AND pid <> pg_backend_pid();
+    SQL
+
+    conn.exec(sql)
+    conn.close
+
+    puts "✅ Disconnected all sessions from #{dbname}"
+  end
+
+  desc 'Force drop the development database (disconnect first)'
+  task force_drop: :disconnect_all do
+    db_config = ActiveRecord::Base.connection_db_config
+    dbname = db_config.database
+
+    # Run drop with FORCE if PostgreSQL 13+
+    ActiveRecord::Base.connection.execute("DROP DATABASE #{dbname} WITH (FORCE);")
+  rescue ActiveRecord::StatementInvalid => e
+    puts "❌ Error: #{e.message}"
+  else
+    puts "💥 Dropped #{dbname} with FORCE"
   end
 end
 
