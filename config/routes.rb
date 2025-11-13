@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'uploads/create'
 # region: Card Creator
   get 'cards/creator-info', to: 'cards#card_creator_inputs'
   get 'cards/creator-portal', to: 'cards#card_creator_inputs'
 # endregion
-
-
 
 # region Cards
   get 'cards/fiends', to: 'cards#fiends'
@@ -32,7 +31,8 @@ Rails.application.routes.draw do
 
   get 'cards/:id', to: 'cards#show'
 
-  resources :cards, only: %i[index show create update destroy] do
+  get 'cards/index/:page/:per_page', to: 'cards#index'
+  resources :cards, only: %i[show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
     post 'search', to: 'cards#search' # using POST since it can have a request body
   end
@@ -63,10 +63,6 @@ Rails.application.routes.draw do
   patch 'decks/:id', to: 'decks#update'
   delete 'decks/:id', to: 'decks#destroy'
 
-
-
-
-
 # region CardTypeAttributes (Tribes and SpellSchools)
 
   # region Tribes
@@ -87,6 +83,10 @@ Rails.application.routes.draw do
 
 # endregion
 
+  # region Scale Powers
+  get 'scale-powers/creator-portal', to: 'scale_powers#scale_power_creator_portal'
+  # endregion
+
 
 # region Quests
 
@@ -97,7 +97,6 @@ Rails.application.routes.draw do
   patch 'quests/progress', to: 'quests#add_quest_progress'
 
 # endregion
-
 
 # region Card Rendering
 # endregion
@@ -113,4 +112,9 @@ Rails.application.routes.draw do
 
   post '/login', to: 'users#login'
   get '/login', to: 'users#authenticate_token'
+
+  # Add Active Storage routes
+  direct :rails_blob do |blob, options|
+    route_for(:rails_service_blob, blob, options)
+  end
 end

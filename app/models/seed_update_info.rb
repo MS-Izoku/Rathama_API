@@ -1,0 +1,2 @@
+class SeedUpdateInfo < ApplicationRecord
+end

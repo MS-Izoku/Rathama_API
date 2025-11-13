@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
 class CardsController < ApplicationController
+  before_action :configure_upload_url_options, only: %i[index create update]
+
 # region: Index Routes
   def index
-    @cards = Card.all
-    render json: @cards.as_json
+    @cards = Card.paginate(page: params[:page], per_page: params[:per_page] || 10)
+    render json: {
+      cards: CompleteCardSerializer.many(@cards).as_json,
+      meta: {
+        current_page: @cards.current_page,
+        total_pages: @cards.total_pages,
+        total_count: @cards.total_entries
+      }
+    }, adapter: :json
   end
 
   def cards_by_expansion
@@ -32,54 +41,103 @@ class CardsController < ApplicationController
   end
 
   def create
+    @attachments_succeeded = false
+    @upload_token = SecureRandom.uuid # Generate a unique upload token to tag blobs in a future image upload request
+    card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
+    @created_blobs = []
+
     ActiveRecord::Base.transaction do
       # Create the card without player_classes
-      card_params = card_create_params.except(:player_classes, :card_mechanics, :card_type_attributes)
-      @card = Card.create!(card_params)
+      @card = Card.create!(card_params.merge(upload_token: @upload_token))
 
       # Assign PlayerClasses manually
+      puts '================ Handling PlayerClasses ================='
+      # binding.break
       player_classes_data = params[:card][:player_classes] || []
-      player_class_ids = player_classes_data.map { |pc| pc[:id] }
+      player_class_ids = player_classes_data.map { |pc| pc[:id].to_i } # force integer
       @player_classes = PlayerClass.where(id: player_class_ids)
-
       @player_classes.each do |player_class|
         PlayerClassCard.create!(player_class:, card: @card)
       end
 
       # Assign Mechanics
+      puts '================ Handling Mechanics ================='
       mechanics_data = params[:card][:card_mechanics] || {}
-
       mechanics_data.each do |lifecycle_stage, mechanics|
         mechanic_string = CardMechanicAssignment.create_adjusted_mechanic_string(lifecycle_stage, mechanics)
         CardMechanicAssignment.create!(
           card: @card,
-          as_string: mechanics.join('|'), # Store raw mechanics list
+          as_string: mechanics.join('|'),
           lifecycle_stage:,
-          mechanic_string: # Store formatted mechanics string
+          mechanic_string:
         )
       end
 
-      # asscociate CardTypeAttributes
-
+      # Associate CardTypeAttributes
+      puts '================ Handling CardTypeAttributes ================='
       attributes_data = params[:card][:card_type_attributes] || []
-      attr_type = if @card.type == 'FiendCard'
-                    'Tribe'
-                  elsif @card.type == 'SpellCard' || @card.type == 'TrapCard'
-                    'SpellSchool'
-                  end
+      attributes_data.each_value do |attribute|
+        # binding.break
+        CardType.create!(card: @card, card_type_attribute_id: attribute['id'].to_i)
+      end
+      puts '================ Completed CardTypeAttributes ================='
 
-      attributes_data.each do |attr|
-      # binding.break
-        puts "--- Doing Attribute Stuff --- #{attr}"
-        CardType.create!(card: @card, card_type_attribute_id: attr['id'])
+      puts '================ Handling Card Image (whole) ================='
+      if params[:card][:card_img].present?
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: params[:card][:card_img],
+          filename: params[:card][:card_img].original_filename,
+          content_type: params[:card][:card_img].content_type,
+          metadata: { upload_token: @upload_token, image_type: 'card_img' }
+        )
+        img_key = blob.key
+        # binding.break
+        puts '============================'
+        puts blob.key
+        puts '============================'
+        @created_blobs << blob
+        @card.card_img.attach(blob)
       end
 
-      render json: @card, status: :created
+      puts '================ Handling Card Image (Art Only) ================='
+      if params[:card][:card_art_img].present?
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: params[:card][:card_art_img],
+          filename: params[:card][:card_art_img].original_filename,
+          content_type: params[:card][:card_art_img].content_type,
+          metadata: { upload_token: @upload_token, image_type: 'card_art_img' }
+        )
+
+        # binding.break
+        card_img_key = blob.key
+        puts '============================'
+        puts blob.key
+        puts '============================'
+        @created_blobs << blob
+        @card.card_art_img.attach(blob)
+      end
+
+      puts "Keys:\n#{img_key}\n#{card_img_key}"
+
+      @attachments_succeeded = true
+
+      # Respond with both the created card and the upload token
+      # render json: { card: @card, upload_token: @upload_token }, status: :created
+      render json: CompleteCardSerializer.one(@card), status: :created
     end
-  rescue ActiveRecord::RecordInvalid => e
+  rescue StandardError => e
     puts "Transaction failed: #{e.message}"
-    @card&.destroy # Ensures cleanup if the card was partially created
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+            # binding.break
+    @card&.destroy unless @attachments_succeeded
+
+            # Clean up orphaned blobs if attachments were attempted but creation failed
+    unless @attachments_succeeded
+      orphaned_blobs = ActiveStorage::Blob.where("metadata::jsonb ->> 'upload_token' = ?", @upload_token)
+
+      orphaned_blobs.each(&:purge_later)
+    end
+    puts '>> Destroyed due to transaction faliure'
+    render json: { errors: e }, status: :unprocessable_entity
   end
 
   def update
@@ -164,7 +222,7 @@ class CardsController < ApplicationController
       @spells = SpellCard.all.to_a
       Rails.cache.write('spells', @spells, expires_in: 12.hours)
     end
-    render json: { spells: SpellSerializer.many(@spells) }
+    render json: { spells: CompleteCardSerializer.many(@spells) }
   end
 
   def traps
@@ -175,7 +233,7 @@ class CardsController < ApplicationController
       Rails.cache.write('traps', @traps, expires_in: 12.hours)
     end
 
-    render json: { traps: TrapSerializer.many(@traps) }
+    render json: { traps: CompleteCardSerializer.many(@traps) }
   end
 
   def weapons
@@ -186,7 +244,7 @@ class CardsController < ApplicationController
       Rails.cache.write('weapons', @weapons, expires_in: 12.hours)
     end
 
-    render json: { weapons: WeaponSerializer.many(@weapons) }
+    render json: { weapons: CompleteCardSerializer.many(@weapons) }
   end
 
   def monuments
@@ -197,7 +255,7 @@ class CardsController < ApplicationController
       Rails.cache.write('monuments', @monuments, expires_in: 12.hours)
     end
 
-    render json: { monuments: MonumentSerializer.many(@monuments) }
+    render json: { monuments: CompleteCardSerializer.many(@monuments) }
   end
 
   def fiends
@@ -208,18 +266,48 @@ class CardsController < ApplicationController
       Rails.cache.write('fiends', @fiends, expires_in: 12.hours)
     end
 
-    render json: { fiends: FiendSerializer.many(@fiends) }
+    render json: { fiends: CompleteCardSerializer.many(@fiends) }
   end
 
   def heroes
-    if Rails.cache.exist?('heroes')
-      @heroes = Rails.cache.read('heroes')
-    else
-      @heroes = HeroCard.all.to_a
-      Rails.cache.write('heroes', @heroes, expires_in: 12.hours)
+    # Generate a unique cache key based on pagination parameters
+    cache_key = "heroes/page/#{params[:page] || 1}/per_page/#{params[:per_page] || 10}"
+
+    # Check if cached data exists for this specific page
+    @heroes = Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      HeroCard.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10).to_a
     end
 
-    render json: { heroes: HeroSerializer.many(@heroes) }
+    # Render JSON response with pagination metadata
+    render json: {
+      heroes: CompleteCardSerializer.many(@heroes).as_json,
+      meta: {
+        current_page: @heroes.current_page,
+        total_pages: @heroes.total_pages,
+        total_count: @heroes.total_entries
+      }
+    }, adapter: :json
+  end
+
+  def index
+    @cards = Card.paginate(page: params[:page], per_page: params[:per_page] || 10)
+    meta = {
+      current_page: @cards.current_page,
+      total_pages: @cards.total_pages,
+      total_count: @cards.total_entries
+    }
+
+    if !params[:resource].nil? && params[:resource] == 'unity'
+      return render json: {
+        cards: CompleteUnityCardSerializer.many(@cards).as_json,
+        meta:
+      }, adapter: :json
+    end
+
+    render json: {
+      cards: CompleteCardSerializer.many(@cards).as_json,
+      meta:
+    }, adapter: :json
   end
 
 # endregion
@@ -351,30 +439,33 @@ class CardsController < ApplicationController
 
 # region Card Creator Portal
   def card_creator_inputs
-    render json: {
-      card_types: %(HeroCard, FiendCard, MonumentCard, SpellCard, TrapCard, WeaponCard),
-      rarities: Card.valid_rarities,
-      mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
-      playerClasses: PlayerClassSerializer.many(PlayerClass.all),
-      expansions: ExpansionSerializer.many(Expansion.all),
-      cardTypeAttributes: {
-        spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
-        tribes: CardTypeAttributeSerializer.many(Tribe.all)
-      },
-      enums: CardMechanic::ENUMS.merge(
-        targetType: CardMechanic.target_types,
-        lifecycleStage: {
-          all: CardMechanic.all_lifecycle_stages,
-          hero: CardMechanic.hero_lifecycle_stages,
-          fiend: CardMechanic.fiend_lifecycle_stages,
-          monument: CardMechanic.monument_lifecycle_stages,
-          spell: CardMechanic.spell_lifecycle_stages,
-          trap: CardMechanic.trap_lifecycle_stages,
-          weapon: CardMechanic.weapon_lifecycle_stages
-        }
-      )
+    @cached_data = Rails.cache.fetch('card_creator_inputs', expires_in: 1.hour) do
+      {
+        card_types: %w[HeroCard FiendCard MonumentCard SpellCard TrapCard WeaponCard],
+        rarities: Card.valid_rarities,
+        mechanics: CardMechanicSerializer.many(CardMechanic.all.order(:name)),
+        playerClasses: PlayerClassSerializer.many(PlayerClass.all),
+        expansions: ExpansionSerializer.many(Expansion.all),
+        cardTypeAttributes: {
+          spellSchools: CardTypeAttributeSerializer.many(SpellSchool.all),
+          tribes: CardTypeAttributeSerializer.many(Tribe.all)
+        },
+        enums: CardMechanic::ENUMS.merge(
+          targetType: CardMechanic.target_types,
+          lifecycleStage: {
+            all: CardMechanic.all_lifecycle_stages,
+            hero: CardMechanic.hero_lifecycle_stages,
+            fiend: CardMechanic.fiend_lifecycle_stages,
+            monument: CardMechanic.monument_lifecycle_stages,
+            spell: CardMechanic.spell_lifecycle_stages,
+            trap: CardMechanic.trap_lifecycle_stages,
+            weapon: CardMechanic.weapon_lifecycle_stages
+          }
+        )
+      }
+    end
 
-    }
+    render json: @cached_data
   end
 # endregion
 
@@ -391,7 +482,7 @@ class CardsController < ApplicationController
       :id, :type, :name, :cost, :rarity, :card_text, :flavor_text,
       :is_generated_card, :deck_size_modifier_type, :deck_size_modifier_value,
       :attack, :health, :armor, :durability, :expansion_id,
-      # :image_file,
+      :card_img, # the card art used for this card
       player_classes: %i[id name],  # Allow player_classes as an array of objects with specific keys
       card_mechanics: {},           # Allow card_mechanics as a hash,
       card_type_attributes: %i[id name description]

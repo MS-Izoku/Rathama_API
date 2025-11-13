@@ -9,6 +9,17 @@ class CardMechanic < ApplicationRecord
 
   # Define available enums globally (can be expanded later)
   ENUMS = {
+    'effectConditions' => {
+      'hasPlayedCardsOfType' => ['CardType' , 'Integer'],
+      'fiendsHaveDied' => "Integer",
+      'monumentsHaveDied' => "Integer",
+      'weaponsDestroyed' => "Integer",
+      'rookShiftCount' => 'Integer',
+      'hasRooks' => 'Boolean',
+      'hasNexus' => 'Boolean',
+      'hasLinkSet' => 'Boolean',
+      'hasFullLink' => 'Boolean'
+    },
     'targetTypes' => %w[
       SingleTarget SingleNonPlayerTarget SingleEnemy SingleAlly
       AllEnemy AllAllies All Opponent

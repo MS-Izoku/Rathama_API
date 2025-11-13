@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_31_033244) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_22_012613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -120,6 +120,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_31_033244) do
     t.integer "deck_size_modifier_value"
     t.text "unity_text"
     t.text "unity_flavor_text"
+    t.string "upload_token"
+    t.boolean "excluded_from_deckbuilding", default: false
   end
 
   create_table "connected_cards", force: :cascade do |t|
@@ -261,6 +263,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_31_033244) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "hero_card_id"
+  end
+
+  create_table "seed_update_infos", force: :cascade do |t|
+    t.datetime "card_type_attributes"
+    t.datetime "basic_cards"
+    t.string "mechanics_datetime"
+    t.datetime "decks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_currencies", force: :cascade do |t|

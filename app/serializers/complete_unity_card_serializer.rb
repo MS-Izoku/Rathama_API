@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-class CompleteCardSerializer < Oj::Serializer
+class CompleteUnityCardSerializer < Oj::Serializer
   # Make the internal object name explicit for clarity in blocks
   object_as :card
 
   # Scalar attributes that come directly from the card
   attributes :id,
              :name,
-             :card_text,
+             :unity_text,
              :cost,
-             :flavor_text,
+             :unity_flavor_text,
              :rarity,
              :type,
              :attack,

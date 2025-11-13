@@ -45,6 +45,10 @@ class ApplicationController < ActionController::API
     JWT.decode(token, secret_key, true, { algorithm: 'HS256' })[0]
   end
 
+  def configure_upload_url_options
+    ActiveStorageConfiguration.configure!
+  end
+
   private
 
     # returns true if the API key belongs to the user and is currently active

@@ -42,6 +42,39 @@ class Card < ApplicationRecord
   before_save :convert_card_text
 # endregion
 
+# region: image urls
+  def art_url
+    get_art_url(card_art_img)
+  end
+
+  def full_card_url
+    get_art_url(card_img)
+  end
+# endregion
+
+# region: Cards by Class
+  def self.detainer
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 1 })
+  end
+
+  def self.magus
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 2 })
+  end
+
+  def self.sage
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 3 })
+  end
+
+  def self.trapper
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 4 })
+  end
+
+  def self.warden
+    joins(:player_class_cards).where(player_class_cards: { player_class_id: 5 })
+  end
+
+# endregion
+
 # region: Card Type Checks
   def fiend_card?
     type == 'FiendCard'
@@ -68,7 +101,7 @@ class Card < ApplicationRecord
   end
 # endregion
 
-  # region Card Rarity and Deck Limits
+# region Card Rarity and Deck Limits
   def self.valid_rarities
     deck_limits_per_card_rarity.keys
   end
@@ -86,6 +119,12 @@ class Card < ApplicationRecord
 
   def self.deck_size_modifier_types
     %w[None Add Subtract Override]
+  end
+
+  def scale_powers
+    return nil unless self.class == 'HeroCard'
+
+    ScalePower.where(hero_card_id: id)
   end
 
   def as_json(options = {})
@@ -110,11 +149,11 @@ class Card < ApplicationRecord
 
 # region Does the Card have Art / Images attached via ActiveStorage?
   def card_img?
-    card.card_img.attached?
+    card_img.attached?
   end
 
   def card_art?
-    card.card_art_img.attached?
+    card_art_img.attached?
   end
 # endregion
 
@@ -153,6 +192,10 @@ class Card < ApplicationRecord
   end
 
   private
+
+  def get_art_url(target)
+    target.attached? ? target.blob.url : ''
+  end
 
   def validate_player_class_requirements
     # a Card cannot belong to more than 2 classes

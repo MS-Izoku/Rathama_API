@@ -1,3 +1,3 @@
 class ExpansionMicroSerializer < Oj::Serializer
-  attributes :id, :name, :release_date, :released
+  attributes :id, :name
 end

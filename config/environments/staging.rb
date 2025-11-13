@@ -33,12 +33,11 @@ Rails.application.configure do
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = ENV['RENDER'] ? :development : :local
-  p "==============================\n#{config.active_storage.service}\n=============================="
+  config.active_storage.service = :staging
   Rails.application.routes.default_url_options = {
-    host: 'localhost',
-    port: 3000,
-    protocol: 'http'
+    host: ENV['HOST'],
+    port: nil,
+    protocol: 'https'
   }
 
   # Don't care if the mailer can't send.
@@ -76,3 +75,5 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 end
+
+# current issue: get windows saving images locally (windows only issues are happening)
