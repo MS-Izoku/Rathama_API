@@ -4,6 +4,8 @@
 # seed each type separately
 require Rails.root.join('lib/seed_runner')
 
+User.create(username: "TestUser", password: "password", email: "email@email.com")
+
 interactive = ENV['INTERACTIVE'].to_s.downcase == 'true'
 SeedRunner.run(interactive)
 

@@ -68,19 +68,22 @@ class Deck < ApplicationRecord
   end
 
   # a method to create a deck and cards using a single transaction
-  def self.create_deck_from_params(input_params, user_id)
-    deck = Deck.new(input_params.except(:card_ids, :deck_classes))
-    deck.owner_id = user_id
-    deck.generation_status = 'Initialized'
+def self.create_deck_from_params(input_params, user_id)
+  deck = Deck.new(input_params.except(:card_ids, :deck_classes).merge(owner_id: user_id))
+  deck.generation_status = 'Initialized'
 
-    deck.save!
+  deck.save!
 
-    return deck unless Deck.create_deck_cards(deck, input_params[:card_ids])
-
-    deck.generation_status = 'GameReady'
-    deck.save
-    deck
+  # Create deck cards and check if successful
+  unless Deck.create_deck_cards(deck, input_params[:card_ids])
+    deck.errors.add(:base, 'Failed to add cards to deck')
+    return deck
   end
+
+  deck.generation_status = 'GameReady'
+  deck.save!
+  deck
+end
 
   # update the card list of a given Deck
   def self.update_card_list(deck, card_ids)
@@ -116,21 +119,31 @@ class Deck < ApplicationRecord
   # a method to create and destroy Deck Cards for a given deck
   # can also be used using a partial-list during Update instead of a full list during create
   def self.create_deck_cards(deck, card_ids)
+    return true if card_ids.blank? # Handle empty card_ids gracefully
+
     valid_cards = Card.where(id: card_ids.uniq, is_generated_card: false)
     valid_card_ids = valid_cards.pluck(:id)
     invalid_ids = card_ids - valid_card_ids
 
-    # check if all cards exist
-    unless invalid_ids.count.zero?
-      puts 'Invalid Deck Card Ids Found'
-      deck.errors.add(:base, "Invalid Card Id#{invalid_ids.count > 1 ? 's' : ''} Found::#{invalid_ids}")
+    unless invalid_ids.empty?
+      deck.errors.add(:base, "Invalid card IDs: #{invalid_ids.join(', ')}")
       return false
     end
 
-    puts 'Creating Deck Cards'
-    card_ids.each do |card_id|
-      DeckCard.create(deck_id: deck.id, card_id:)
+    # Validate card counts against rarity limits
+    card_counts = card_ids.tally
+    card_counts.each do |card_id, count|
+      card = valid_cards.find { |c| c.id == card_id }
+      max_limit = Card.deck_limits_per_card_rarity[card.rarity] || 2
+      if count > max_limit
+        deck.errors.add(:base, "Card ID #{card_id} (#{card.name}) exceeds limit of #{max_limit}, found #{count}")
+        return false
+      end
     end
+
+    # Bulk insert deck cards
+    deck_card_attributes = card_ids.map { |card_id| { deck_id: deck.id, card_id: card_id, created_at: Time.current, updated_at: Time.current } }
+    DeckCard.insert_all(deck_card_attributes)
 
     true
   end
@@ -149,7 +162,7 @@ class Deck < ApplicationRecord
       "#{card[:id]}:#{card[:count]}"
     end
 
-                                                            checksum_string.join(',')}"
+    checksum_string.join(',')}"
 
     # Calculate the CRC32 checksum
     Zlib.crc32(checksum_string)
@@ -252,16 +265,12 @@ class Deck < ApplicationRecord
     return if generation_status == 'Initialized' || generation_status.nil?
 
     if persisted?
-      p 'Creating Deck Code'
+      puts 'Modifying Deck Code'
+      self.deck_code = generate_deck_code
     else
-      p 'Modifying DeckCode'
-      original_deck_card_ids = Deck.find(id).deck_card_ids.sort
-      current_deck_card_ids = deck_card_ids.sort
-
-      return if original_deck_card_ids == current_deck_card_ids
-
+      puts 'Creating Deck Code'
+      self.deck_code = generate_deck_code
     end
-    self.deck_code = generate_deck_code
   end
 
   def validate_deck_classes

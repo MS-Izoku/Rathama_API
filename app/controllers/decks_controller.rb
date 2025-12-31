@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DecksController < ApplicationController
-  before_action :authenticate_user # @current_user is available
+  # before_action :authenticate_user # @current_user is available
 
   def index
     @decks = Deck.where(owner_id: current_user.id)
@@ -19,39 +19,49 @@ class DecksController < ApplicationController
   end
 
   def create
-    if deck_params[:deck_classes].nil? || deck_params[:deck_classes].zero?
-      return render json: { error: 'No Player Classes Found ([ deck_class:[] ] param not found)' }
+    unless deck_params[:deck_classes]&.any?
+      return render json: { error: 'At least one valid player class is required' }, status: :bad_request
     end
 
-    # data transaction
+    @deck = nil
     ActiveRecord::Base.transaction do
-      @deck = Deck.create_deck_from_params(deck_params, current_user.id)
+      # Create deck
+      @deck = Deck.create_deck_from_params(deck_params, deck_params[:owner_id])
 
+      # Validate and create deck classes
       valid_player_classes = deck_params[:deck_classes].reject { |class_name| class_name == 'Neutral' }
-      valid_player_classes.each do |dc_name| # deck_class_name
-        puts dc_name
+      valid_player_classes.each do |dc_name|
         player_class = PlayerClass.find_by(name: dc_name)
-        raise ActiveRecord::Rollback if player_class.nil?
-
-        DeckClass.create(player_class:, deck: @deck)
+        unless player_class
+          @deck.errors.add(:deck_classes, "Invalid player class: #{dc_name}")
+          raise ActiveRecord::Rollback
+        end
+        DeckClass.create!(player_class:, deck: @deck)
       end
 
-      if @deck.errors.any?
-        p @deck.errors
-        raise ActiveRecord::Rollback
-      end
-    rescue StandardError
-      raise ActiveRecord::Rollback
+      # Validate deck after creating cards and classes
+      raise ActiveRecord::Rollback if @deck.errors.any? || !@deck.valid?
+    rescue ActiveRecord::Rollback
+      # Errors will be handled below
+      nil
+    rescue StandardError => e
+      Rails.logger.error("Unexpected error in deck creation: #{e.message}")
+      render json: { error: 'An unexpected error occurred' }, status: :internal_server_error
+      return
     end
 
-
-
-    # json rendering
-    if @deck.errors.any?
-      render json: { errors: @deck.errors }, status: :bad_request
-    else
+    if @deck&.errors&.any?
+      render json: { errors: @deck.errors.full_messages }, status: :bad_request
+    elsif @deck
+      # Cache the deck (assuming deck_key is defined)
       Rails.cache.write(deck_key(@deck), @deck, expires_in: 12.hours)
-      render json: { deck: @deck, card_count: @deck.deck_cards.count, deck_classes: @deck.deck_classes }
+      render json: {
+        deck: DeckSerializer.one(@deck),
+        card_count: @deck.deck_cards.count,
+        deck_classes: @deck.deck_classes.map { |dc| dc.player_class.name }
+      }, status: :created
+    else
+      render json: { error: 'Deck creation failed' }, status: :bad_request
     end
   end
 
@@ -98,7 +108,6 @@ class DecksController < ApplicationController
       raise ActiveRecord::Rollback
     end
 
-
     if @deck.errors.any?
       render json: { errors: @deck.errors }, status: :bad_request
     else
@@ -106,7 +115,6 @@ class DecksController < ApplicationController
       render json: { deck: @deck, card_count: @deck.deck_cards.count }
     end
   end
-
 
   private
 

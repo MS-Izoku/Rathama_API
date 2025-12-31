@@ -32,11 +32,12 @@ class SeedBasicCards
   end
 
   def self.seed_detainer_cards
+    detainer_cards = []
       # region: Heroes
       # endregion
 
       # region: Fiends
-    FiendCard.find_or_create_by(
+    grasping_hands = FiendCard.find_or_create_by(
       name: 'The Grasping Hands',
       flavor_text: 'Why are there so many of them?',
       rarity: 'Legendary',
@@ -48,6 +49,7 @@ class SeedBasicCards
       attack: 2,
       health: 10
     )
+    detainer_cards << grasping_hands
 
     FiendCard.find_or_create_by(
       name: 'Creeping Hand',
@@ -91,6 +93,20 @@ class SeedBasicCards
     FiendCard.find_or_create_by(
       name: 'Skinless Hand',
       flavor_text: "Where'd the skin go?",
+      rarity: 'Rare',
+      cost: 3,
+      card_text: '<b>Anim</b>',
+      is_generated_card: false,
+      deck_size_modifier_type: 'None',
+      expansion_id: 1,
+      attack: 3,
+      health: 3
+    )
+
+    
+    FiendCard.find_or_create_by(
+      name: 'Another Hand',
+      flavor_text: "Why are there so many?",
       rarity: 'Rare',
       cost: 3,
       card_text: '<b>Anim</b>',
@@ -234,6 +250,11 @@ class SeedBasicCards
       durability: 3
     )
       # endregion
+
+    detainer_class = PlayerClass.find_by(name: 'Detainer')
+    detainer_cards.each do |_card|
+      PlayerClassCard.create(player_class: detainer_class, card: card)
+    end
   end
 
   def self.seed_magus_cards
