@@ -103,10 +103,9 @@ class SeedBasicCards
       health: 3
     )
 
-    
     FiendCard.find_or_create_by(
       name: 'Another Hand',
-      flavor_text: "Why are there so many?",
+      flavor_text: 'Why are there so many?',
       rarity: 'Rare',
       cost: 3,
       card_text: '<b>Anim</b>',
@@ -252,8 +251,8 @@ class SeedBasicCards
       # endregion
 
     detainer_class = PlayerClass.find_by(name: 'Detainer')
-    detainer_cards.each do |_card|
-      PlayerClassCard.create(player_class: detainer_class, card: card)
+    detainer_cards.each do |card|
+      PlayerClassCard.create(player_class: detainer_class, card:)
     end
   end
 

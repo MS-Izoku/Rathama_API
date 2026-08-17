@@ -10,7 +10,7 @@ class SeedCardMechanics
 
   def self.create_core_mechanics
     CardMechanic.find_or_create_by(name: 'DealDamage', description: 'Deals Damage to something',
-                                   args: 'damage:integer,target:targetType', is_trait: false)
+                                   args: 'damage:integer,target:targetType')
 
     CardMechanic.find_or_create_by(name: 'Heal', description: 'Deals Damage to something',
                                    args: 'health:integer,target:targetType')
@@ -24,7 +24,8 @@ class SeedCardMechanics
     # generative / searching mechanics
     CardMechanic.find_or_create_by(name: 'Copy', description: 'Generates a copy of a target',
                                    args: 'targetType:targetType')
-    # CardMechanic.find_or_create_by(name: 'Hail', description: '<strong>Find</strong> 3 cards from your deck, pick one to put on top', args: '', is_trait: true)
+    CardMechanic.find_or_create_by(name: 'Hail',
+                                   description: '<strong>Find</strong> 3 cards from your deck, pick one to put on top')
 
     # Gaining effects
     CardMechanic.find_or_create_by(name: 'GainEffect', description: 'Gain an additional effect',
@@ -49,6 +50,8 @@ class SeedCardMechanics
                                    description: 'An effect that occurs when this card is played after another', args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Fury', description: 'An effect that occurs when this minion takes damage',
                                    args: '', is_trait: true)
+    CardMechanic.find_or_create_by(name: 'Giant', description: 'Summons powerful tokens in additional spaces',
+                                   args: 'summonCount:integer', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Inspire', description: 'Activates when the Scales are used', args: '',
                                    is_trait: true)
     CardMechanic.find_or_create_by(name: 'Link',
@@ -89,8 +92,6 @@ class SeedCardMechanics
                                    description: 'Generates a new card from a selection and adds it to hand', args: 'selectionSize:integer, findSelectionType:findSelectionType')
     CardMechanic.find_or_create_by(name: 'Gag', description: 'Removes any/all effects from the target',
                                    args: 'targetType:targetType')
-    CardMechanic.find_or_create_by(name: 'Giant', description: 'Summons powerful tokens in additional spaces',
-                                   args: 'summonCount:integer')
     CardMechanic.find_or_create_by(name: 'Invoke', description: 'Activates the hero power of another card',
                                    args: 'heroCardId:integer')
     # CardMechanic.find_or_create_by(name: 'Lift',

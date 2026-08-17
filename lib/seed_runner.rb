@@ -59,7 +59,7 @@ module SeedRunner
       create_sandwich_symbols(' ')
       create_sandwich_symbols
     rescue StandardError => e
-      print_seed_message("Error::#{e.message}", 1)
+      print_seed_message("Error::#{e.message} || #{e.full_message}", 1)
       print_seed_message('Seeding has stopped', 1)
       create_sandwich_symbols(' ')
 
