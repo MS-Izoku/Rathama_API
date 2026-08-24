@@ -10,10 +10,10 @@ class CardMechanic < ApplicationRecord
   # Define available enums globally (can be expanded later)
   ENUMS = {
     'effectConditions' => {
-      'hasPlayedCardsOfType' => ['CardType' , 'Integer'],
-      'fiendsHaveDied' => "Integer",
-      'monumentsHaveDied' => "Integer",
-      'weaponsDestroyed' => "Integer",
+      'hasPlayedCardsOfType' => %w[CardType Integer],
+      'fiendsHaveDied' => 'Integer',
+      'monumentsHaveDied' => 'Integer',
+      'weaponsDestroyed' => 'Integer',
       'rookShiftCount' => 'Integer',
       'hasRooks' => 'Boolean',
       'hasNexus' => 'Boolean',
@@ -35,6 +35,7 @@ class CardMechanic < ApplicationRecord
     'fiendLifecycle' => %w[Root Dawn Call Nexus Rook Link AttackDeclared TargetedForAttack TargetedBySpell DamageStep PostAttackStep Overkill
                            Rale Cusp].freeze,
     'monumentLifecycle' => %w[Root Dawn Call Nexus Rook Link OnMonumentActivate Overkill Rale OnResolve].freeze,
+    'scalePowerLifecycle' => %(Call Cusp Dawn Overkill),
     'spellLifecycle' => %w[Root OnSpellActivate Overkill OnResolve].freeze,
     'trapLifecycle' => %w[Root OnTrapActivate Overkill OnResolve].freeze,
     'weaponLifecycle' => %w[Root Dawn Call AttackDeclared DamageStep PostAttackStep Overkill Rale Cusp].freeze
@@ -43,6 +44,11 @@ class CardMechanic < ApplicationRecord
   # region: Enum Exposure
   def self.target_types
     ENUMS['targetType']
+  end
+
+  # scale-powers exist outside of the #all_lifecycle_states since those represent cards
+  def self.scale_power_lifecycle_stages
+    ENUMS['scalePowerLifecycle']
   end
 
   def self.all_lifecycle_stages

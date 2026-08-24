@@ -12,7 +12,7 @@ module SeedRunner
     SeedPlayerClasses => true,
     SeedCardMechanics => true,
     SeedBasicCards => true,
-    SeedScalePowers => true
+    SeedScalePowers => true # scale powers require basic cards in order to be properly asscociated
   }.freeze
 
   def self.interactive_config

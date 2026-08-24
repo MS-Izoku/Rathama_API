@@ -28,10 +28,9 @@ Rails.application.routes.draw do
   get 'cards/expansions/:expansion_id/spells', to: 'cards#spells_from_expansion'
   get 'cards/expansions/:expansion_id/traps', to: 'cards#traps_from_expansion'
   get 'cards/expansions/:expansion_id/weapons', to: 'cards#weapons_from_expansion'
-
+  get 'cards/index/:page/:per_page', to: 'cards#index'
   get 'cards/:id', to: 'cards#show'
 
-  get 'cards/index/:page/:per_page', to: 'cards#index'
   resources :cards, only: %i[show create update destroy] do
     put 'cards/change_image', to: 'cards#change_image'
     post 'search', to: 'cards#search' # using POST since it can have a request body
@@ -85,6 +84,7 @@ Rails.application.routes.draw do
 
   # region Scale Powers
   get 'scale-powers/creator-portal', to: 'scale_powers#scale_power_creator_portal'
+  get 'scale-powers/:id', to: 'scale_powers#show'
   # endregion
 
 
