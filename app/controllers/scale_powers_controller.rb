@@ -1,4 +1,6 @@
 class ScalePowersController < ApplicationController
+  before_action :set_active_storage_url_options, only: :scale_power_creator_portal
+
   def scale_power_creator_portal
     key = 'scale_power_creator_portal'.freeze
 
@@ -39,5 +41,11 @@ class ScalePowersController < ApplicationController
   def show
     @scale_power = ScalePower.find_by(id: params[:id])
     render json: ScalePowerCreatorSerializer.one(@scale_power)
+  end
+
+  private
+
+  def set_active_storage_url_options
+    ActiveStorage::Current.url_options = ActiveStorageConfiguration.env_config
   end
 end

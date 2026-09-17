@@ -3610,13 +3610,6 @@
       "updated_at": "2024-08-23T14:25:08.126Z"
     },
     {
-      "id": 13,
-      "name": "Fury",
-      "description": "An effect that occurs when the target is damaged.",
-      "created_at": "2024-08-23T14:25:08.130Z",
-      "updated_at": "2024-08-23T14:25:08.130Z"
-    },
-    {
       "id": 14,
       "name": "Gag",
       "description": "Removes any/all effects from the target.",
@@ -3776,13 +3769,6 @@
       "description": "Cannot be targeted until this attacks.",
       "created_at": "2024-08-23T14:25:08.235Z",
       "updated_at": "2024-08-23T14:25:08.235Z"
-    },
-    {
-      "id": 37,
-      "name": "Ward",
-      "description": "Enemies must attack this, or other Ward Fiends.",
-      "created_at": "2024-08-23T14:25:08.239Z",
-      "updated_at": "2024-08-23T14:25:08.239Z"
     },
     {
       "id": 38,

@@ -33,9 +33,9 @@ class CardMechanic < ApplicationRecord
     'heroLifecycle' => %w[Root Dawn Call AttackDeclared TargetedForAttack TargetedBySpell PostAttackStep Overkill Rale
                           Cusp].freeze,
     'fiendLifecycle' => %w[Root Dawn Call Nexus Rook Link AttackDeclared TargetedForAttack TargetedBySpell DamageStep PostAttackStep Overkill
-                           Rale Cusp].freeze,
+                           Stand Rale Anim Cusp].freeze,
     'monumentLifecycle' => %w[Root Dawn Call Nexus Rook Link OnMonumentActivate Overkill Rale OnResolve].freeze,
-    'scalePowerLifecycle' => %(Call Cusp Dawn Overkill),
+    'scalePowerLifecycle' => %w[OnScalePowerActivate Cusp Dawn Overkill].freeze,
     'spellLifecycle' => %w[Root OnSpellActivate Overkill OnResolve].freeze,
     'trapLifecycle' => %w[Root OnTrapActivate Overkill OnResolve].freeze,
     'weaponLifecycle' => %w[Root Dawn Call AttackDeclared DamageStep PostAttackStep Overkill Rale Cusp].freeze

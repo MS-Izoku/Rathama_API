@@ -74,8 +74,6 @@ class SeedCardMechanics
                                    args: '', is_trait: true)
     CardMechanic.find_or_create_by(name: 'Veil', description: 'Cannot be targeted until this attacks', args: '',
                                    is_trait: true)
-    CardMechanic.find_or_create_by(name: 'Ward', description: 'Enemy minions must attack this', args: '',
-                                   is_trait: true)
       # those few Traits with args
     CardMechanic.find_or_create_by(name: 'Charge',
                                    description: 'Can be played multiple times from hand for the same cost', args: 'quantity:integer', is_trait: true)
